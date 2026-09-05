@@ -11,6 +11,9 @@
 5. 提交pr请求待我看到之后我会进行评估后添加  
 
 Q: 我实在不会呀该怎么办呢?
-A: 试着询问ai或者把你的fun地图文件发往到邮件bywihee [at] outlook.com 我会不定时的查看
+A: 试着询问ai或者把你的fun地图文件发往到邮件bywihee [at] outlook.com 我会不定时的查看,或者提issue有标准格式
 
 ---
+
+# 网址
+> https://sds-map-share.pages.dev/

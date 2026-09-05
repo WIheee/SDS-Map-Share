@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { MapItem } from '@/types/map'
 import { useMapsStore } from '@/stores/maps'
@@ -18,24 +18,61 @@ const loading = ref(true)
 const error = ref(false)
 const downloading = ref(false)
 
+// ===== Giscus 评论（按地图 ID 隔离）=====
+const loadGiscus = () => {
+  if (!mapData.value) return
+  
+  const container = document.querySelector('.giscus-container')
+  if (!container) return
+  container.innerHTML = ''
+  
+  const oldScript = document.querySelector('#giscus-script')
+  if (oldScript) oldScript.remove()
+  
+  const script = document.createElement('script')
+  script.id = 'giscus-script'
+  script.src = 'https://giscus.app/client.js'
+  script.setAttribute('data-repo', 'WIheee/SDS-Map-Share')
+  script.setAttribute('data-repo-id', 'R_kgDOUPE0UA')
+  script.setAttribute('data-category', 'Announcements')
+  script.setAttribute('data-category-id', 'DIC_kwDOUPE0UM4DE8IZ')
+  script.setAttribute('data-mapping', 'specific')
+  // ★ 关键：使用地图 ID 作为唯一标识
+  script.setAttribute('data-term', String(mapData.value.id))
+  script.setAttribute('data-strict', '0')
+  script.setAttribute('data-reactions-enabled', '1')
+  script.setAttribute('data-emit-metadata', '0')
+  script.setAttribute('data-input-position', 'bottom')
+  script.setAttribute('data-theme', 'preferred_color_scheme')
+  script.setAttribute('data-lang', 'zh-CN')
+  script.setAttribute('data-loading', 'lazy')
+  script.crossOrigin = 'anonymous'
+  script.async = true
+  
+  container.appendChild(script)
+}
+
+// 地图切换时重新加载评论
+watch(() => mapData.value, (newVal) => {
+  if (newVal) {
+    nextTick(() => { loadGiscus() })
+  }
+}, { immediate: true })
+
+// ===== 下载 =====
 const downloadMap = () => {
   if (!mapData.value || downloading.value) return
   downloading.value = true
-  // 同源静态资源直接用 a[download]，避免把整个 7z 读进内存（原来 fetch+blob 会卡大文件）
   const a = document.createElement('a')
   a.href = import.meta.env.BASE_URL + mapData.value.file.replace(/^\//, '')
   a.download = mapData.value.file.split('/').pop() ?? 'map.7z'
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)
-  // 简单节流，防止连续点击重复触发下载
-  setTimeout(() => {
-    downloading.value = false
-  }, 1500)
+  setTimeout(() => { downloading.value = false }, 1500)
 }
 
 const goBack = () => {
-  // 直链进入时没有上一页历史，退回列表页而不是退出站点
   if (window.history.state?.back) {
     router.back()
   } else {
@@ -103,6 +140,9 @@ onMounted(async () => {
         <mdui-divider></mdui-divider>
         <div class="card-body">{{ mapData.author }}</div>
       </mdui-card>
+
+      <!-- ====== 评论区域 ====== -->
+      <div class="giscus-container" style="margin-top: 24px; width: 100%;"></div>
     </div>
   </div>
 </template>
