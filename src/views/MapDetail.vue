@@ -53,7 +53,7 @@ const downloadMap = () => {
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = filePath.split('/').pop() || 'map.map'
+      a.download = filePath.split('/').pop() || 'map.7z'
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
