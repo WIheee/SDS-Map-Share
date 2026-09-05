@@ -6,11 +6,7 @@
     </div>
 
     <div class="card-grid">
-      <mdui-card
-        v-for="activity in activities"
-        :key="activity.id"
-        class="activity-card"
-      >
+      <mdui-card v-for="activity in activities" :key="activity.id" class="activity-card">
         <div class="card-content">
           <h3>{{ activity.title }}</h3>
           <mdui-divider></mdui-divider>
@@ -39,18 +35,18 @@ const activities: Activity[] = [
   {
     id: 1,
     title: '测试活动 1',
-    description: '这是一个测试活动的描述，用于展示卡片样式。'
+    description: '这是一个测试活动的描述，用于展示卡片样式。',
   },
   {
     id: 2,
     title: '测试活动 2',
-    description: '第二个测试活动，内容同样为占位文字。'
+    description: '第二个测试活动，内容同样为占位文字。',
   },
   {
     id: 3,
     title: '测试活动 3',
-    description: '第三个测试活动，可替换为真实数据。'
-  }
+    description: '第三个测试活动，可替换为真实数据。',
+  },
 ]
 </script>
 
@@ -59,12 +55,12 @@ const activities: Activity[] = [
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;
+  min-height: calc(100vh - 160px);
   color: rgb(var(--mdui-color-on-surface));
   background: rgb(var(--mdui-color-surface));
 }
@@ -99,7 +95,9 @@ h1 {
 .activity-card {
   overflow: hidden;
   background: rgb(var(--mdui-color-surface-container));
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .activity-card:hover {
@@ -132,9 +130,6 @@ h1 {
 }
 
 @media (max-width: 600px) {
-  .activity-page {
-    padding: 12px;
-  }
   .header-icon {
     font-size: 26px;
   }

@@ -12,9 +12,7 @@
         <span>公告</span>
       </div>
       <mdui-divider></mdui-divider>
-      <div class="card-body">
-        欢迎使用 SDS 地图分享平台！当前版本为 v1.0，更多功能即将上线。
-      </div>
+      <div class="card-body">欢迎使用 SDS 地图分享平台！当前版本为 v1.0，更多功能即将上线。</div>
     </mdui-card>
 
     <!-- 开源信息卡片 -->
@@ -26,15 +24,15 @@
       <mdui-divider></mdui-divider>
       <div class="card-body">
         <p>该网站是开源的，并且遵循 <strong>GPL-3.0</strong> 开源协议。</p>
-        <p style="margin-top: 8px;">
+        <p style="margin-top: 8px">
           开源地址：
           <a
-            href="https://github.com/WIheee/SDS-Map-Share.git"
+            href="https://github.com/WIheee/SDS-Map-Share"
             target="_blank"
             rel="noopener noreferrer"
             class="repo-link"
           >
-            https://github.com/WIheee/SDS-Map-Share.git
+            https://github.com/WIheee/SDS-Map-Share
           </a>
         </p>
       </div>
@@ -75,9 +73,9 @@ const team: TeamMember[] = [
   {
     name: 'WIheee',
     role: '首席开发者/维护者',
-    avatar: '/team/WIhee.webp'
-  }
-  ]
+    avatar: '/team/WIhee.webp',
+  },
+]
 </script>
 
 <style scoped>
@@ -85,12 +83,12 @@ const team: TeamMember[] = [
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;
+  min-height: calc(100vh - 160px);
   color: rgb(var(--mdui-color-on-surface));
   background: rgb(var(--mdui-color-surface));
 }
@@ -194,9 +192,6 @@ h1 {
 }
 
 @media (max-width: 600px) {
-  .about-page {
-    padding: 12px;
-  }
   .header-icon {
     font-size: 26px;
   }

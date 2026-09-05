@@ -32,7 +32,7 @@ const applySavedSettings = () => {
       purple: '#6750A4',
       blue: '#0061A4',
       green: '#1E7A5E',
-      pink: '#B93A6C'
+      pink: '#B93A6C',
     }
     if (colorPresets[savedColor]) setColorScheme(colorPresets[savedColor])
   }
@@ -55,11 +55,7 @@ onMounted(() => {
       </router-view>
     </div>
 
-    <mdui-navigation-bar
-      placement="bottom"
-      :value="activeTab"
-      @change="onTabChange"
-    >
+    <mdui-navigation-bar placement="bottom" :value="activeTab" @change="onTabChange">
       <mdui-navigation-bar-item value="map" icon="map" label="地图资源" />
       <mdui-navigation-bar-item value="activity" icon="event" label="活动" />
       <mdui-navigation-bar-item value="announcement" icon="announcement" label="公告/关于" />
@@ -80,9 +76,9 @@ onMounted(() => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;      /* 水平居中 */
-  justify-content: center;  /* 垂直居中 */
+  align-items: center; /* 水平居中 */
   padding: 20px;
+  padding-top: 40px;
   padding-bottom: 80px;
   color: rgb(var(--mdui-color-on-surface));
   box-sizing: border-box;

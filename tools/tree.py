@@ -19,7 +19,8 @@ DEFAULT_SKIP_PATTERNS = [
     "package-lock.json",
     "tree.txt" ,
     "t",
-    "a"
+    "a",
+    "tools/"
 ]
 # 加载外部自定义
 SKIP_PATTERNS_FILE = ".skip_patterns"

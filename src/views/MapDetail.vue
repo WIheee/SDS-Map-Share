@@ -33,7 +33,7 @@ const loadMap = (id: number) => {
       allData.push(...data)
     }
   }
-  const found = allData.find(item => item.id === id)
+  const found = allData.find((item) => item.id === id)
   if (found) {
     mapData.value = found
     loading.value = false
@@ -48,8 +48,8 @@ const downloadMap = () => {
   const filePath = mapData.value.file
   const fullPath = import.meta.env.BASE_URL + filePath.replace(/^\//, '')
   fetch(fullPath)
-    .then(res => res.blob())
-    .then(blob => {
+    .then((res) => res.blob())
+    .then((blob) => {
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
@@ -145,15 +145,14 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
   padding: 20px 16px 40px;
+  box-sizing: border-box;
+  min-height: calc(100vh - 160px);
   background: rgb(var(--mdui-color-surface));
   color: rgb(var(--mdui-color-on-surface));
-  min-height: 100vh;
-  box-sizing: border-box;
 }
 
 .back-bar {
@@ -242,9 +241,6 @@ onMounted(() => {
 }
 
 @media (max-width: 600px) {
-  .detail-page {
-    padding: 12px;
-  }
   .map-title {
     font-size: 22px;
   }

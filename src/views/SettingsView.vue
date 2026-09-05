@@ -15,7 +15,7 @@ const colorPresets: Record<ColorPreset, string> = {
   purple: '#6750A4',
   blue: '#0061A4',
   green: '#1E7A5E',
-  pink: '#B93A6C'
+  pink: '#B93A6C',
 }
 
 const savedTheme = localStorage.getItem('theme') as Theme | null
@@ -48,11 +48,7 @@ onMounted(() => {
 
     <div class="setting-section">
       <p>主题模式</p>
-      <mdui-segmented-button-group
-        selects="single"
-        required
-        :value="theme"
-      >
+      <mdui-segmented-button-group selects="single" required :value="theme">
         <mdui-segmented-button value="light" @click="applyTheme('light')">
           <mdui-icon name="light_mode" slot="icon"></mdui-icon>
           浅色
@@ -89,14 +85,14 @@ onMounted(() => {
 .settings-page {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: center; /* 水平居中 */
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
   padding: 40px 20px;
-  color: rgb(var(--mdui-color-on-surface));
   box-sizing: border-box;
+  min-height: calc(100vh - 160px);
+  color: rgb(var(--mdui-color-on-surface));
 }
 
 h1 {

@@ -45,7 +45,7 @@ const loadData = () => {
 
 const filteredMaps = computed(() => {
   const query = searchQuery.value.trim().toLowerCase()
-  return maps.value.filter(map => {
+  return maps.value.filter((map) => {
     const matchCategory = selectedCategory.value ? map.category === selectedCategory.value : true
     if (!matchCategory) return false
     if (!query) return true
@@ -114,11 +114,9 @@ onMounted(() => {
         @change="onCategoryChange"
       >
         <mdui-segmented-button value="">全部</mdui-segmented-button>
-        <mdui-segmented-button
-          v-for="cat in categories"
-          :key="cat"
-          :value="cat"
-        >{{ cat }}</mdui-segmented-button>
+        <mdui-segmented-button v-for="cat in categories" :key="cat" :value="cat">{{
+          cat
+        }}</mdui-segmented-button>
       </mdui-segmented-button-group>
     </div>
 
@@ -137,19 +135,14 @@ onMounted(() => {
         @keydown.enter="goToDetail(map.id)"
         @keydown.space.prevent="goToDetail(map.id)"
       >
-        <img
-          :src="map.image"
-          :alt="map.title"
-          class="card-image"
-          loading="lazy"
-        />
+        <img :src="map.image" :alt="map.title" class="card-image" loading="lazy" />
         <div class="card-content">
           <div class="card-header">
             <h3>{{ map.title }}</h3>
             <mdui-icon name="chevron_right" class="arrow-icon"></mdui-icon>
           </div>
           <mdui-divider></mdui-divider>
-          <p>{{ map.description }}</p>
+          <p>{{ map.description.slice(0, 20) }}{{ map.description.length > 20 ? '...' : '' }}</p>
           <div class="card-footer">
             <span class="category-tag">{{ map.category }}</span>
             <span class="author-tag">{{ map.author }}</span>
@@ -220,7 +213,9 @@ h1 {
 .map-card {
   overflow: hidden;
   background: rgb(var(--mdui-color-surface-container));
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   cursor: pointer;
 }
 

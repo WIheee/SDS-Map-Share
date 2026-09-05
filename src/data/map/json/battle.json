@@ -1,11 +1,11 @@
 [
   {
     "id": 1,
-    "title": "熔岩公司",
-    "description": "在一家熔岩公司pvp到底有多爽张雪峰老师张雪峰老师张雪峰老师张雪峰老师",
-    "image": "/map/image/battle/熔岩公司.webp",
-    "file": "/map/fun/battle/熔岩公司.fun",
+    "title": "断沧渊",
+    "description": "此起彼伏的海浪，飞舞的蝴蝶，壮观的海洋地图",
+    "image": "/map/image/battle/断沧渊.webp",
+    "file": "/map/fun/battle/断沧渊.7z",
     "category": "对战",
-    "author": "这个我真不知道"
+    "author": "Wave Butterflies"
   }
 ]
