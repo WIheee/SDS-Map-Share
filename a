@@ -1,146 +1,237 @@
 from pathlib import Path
 
 BASE_DIR = Path(__file__).parent
-app_path = BASE_DIR / "src" / "App.vue"
 
-new_app_content = '''<script setup lang="ts">
-import { computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import 'mdui/components/navigation-bar.js'
-import 'mdui/components/navigation-bar-item.js'
-// 导入 MDUI 主题函数
-import { setTheme } from 'mdui/functions/setTheme.js'
-import { setColorScheme } from 'mdui/functions/setColorScheme.js'
-
-const route = useRoute()
-const router = useRouter()
-
-// 根据当前路径计算激活的 tab 值，默认 'map'
-const activeTab = computed(() => {
-  const path = route.path.replace('/', '') || 'map'
-  // 确保只返回我们定义的四个值之一，防止路由不匹配时高亮错误
-  return ['map', 'activity', 'announcement', 'settings'].includes(path) ? path : 'map'
-})
-
-const onTabChange = (event: Event) => {
-  const detail = (event as CustomEvent).detail
-  const target = event.target as HTMLElement & { value?: string }
-  const newTab = detail?.value ?? target?.value
-  if (newTab) {
-    router.push(`/${newTab}`)
-  }
-}
-
-// 应用用户保存的主题和配色
-const applySavedSettings = () => {
-  // 读取保存的主题
-  const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | 'auto' | null
-  if (savedTheme) {
-    setTheme(savedTheme)
-  }
-
-  // 读取保存的配色方案
-  const savedColor = localStorage.getItem('colorScheme')
-  if (savedColor) {
-    // 配色预设映射
-    const colorPresets: Record<string, string> = {
-      purple: '#6750A4',
-      blue: '#0061A4',
-      green: '#1E7A5E',
-      pink: '#B93A6C'
-    }
-    if (colorPresets[savedColor]) {
-      setColorScheme(colorPresets[savedColor])
-    }
-  }
-}
-
-onMounted(() => {
-  applySavedSettings()
-})
-</script>
-
-<template>
-  <div class="app-container">
-    <div class="content">
-      <router-view v-slot="{ Component }">
-        <transition name="fade-slide" mode="out-in">
-          <keep-alive include="MapView">
-            <component :is="Component" />
-          </keep-alive>
-        </transition>
-      </router-view>
+# ---------- 更新 AnnouncementView.vue ----------
+announcement_content = '''<template>
+  <div class="about-page">
+    <div class="header">
+      <mdui-icon name="info" class="header-icon" aria-hidden="true"></mdui-icon>
+      <h1>公告与关于</h1>
     </div>
 
-    <mdui-navigation-bar
-      placement="bottom"
-      :value="activeTab"
-      @change="onTabChange"
-    >
-      <mdui-navigation-bar-item 
-        value="map" 
-        icon="map" 
-        label="地图资源" 
-      />
-      <mdui-navigation-bar-item 
-        value="activity" 
-        icon="event" 
-        label="活动" 
-      />
-      <mdui-navigation-bar-item 
-        value="announcement" 
-        icon="announcement" 
-        label="公告/关于" 
-      />
-      <mdui-navigation-bar-item 
-        value="settings" 
-        icon="settings" 
-        label="网站设置" 
-      />
-    </mdui-navigation-bar>
+    <!-- 公告卡片 -->
+    <mdui-card class="info-card">
+      <div class="card-header">
+        <mdui-icon name="announcement" class="card-icon"></mdui-icon>
+        <span>公告</span>
+      </div>
+      <mdui-divider></mdui-divider>
+      <div class="card-body">
+        欢迎使用 SDS 地图分享平台！当前版本为 v1.0，更多功能即将上线。
+      </div>
+    </mdui-card>
+
+    <!-- 开源信息卡片 -->
+    <mdui-card class="info-card">
+      <div class="card-header">
+        <mdui-icon name="code" class="card-icon"></mdui-icon>
+        <span>开源协议</span>
+      </div>
+      <mdui-divider></mdui-divider>
+      <div class="card-body">
+        <p>该网站是开源的，并且遵循 <strong>GPL-3.0</strong> 开源协议。</p>
+        <p style="margin-top: 8px;">
+          开源地址：
+          <a
+            href="https://github.com/WIheee/SDS-Map-Share.git"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="repo-link"
+          >
+            https://github.com/WIheee/SDS-Map-Share.git
+          </a>
+        </p>
+      </div>
+    </mdui-card>
+
+    <!-- 团队卡片 -->
+    <mdui-card class="info-card">
+      <div class="card-header">
+        <mdui-icon name="group" class="card-icon"></mdui-icon>
+        <span>我们的团队</span>
+      </div>
+      <mdui-divider></mdui-divider>
+      <div class="team-grid">
+        <div v-for="member in team" :key="member.name" class="team-member">
+          <img :src="member.avatar" :alt="member.name" class="avatar" loading="lazy" />
+          <div class="member-info">
+            <div class="member-name">{{ member.name }}</div>
+            <div class="member-role">{{ member.role }}</div>
+          </div>
+        </div>
+      </div>
+    </mdui-card>
   </div>
 </template>
 
+<script setup lang="ts">
+import 'mdui/components/card.js'
+import 'mdui/components/icon.js'
+import 'mdui/components/divider.js'
+
+interface TeamMember {
+  name: string
+  role: string
+  avatar: string
+}
+
+const team: TeamMember[] = [
+  {
+    name: 'WIheee',
+    role: '项目负责人 / 全栈开发',
+    avatar: '/team/WIhee.webp'
+  },
+  {
+    name: '李四',
+    role: 'UI 设计 / 前端开发',
+    avatar: 'https://i.pravatar.cc/150?img=2'
+  },
+  {
+    name: '王五',
+    role: '后端开发 / 运维',
+    avatar: 'https://i.pravatar.cc/150?img=3'
+  }
+]
+</script>
+
 <style scoped>
-.app-container {
+.about-page {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+  color: rgb(var(--mdui-color-on-surface));
   background: rgb(var(--mdui-color-surface));
 }
 
-.content {
-  flex: 1;
-  padding: 20px;
-  padding-bottom: 80px; /* 留出底部导航栏的空间 */
-  overflow-y: auto;
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  width: 100%;
+  justify-content: center;
+}
+
+.header-icon {
+  font-size: 32px;
+  color: rgb(var(--mdui-color-primary));
+}
+
+h1 {
+  font-size: 24px;
+  margin: 0;
   color: rgb(var(--mdui-color-on-surface));
 }
 
-.fade-slide-enter-active,
-.fade-slide-leave-active {
-  transition: all 0.25s ease;
+.info-card {
+  padding: 16px;
+  margin-bottom: 16px;
+  width: 100%;
+  background: rgb(var(--mdui-color-surface-container));
 }
 
-.fade-slide-enter-from {
-  opacity: 0;
-  transform: translateY(12px);
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: rgb(var(--mdui-color-on-surface-variant));
+  font-size: 14px;
 }
 
-.fade-slide-leave-to {
-  opacity: 0;
-  transform: translateY(-12px);
+.card-icon {
+  font-size: 20px;
+  color: rgb(var(--mdui-color-primary));
 }
 
-mdui-navigation-bar {
-  background-color: rgb(var(--mdui-color-surface-container)) !important;
-  border-top: 1px solid rgb(var(--mdui-color-outline-variant));
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+.card-body {
+  padding-top: 12px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgb(var(--mdui-color-on-surface));
+}
+
+.repo-link {
+  color: rgb(var(--mdui-color-primary));
+  text-decoration: none;
+  word-break: break-all;
+}
+.repo-link:hover {
+  text-decoration: underline;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  padding-top: 12px;
+}
+
+.team-member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 12px;
+  background: rgb(var(--mdui-color-surface));
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+.team-member:hover {
+  transform: translateY(-2px);
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 8px;
+  background: rgb(var(--mdui-color-surface-container));
+}
+
+.member-name {
+  font-weight: 500;
+  color: rgb(var(--mdui-color-on-surface));
+  font-size: 16px;
+}
+.member-role {
+  font-size: 12px;
+  color: rgb(var(--mdui-color-on-surface-variant));
+  margin-top: 4px;
+}
+
+@media (max-width: 600px) {
+  .about-page {
+    padding: 12px;
+  }
+  .header-icon {
+    font-size: 26px;
+  }
+  h1 {
+    font-size: 20px;
+  }
+  .team-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 </style>
 '''
 
-app_path.write_text(new_app_content, encoding='utf-8')
+announcement_path = BASE_DIR / "src" / "views" / "AnnouncementView.vue"
+announcement_path.write_text(announcement_content, encoding='utf-8')
 
-print("✅ App.vue 已更新，现在会持久化用户设置（主题和配色）。")
-print("▶️  请运行 pnpm run dev 查看效果。")
+print("=" * 60)
+print("✅ 团队头像已更新！")
+print("📌 更新内容：")
+print("  - 第一个团队成员改为 'WIheee'")
+print("  - 头像指向 /team/WIhee.webp")
+print("=" * 60)
+print("▶️  请运行 pnpm run dev 查看效果")

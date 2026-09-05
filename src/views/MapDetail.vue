@@ -23,7 +23,6 @@ const mapData = ref<MapItem | null>(null)
 const loading = ref(true)
 const error = ref(false)
 
-// 动态导入所有 JSON 数据
 const modules = import.meta.glob('@/data/map/json/*.json', { eager: true })
 
 const loadMap = (id: number) => {
@@ -34,7 +33,7 @@ const loadMap = (id: number) => {
       allData.push(...data)
     }
   }
-  const found = allData.find((item) => item.id === id)
+  const found = allData.find(item => item.id === id)
   if (found) {
     mapData.value = found
     loading.value = false
@@ -47,11 +46,10 @@ const loadMap = (id: number) => {
 const downloadMap = () => {
   if (!mapData.value) return
   const filePath = mapData.value.file
-  // 使用 import.meta.env.BASE_URL 确保路径正确
   const fullPath = import.meta.env.BASE_URL + filePath.replace(/^\//, '')
   fetch(fullPath)
-    .then((res) => res.blob())
-    .then((blob) => {
+    .then(res => res.blob())
+    .then(blob => {
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
@@ -65,7 +63,7 @@ const downloadMap = () => {
 }
 
 const goBack = () => {
-  router.push('/map')
+  router.back()
 }
 
 onMounted(() => {
@@ -76,7 +74,6 @@ onMounted(() => {
     return
   }
   loadMap(id)
-  // 滚动到页面顶部
   nextTick(() => {
     window.scrollTo(0, 0)
   })
@@ -85,7 +82,6 @@ onMounted(() => {
 
 <template>
   <div class="detail-page">
-    <!-- 返回按钮：纯图标圆形，放大尺寸 -->
     <div class="back-bar">
       <mdui-button
         variant="text"
@@ -106,15 +102,12 @@ onMounted(() => {
     </div>
 
     <div v-else-if="mapData" class="detail-content">
-      <!-- 标题 -->
       <h1 class="map-title">{{ mapData.title }}</h1>
 
-      <!-- 全景图 -->
       <div class="panorama">
         <img :src="mapData.image" :alt="mapData.title" />
       </div>
 
-      <!-- 下载按钮 -->
       <div class="download-section">
         <mdui-button variant="filled" @click="downloadMap" class="download-btn">
           <mdui-icon name="file_download" slot="icon"></mdui-icon>
@@ -122,7 +115,6 @@ onMounted(() => {
         </mdui-button>
       </div>
 
-      <!-- 描述卡片 -->
       <mdui-card class="info-card">
         <div class="card-header">
           <mdui-icon name="description" class="card-icon"></mdui-icon>
@@ -134,7 +126,6 @@ onMounted(() => {
         </div>
       </mdui-card>
 
-      <!-- 作者卡片 -->
       <mdui-card class="info-card">
         <div class="card-header">
           <mdui-icon name="person" class="card-icon"></mdui-icon>
@@ -151,26 +142,33 @@ onMounted(() => {
 
 <style scoped>
 .detail-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
   max-width: 800px;
   margin: 0 auto;
   padding: 20px 16px 40px;
   background: rgb(var(--mdui-color-surface));
   color: rgb(var(--mdui-color-on-surface));
   min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .back-bar {
   display: flex;
   align-items: center;
+  width: 100%;
   margin-bottom: 20px;
 }
 
 .back-btn {
-  min-width: 56px !important; /* 放大尺寸 */
+  min-width: 56px !important;
   height: 56px !important;
   border-radius: 50% !important;
   padding: 0 !important;
-  --mdui-button-icon-size: 28px; /* 图标也稍大 */
+  --mdui-button-icon-size: 28px;
 }
 
 .loading-state,
@@ -181,6 +179,10 @@ onMounted(() => {
   justify-content: center;
   min-height: 200px;
   color: rgb(var(--mdui-color-on-surface-variant));
+}
+
+.detail-content {
+  width: 100%;
 }
 
 .map-title {

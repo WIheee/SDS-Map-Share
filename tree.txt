@@ -1,0 +1,1267 @@
+项目目录及文件内容（跳过项已完全隐藏）
+sds
+├── public
+│   └── map
+│       ├── fun
+│       │   ├── battle
+│       │   │   └── 熔岩公司.fun
+│       │   ├── mechanism
+│       │   ├── scenery
+│       │   └── survival
+│       └── image
+│           ├── battle
+│           │   └── 熔岩公司.webp
+│           ├── mechanism
+│           ├── scenery
+│           └── survival
+├── src
+│   ├── assets
+│   │   ├── base.css
+│   │   └── main.css
+│   ├── data
+│   │   └── map
+│   │       └── json
+│   │           ├── battle.json
+│   │           ├── mechanism.json
+│   │           ├── scenery.json
+│   │           └── survival.json
+│   ├── router
+│   │   └── index.ts
+│   ├── stores
+│   │   └── counter.ts
+│   ├── views
+│   │   ├── ActivityView.vue
+│   │   ├── AnnouncementView.vue
+│   │   ├── MapDetail.vue
+│   │   ├── MapView.vue
+│   │   └── SettingsView.vue
+│   ├── App.vue
+│   └── main.ts
+├── env.d.ts
+├── eslint.config.ts
+├── index.html
+├── package.json
+├── tsconfig.app.json
+├── tsconfig.json
+├── tsconfig.node.json
+└── vite.config.ts
+package.json{
+{
+  "name": "sds",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "run-p type-check \"build-only {@}\" --",
+    "preview": "vite preview",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --build",
+    "lint": "run-s \"lint:*\"",
+    "lint:oxlint": "oxlint . --fix",
+    "lint:eslint": "eslint . --fix --cache",
+    "format": "prettier --write --experimental-cli src/"
+  },
+  "dependencies": {
+    "mdui": "^2.1.5",
+    "pinia": "^4.0.2",
+    "vue": "^3.5.40",
+    "vue-router": "^5.2.0"
+  },
+  "devDependencies": {
+    "@tsconfig/node24": "^24.0.4",
+    "@types/node": "^24.13.3",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "@vue/eslint-config-typescript": "^14.9.0",
+    "@vue/tsconfig": "^0.9.1",
+    "eslint": "^10.7.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-oxlint": "~1.73.0",
+    "eslint-plugin-vue": "~10.9.2",
+    "jiti": "^2.7.0",
+    "npm-run-all2": "^9.0.2",
+    "oxlint": "~1.74.0",
+    "prettier": "3.9.5",
+    "typescript": "~6.0.0",
+    "vite": "^8.1.5",
+    "vite-plugin-vue-devtools": "^8.1.5",
+    "vue-eslint-parser": "^10.4.1",
+    "vue-tsc": "^3.3.7"
+  },
+  "engines": {
+    "node": "^22.18.0 || >=24.12.0"
+  }
+}
+}index.html{
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 填充图标 (最常用) -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <title>SDS Map Share</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
+}vite.config.ts{
+import { fileURLToPath, URL } from 'node:url'
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import vueDevTools from 'vite-plugin-vue-devtools'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [
+    vue({                              // ← 只需要改这里（添加括号和配置对象）
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag.startsWith('mdui-'),
+        },
+      },
+    }),
+    vueDevTools(),
+  ],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+})
+}eslint.config.ts{
+import { globalIgnores } from 'eslint/config'
+import { defineConfigWithVueTs, vueTsConfigs } from '@vue/eslint-config-typescript'
+import pluginVue from 'eslint-plugin-vue'
+import pluginOxlint from 'eslint-plugin-oxlint'
+import skipFormatting from 'eslint-config-prettier/flat'
+
+// To allow more languages other than `ts` in `.vue` files, uncomment the following lines:
+// import { configureVueProject } from '@vue/eslint-config-typescript'
+// configureVueProject({ scriptLangs: ['ts', 'tsx'] })
+// More info at https://github.com/vuejs/eslint-config-typescript/#advanced-setup
+
+export default defineConfigWithVueTs(
+  {
+    name: 'app/files-to-lint',
+    files: ['**/*.{vue,ts,mts,tsx}'],
+  },
+
+  globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
+
+  ...pluginVue.configs['flat/essential'],
+  vueTsConfigs.recommended,
+
+  ...pluginOxlint.buildFromOxlintConfigFile('.oxlintrc.json'),
+
+  skipFormatting,
+)
+}env.d.ts{
+/// <reference types="vite/client" />
+}tsconfig.app.json{
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+  "exclude": ["src/**/__tests__/*"],
+  "compilerOptions": {
+    // Extra safety for array and object lookups, but may have false positives.
+    "noUncheckedIndexedAccess": true,
+
+    // Path mapping for cleaner imports.
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
+    // `vue-tsc --build` produces a .tsbuildinfo file for incremental type-checking.
+    // Specified here to keep it out of the root directory.
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo"
+  }
+}
+}tsconfig.node.json{
+// TSConfig for modules that run in Node.js environment via either transpilation or type-stripping.
+{
+  "extends": "@tsconfig/node24/tsconfig.json",
+  "include": [
+    "vite.config.*",
+    "vitest.config.*",
+    "cypress.config.*",
+    "playwright.config.*",
+    "eslint.config.*"
+  ],
+  "compilerOptions": {
+    // Most tools use transpilation instead of Node.js's native type-stripping.
+    // Bundler mode provides a smoother developer experience.
+    "module": "preserve",
+    "moduleResolution": "bundler",
+
+    // Include Node.js types and avoid accidentally including other `@types/*` packages.
+    "types": ["node"],
+
+    // Disable emitting output during `vue-tsc --build`, which is used for type-checking only.
+    "noEmit": true,
+
+    // `vue-tsc --build` produces a .tsbuildinfo file for incremental type-checking.
+    // Specified here to keep it out of the root directory.
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo"
+  }
+}
+}tsconfig.json{
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    }
+  ]
+}
+}public/map/image/battle/熔岩公司.webp{
+[编码错误]
+}public/map/fun/battle/熔岩公司.fun{
+[编码错误]
+}src/App.vue{
+<script setup lang="ts">
+import { computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import 'mdui/components/navigation-bar.js'
+import 'mdui/components/navigation-bar-item.js'
+import { setTheme } from 'mdui/functions/setTheme.js'
+import { setColorScheme } from 'mdui/functions/setColorScheme.js'
+
+const route = useRoute()
+const router = useRouter()
+
+const activeTab = computed(() => {
+  const path = route.path.replace('/', '') || 'map'
+  return ['map', 'activity', 'announcement', 'settings'].includes(path) ? path : 'map'
+})
+
+const onTabChange = (event: Event) => {
+  const detail = (event as CustomEvent).detail
+  const target = event.target as HTMLElement & { value?: string }
+  const newTab = detail?.value ?? target?.value
+  if (newTab) {
+    router.push(`/${newTab}`)
+  }
+}
+
+const applySavedSettings = () => {
+  const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | 'auto' | null
+  if (savedTheme) setTheme(savedTheme)
+  const savedColor = localStorage.getItem('colorScheme')
+  if (savedColor) {
+    const colorPresets: Record<string, string> = {
+      purple: '#6750A4',
+      blue: '#0061A4',
+      green: '#1E7A5E',
+      pink: '#B93A6C'
+    }
+    if (colorPresets[savedColor]) setColorScheme(colorPresets[savedColor])
+  }
+}
+
+onMounted(() => {
+  applySavedSettings()
+})
+</script>
+
+<template>
+  <div class="app-container">
+    <div class="content">
+      <router-view v-slot="{ Component }">
+        <transition name="fade-slide" mode="out-in">
+          <keep-alive include="MapView">
+            <component :is="Component" />
+          </keep-alive>
+        </transition>
+      </router-view>
+    </div>
+
+    <mdui-navigation-bar
+      placement="bottom"
+      :value="activeTab"
+      @change="onTabChange"
+    >
+      <mdui-navigation-bar-item value="map" icon="map" label="地图资源" />
+      <mdui-navigation-bar-item value="activity" icon="event" label="活动" />
+      <mdui-navigation-bar-item value="announcement" icon="announcement" label="公告/关于" />
+      <mdui-navigation-bar-item value="settings" icon="settings" label="网站设置" />
+    </mdui-navigation-bar>
+  </div>
+</template>
+
+<style scoped>
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: rgb(var(--mdui-color-surface));
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;      /* 水平居中 */
+  justify-content: center;  /* 垂直居中 */
+  padding: 20px;
+  padding-bottom: 80px;
+  color: rgb(var(--mdui-color-on-surface));
+  box-sizing: border-box;
+}
+
+/* 过渡动画 */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.25s ease;
+}
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-12px);
+}
+
+mdui-navigation-bar {
+  background-color: rgb(var(--mdui-color-surface-container)) !important;
+  border-top: 1px solid rgb(var(--mdui-color-outline-variant));
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+}
+</style>
+}src/main.ts{
+import './assets/main.css'
+import 'mdui/mdui.css' // ← 新增：MDUI 样式
+import 'mdui' // ← 新增：MDUI 组件库
+
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.vue'
+import router from './router'
+
+const app = createApp(App)
+
+app.use(createPinia())
+app.use(router)
+
+app.mount('#app')
+}src/assets/base.css{
+/* 引入 MDUI 默认样式，确保设计令牌可用 */
+/* MDUI 的设计令牌会通过 JS 动态注入，此处无需额外导入 */
+
+/* 全局样式重置，使用 MDUI 的颜色令牌 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+body {
+  min-height: 100vh;
+  color: rgb(var(--mdui-color-on-surface));
+  background: rgb(var(--mdui-color-surface));
+  transition:
+    color 0.5s,
+    background-color 0.5s;
+  line-height: 1.6;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+}src/assets/main.css{
+/* 应用容器样式，使用 MDUI 设计令牌 */
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+  background: rgb(var(--mdui-color-surface));
+  color: rgb(var(--mdui-color-on-surface));
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: rgb(var(--mdui-color-primary));
+  transition: 0.4s;
+  padding: 3px;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: rgb(var(--mdui-color-primary-container));
+    color: rgb(var(--mdui-color-on-primary-container));
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  #app {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 2rem;
+  }
+}
+}src/stores/counter.ts{
+import { ref, computed } from 'vue'
+import { defineStore } from 'pinia'
+
+export const useCounterStore = defineStore('counter', () => {
+  const count = ref(0)
+  const doubleCount = computed(() => count.value * 2)
+  function increment() {
+    count.value++
+  }
+
+  return { count, doubleCount, increment }
+})
+}src/views/MapView.vue{
+<script setup lang="ts">
+import { ref, computed, onMounted, onActivated, onDeactivated, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
+import 'mdui/components/text-field.js'
+import 'mdui/components/segmented-button-group.js'
+import 'mdui/components/segmented-button.js'
+import 'mdui/components/card.js'
+import 'mdui/components/icon.js'
+import 'mdui/components/divider.js'
+import 'mdui/components/circular-progress.js'
+
+defineOptions({ name: 'MapView' })
+
+interface MapItem {
+  id: number
+  title: string
+  description: string
+  image: string
+  file: string
+  category: string
+  author: string
+}
+
+const router = useRouter()
+const categories = ['对战', '观赏', '机关', '生存']
+const selectedCategory = ref<string>('')
+const searchQuery = ref('')
+const maps = ref<MapItem[]>([])
+const loading = ref(true)
+const scrollPosition = ref(0)
+
+const modules = import.meta.glob('@/data/map/json/*.json', { eager: true })
+
+const loadData = () => {
+  const allData: MapItem[] = []
+  for (const path in modules) {
+    const data = (modules[path] as { default: MapItem[] }).default
+    if (Array.isArray(data)) {
+      allData.push(...data)
+    }
+  }
+  maps.value = allData
+  loading.value = false
+}
+
+const filteredMaps = computed(() => {
+  return maps.value.filter(map => {
+    const matchCategory = selectedCategory.value ? map.category === selectedCategory.value : true
+    const matchSearch = map.title.includes(searchQuery.value) || map.description.includes(searchQuery.value)
+    return matchCategory && matchSearch
+  })
+})
+
+const onCategoryChange = (event: Event) => {
+  const detail = (event as CustomEvent).detail
+  const target = event.target as HTMLElement & { value?: string }
+  const newValue = detail?.value ?? target?.value
+  if (typeof newValue === 'string') {
+    selectedCategory.value = newValue
+  }
+}
+
+const goToDetail = (id: number) => {
+  router.push(`/map/${id}`)
+}
+
+onDeactivated(() => {
+  const container = document.querySelector('.content') as HTMLElement | null
+  scrollPosition.value = container?.scrollTop || 0
+})
+
+onActivated(() => {
+  nextTick(() => {
+    const container = document.querySelector('.content') as HTMLElement | null
+    if (container) {
+      container.scrollTop = scrollPosition.value
+    }
+  })
+})
+
+onMounted(() => {
+  loadData()
+})
+</script>
+
+<template>
+  <div class="map-view">
+    <div class="header">
+      <mdui-icon name="map" class="header-icon" aria-hidden="true"></mdui-icon>
+      <h1>Map View</h1>
+    </div>
+
+    <div class="search-box">
+      <mdui-text-field
+        v-model="searchQuery"
+        placeholder="搜索地图..."
+        clearable
+        icon="search"
+        aria-label="搜索地图"
+      ></mdui-text-field>
+    </div>
+
+    <div class="categories">
+      <mdui-segmented-button-group
+        selects="single"
+        :value="selectedCategory"
+        @change="onCategoryChange"
+      >
+        <mdui-segmented-button value="">全部</mdui-segmented-button>
+        <mdui-segmented-button
+          v-for="cat in categories"
+          :key="cat"
+          :value="cat"
+        >{{ cat }}</mdui-segmented-button>
+      </mdui-segmented-button-group>
+    </div>
+
+    <div v-if="loading" class="loading-state">
+      <mdui-circular-progress></mdui-circular-progress>
+    </div>
+    <div v-else class="card-grid">
+      <mdui-card
+        v-for="map in filteredMaps"
+        :key="map.id"
+        class="map-card"
+        role="button"
+        tabindex="0"
+        :aria-label="`查看地图 ${map.title}`"
+        @click="goToDetail(map.id)"
+        @keydown.enter="goToDetail(map.id)"
+        @keydown.space.prevent="goToDetail(map.id)"
+      >
+        <img :src="map.image" :alt="map.title" class="card-image" />
+        <div class="card-content">
+          <div class="card-header">
+            <h3>{{ map.title }}</h3>
+            <mdui-icon name="chevron_right" class="arrow-icon"></mdui-icon>
+          </div>
+          <mdui-divider></mdui-divider>
+          <p>{{ map.description }}</p>
+          <div class="card-footer">
+            <span class="category-tag">{{ map.category }}</span>
+          </div>
+        </div>
+      </mdui-card>
+      <div v-if="filteredMaps.length === 0" class="empty-state">
+        <p>没有找到匹配的地图</p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.map-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+  color: rgb(var(--mdui-color-on-surface));
+  background: rgb(var(--mdui-color-surface));
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  width: 100%;
+  justify-content: center;
+}
+
+.header-icon {
+  font-size: 32px;
+  color: rgb(var(--mdui-color-primary));
+}
+
+h1 {
+  font-size: 24px;
+  margin: 0;
+  color: rgb(var(--mdui-color-on-surface));
+}
+
+.search-box {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 16px;
+}
+
+.categories {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 20px;
+}
+
+.card-grid {
+  display: grid;
+  width: 100%;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.map-card {
+  overflow: hidden;
+  background: rgb(var(--mdui-color-surface-container));
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.map-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.card-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+}
+
+.card-content {
+  padding: 12px 16px 16px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: rgb(var(--mdui-color-on-surface));
+}
+
+.arrow-icon {
+  font-size: 20px;
+  color: rgb(var(--mdui-color-primary));
+  opacity: 0.6;
+}
+
+.card-content p {
+  margin: 8px 0 12px 0;
+  color: rgb(var(--mdui-color-on-surface-variant));
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.category-tag {
+  font-size: 12px;
+  padding: 2px 12px;
+  border-radius: 12px;
+  background: rgb(var(--mdui-color-primary-container));
+  color: rgb(var(--mdui-color-on-primary-container));
+}
+
+.loading-state,
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 48px 20px;
+  color: rgb(var(--mdui-color-on-surface-variant));
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+@media (max-width: 600px) {
+  .map-view {
+    padding: 12px;
+  }
+  .header-icon {
+    font-size: 26px;
+  }
+  h1 {
+    font-size: 20px;
+  }
+  .card-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .card-image {
+    height: 120px;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 901px) {
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .card-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+</style>
+}src/views/ActivityView.vue{
+<template>
+  <div class="page">
+    <h2>📅 活动</h2>
+    <p>这里放活动列表...</p>
+  </div>
+</template>
+
+<style scoped>
+.page {
+  padding: 20px;
+  color: rgb(var(--mdui-color-on-surface));
+}
+
+h2 {
+  color: rgb(var(--mdui-color-primary));
+}
+</style>
+}src/views/AnnouncementView.vue{
+<template>
+  <div class="page">
+    <h2>📢 公告 / 关于</h2>
+    <p>这里放公告或关于信息...</p>
+  </div>
+</template>
+
+<style scoped>
+.page {
+  padding: 20px;
+  color: rgb(var(--mdui-color-on-surface));
+}
+
+h2 {
+  color: rgb(var(--mdui-color-primary));
+}
+</style>
+}src/views/SettingsView.vue{
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { setTheme } from 'mdui/functions/setTheme.js'
+import { setColorScheme } from 'mdui/functions/setColorScheme.js'
+import 'mdui/components/segmented-button-group.js'
+import 'mdui/components/segmented-button.js'
+import 'mdui/components/icon.js'
+
+defineOptions({ name: 'SettingsPage' })
+
+type Theme = 'light' | 'dark' | 'auto'
+type ColorPreset = 'purple' | 'blue' | 'green' | 'pink'
+
+const colorPresets: Record<ColorPreset, string> = {
+  purple: '#6750A4',
+  blue: '#0061A4',
+  green: '#1E7A5E',
+  pink: '#B93A6C'
+}
+
+const savedTheme = localStorage.getItem('theme') as Theme | null
+const theme = ref<Theme>(savedTheme || 'auto')
+
+const savedColor = localStorage.getItem('colorScheme') as ColorPreset | null
+const currentColor = ref<ColorPreset>(savedColor || 'purple')
+
+const applyTheme = (value: Theme) => {
+  theme.value = value
+  setTheme(value)
+  localStorage.setItem('theme', value)
+}
+
+const applyColorScheme = (preset: ColorPreset) => {
+  currentColor.value = preset
+  setColorScheme(colorPresets[preset])
+  localStorage.setItem('colorScheme', preset)
+}
+
+onMounted(() => {
+  setTheme(theme.value)
+  setColorScheme(colorPresets[currentColor.value])
+})
+</script>
+
+<template>
+  <div class="settings-page">
+    <h1>设置</h1>
+
+    <div class="setting-section">
+      <p>主题模式</p>
+      <mdui-segmented-button-group
+        selects="single"
+        required
+        :value="theme"
+      >
+        <mdui-segmented-button value="light" @click="applyTheme('light')">
+          <mdui-icon name="light_mode" slot="icon"></mdui-icon>
+          浅色
+        </mdui-segmented-button>
+        <mdui-segmented-button value="dark" @click="applyTheme('dark')">
+          <mdui-icon name="dark_mode" slot="icon"></mdui-icon>
+          深色
+        </mdui-segmented-button>
+        <mdui-segmented-button value="auto" @click="applyTheme('auto')">
+          <mdui-icon name="brightness_auto" slot="icon"></mdui-icon>
+          自动
+        </mdui-segmented-button>
+      </mdui-segmented-button-group>
+    </div>
+
+    <div class="setting-section">
+      <p>主题色</p>
+      <div class="color-presets">
+        <button
+          v-for="preset in Object.keys(colorPresets) as ColorPreset[]"
+          :key="preset"
+          class="color-dot"
+          :class="{ active: currentColor === preset }"
+          :style="{ backgroundColor: colorPresets[preset] }"
+          @click="applyColorScheme(preset)"
+          :aria-label="`切换到 ${preset} 主题`"
+        ></button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.settings-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  color: rgb(var(--mdui-color-on-surface));
+  box-sizing: border-box;
+}
+
+h1 {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 32px;
+  color: rgb(var(--mdui-color-on-surface));
+}
+
+.setting-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 28px;
+  width: 100%;
+}
+
+.setting-section p {
+  font-size: 14px;
+  color: rgb(var(--mdui-color-on-surface-variant));
+  margin: 0;
+  text-align: center;
+}
+
+mdui-segmented-button-group {
+  width: 100%;
+}
+
+.color-presets {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.color-dot {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.color-dot:hover {
+  transform: scale(1.1);
+}
+
+.color-dot.active {
+  border-color: rgb(var(--mdui-color-on-surface));
+  box-shadow: 0 0 0 2px rgb(var(--mdui-color-surface));
+}
+</style>
+}src/views/MapDetail.vue{
+<script setup lang="ts">
+import { ref, onMounted, nextTick } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import 'mdui/components/card.js'
+import 'mdui/components/button.js'
+import 'mdui/components/icon.js'
+import 'mdui/components/divider.js'
+import 'mdui/components/circular-progress.js'
+
+interface MapItem {
+  id: number
+  title: string
+  description: string
+  image: string
+  file: string
+  category: string
+  author: string
+}
+
+const route = useRoute()
+const router = useRouter()
+const mapData = ref<MapItem | null>(null)
+const loading = ref(true)
+const error = ref(false)
+
+const modules = import.meta.glob('@/data/map/json/*.json', { eager: true })
+
+const loadMap = (id: number) => {
+  const allData: MapItem[] = []
+  for (const path in modules) {
+    const data = (modules[path] as { default: MapItem[] }).default
+    if (Array.isArray(data)) {
+      allData.push(...data)
+    }
+  }
+  const found = allData.find(item => item.id === id)
+  if (found) {
+    mapData.value = found
+    loading.value = false
+  } else {
+    error.value = true
+    loading.value = false
+  }
+}
+
+const downloadMap = () => {
+  if (!mapData.value) return
+  const filePath = mapData.value.file
+  const fullPath = import.meta.env.BASE_URL + filePath.replace(/^\//, '')
+  fetch(fullPath)
+    .then(res => res.blob())
+    .then(blob => {
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filePath.split('/').pop() || 'map.map'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    })
+    .catch(() => alert('下载失败，请稍后重试'))
+}
+
+const goBack = () => {
+  router.back()
+}
+
+onMounted(() => {
+  const id = parseInt(route.params.id as string)
+  if (isNaN(id)) {
+    error.value = true
+    loading.value = false
+    return
+  }
+  loadMap(id)
+  nextTick(() => {
+    window.scrollTo(0, 0)
+  })
+})
+</script>
+
+<template>
+  <div class="detail-page">
+    <div class="back-bar">
+      <mdui-button
+        variant="text"
+        icon="arrow_back"
+        @click="goBack"
+        class="back-btn"
+        aria-label="返回地图列表"
+      ></mdui-button>
+    </div>
+
+    <div v-if="loading" class="loading-state">
+      <mdui-circular-progress></mdui-circular-progress>
+    </div>
+
+    <div v-else-if="error" class="error-state">
+      <p>地图不存在或加载失败</p>
+      <mdui-button variant="text" @click="goBack">返回</mdui-button>
+    </div>
+
+    <div v-else-if="mapData" class="detail-content">
+      <h1 class="map-title">{{ mapData.title }}</h1>
+
+      <div class="panorama">
+        <img :src="mapData.image" :alt="mapData.title" />
+      </div>
+
+      <div class="download-section">
+        <mdui-button variant="filled" @click="downloadMap" class="download-btn">
+          <mdui-icon name="file_download" slot="icon"></mdui-icon>
+          下载地图
+        </mdui-button>
+      </div>
+
+      <mdui-card class="info-card">
+        <div class="card-header">
+          <mdui-icon name="description" class="card-icon"></mdui-icon>
+          <span>描述</span>
+        </div>
+        <mdui-divider></mdui-divider>
+        <div class="card-body">
+          {{ mapData.description }}
+        </div>
+      </mdui-card>
+
+      <mdui-card class="info-card">
+        <div class="card-header">
+          <mdui-icon name="person" class="card-icon"></mdui-icon>
+          <span>作者</span>
+        </div>
+        <mdui-divider></mdui-divider>
+        <div class="card-body">
+          {{ mapData.author }}
+        </div>
+      </mdui-card>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.detail-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+  background: rgb(var(--mdui-color-surface));
+  color: rgb(var(--mdui-color-on-surface));
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.back-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.back-btn {
+  min-width: 56px !important;
+  height: 56px !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  --mdui-button-icon-size: 28px;
+}
+
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: rgb(var(--mdui-color-on-surface-variant));
+}
+
+.detail-content {
+  width: 100%;
+}
+
+.map-title {
+  font-size: 28px;
+  text-align: center;
+  margin: 0 0 16px 0;
+  color: rgb(var(--mdui-color-on-surface));
+}
+
+.panorama {
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  background: rgb(var(--mdui-color-surface-container));
+}
+
+.panorama img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.download-section {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.download-btn {
+  min-width: 160px;
+}
+
+.info-card {
+  padding: 16px;
+  margin-bottom: 16px;
+  background: rgb(var(--mdui-color-surface-container));
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: rgb(var(--mdui-color-on-surface-variant));
+  font-size: 14px;
+}
+
+.card-icon {
+  font-size: 20px;
+  color: rgb(var(--mdui-color-primary));
+}
+
+.card-body {
+  padding-top: 12px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgb(var(--mdui-color-on-surface));
+}
+
+@media (max-width: 600px) {
+  .detail-page {
+    padding: 12px;
+  }
+  .map-title {
+    font-size: 22px;
+  }
+}
+</style>
+}src/router/index.ts{
+import { createRouter, createWebHistory } from 'vue-router'
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: '/',
+      redirect: '/map',
+    },
+    {
+      path: '/map',
+      name: 'map',
+      component: () => import('../views/MapView.vue'),
+    },
+    {
+      path: '/map/:id',
+      name: 'mapDetail',
+      component: () => import('../views/MapDetail.vue'),
+    },
+    {
+      path: '/activity',
+      name: 'activity',
+      component: () => import('../views/ActivityView.vue'),
+    },
+    {
+      path: '/announcement',
+      name: 'announcement',
+      component: () => import('../views/AnnouncementView.vue'),
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: () => import('../views/SettingsView.vue'),
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/map',
+    },
+  ],
+})
+
+export default router
+}src/data/map/json/battle.json{
+[
+  {
+    "id": 1,
+    "title": "熔岩公司",
+    "description": "在一家熔岩公司pvp到底有多爽张雪峰老师张雪峰老师张雪峰老师张雪峰老师",
+    "image": "/map/image/battle/熔岩公司.webp",
+    "file": "/map/fun/battle/熔岩公司.fun",
+    "category": "对战",
+    "author": "这个我真不知道"
+  }
+]
+}src/data/map/json/scenery.json{
+[]
+}src/data/map/json/mechanism.json{
+[]
+}src/data/map/json/survival.json{
+[]
+}

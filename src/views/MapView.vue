@@ -44,11 +44,17 @@ const loadData = () => {
 }
 
 const filteredMaps = computed(() => {
-  return maps.value.filter((map) => {
+  const query = searchQuery.value.trim().toLowerCase()
+  return maps.value.filter(map => {
     const matchCategory = selectedCategory.value ? map.category === selectedCategory.value : true
-    const matchSearch =
-      map.title.includes(searchQuery.value) || map.description.includes(searchQuery.value)
-    return matchCategory && matchSearch
+    if (!matchCategory) return false
+    if (!query) return true
+    // 搜索标题、描述、作者
+    return (
+      map.title.toLowerCase().includes(query) ||
+      map.description.toLowerCase().includes(query) ||
+      map.author.toLowerCase().includes(query)
+    )
   })
 })
 
@@ -65,13 +71,11 @@ const goToDetail = (id: number) => {
   router.push(`/map/${id}`)
 }
 
-// 保存滚动位置（离开页面时）
 onDeactivated(() => {
   const container = document.querySelector('.content') as HTMLElement | null
   scrollPosition.value = container?.scrollTop || 0
 })
 
-// 恢复滚动位置（回到页面时）
 onActivated(() => {
   nextTick(() => {
     const container = document.querySelector('.content') as HTMLElement | null
@@ -96,7 +100,7 @@ onMounted(() => {
     <div class="search-box">
       <mdui-text-field
         v-model="searchQuery"
-        placeholder="搜索地图..."
+        placeholder="搜索地图、作者..."
         clearable
         icon="search"
         aria-label="搜索地图"
@@ -110,9 +114,11 @@ onMounted(() => {
         @change="onCategoryChange"
       >
         <mdui-segmented-button value="">全部</mdui-segmented-button>
-        <mdui-segmented-button v-for="cat in categories" :key="cat" :value="cat">{{
-          cat
-        }}</mdui-segmented-button>
+        <mdui-segmented-button
+          v-for="cat in categories"
+          :key="cat"
+          :value="cat"
+        >{{ cat }}</mdui-segmented-button>
       </mdui-segmented-button-group>
     </div>
 
@@ -131,7 +137,12 @@ onMounted(() => {
         @keydown.enter="goToDetail(map.id)"
         @keydown.space.prevent="goToDetail(map.id)"
       >
-        <img :src="map.image" :alt="map.title" class="card-image" />
+        <img
+          :src="map.image"
+          :alt="map.title"
+          class="card-image"
+          loading="lazy"
+        />
         <div class="card-content">
           <div class="card-header">
             <h3>{{ map.title }}</h3>
@@ -141,6 +152,7 @@ onMounted(() => {
           <p>{{ map.description }}</p>
           <div class="card-footer">
             <span class="category-tag">{{ map.category }}</span>
+            <span class="author-tag">{{ map.author }}</span>
           </div>
         </div>
       </mdui-card>
@@ -157,14 +169,13 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;
   color: rgb(var(--mdui-color-on-surface));
   background: rgb(var(--mdui-color-surface));
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
 }
 
 .header {
@@ -173,6 +184,7 @@ onMounted(() => {
   gap: 8px;
   margin-bottom: 20px;
   width: 100%;
+  justify-content: center;
 }
 
 .header-icon {
@@ -208,9 +220,7 @@ h1 {
 .map-card {
   overflow: hidden;
   background: rgb(var(--mdui-color-surface-container));
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
 }
 
@@ -221,13 +231,13 @@ h1 {
 
 .card-image {
   width: 100%;
-  height: 100px;
+  height: 150px;
   object-fit: cover;
   display: block;
 }
 
 .card-content {
-  padding: 10px 14px 14px;
+  padding: 12px 16px 16px;
 }
 
 .card-header {
@@ -257,7 +267,9 @@ h1 {
 
 .card-footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
 }
 
 .category-tag {
@@ -266,6 +278,15 @@ h1 {
   border-radius: 12px;
   background: rgb(var(--mdui-color-primary-container));
   color: rgb(var(--mdui-color-on-primary-container));
+}
+
+.author-tag {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgb(var(--mdui-color-surface-container));
+  color: rgb(var(--mdui-color-on-surface-variant));
+  opacity: 0.8;
 }
 
 .loading-state,
@@ -298,7 +319,7 @@ h1 {
     gap: 12px;
   }
   .card-image {
-    height: 80px;
+    height: 120px;
   }
 }
 
