@@ -1,0 +1,113 @@
+#!/usr/bin/env python3
+"""
+一键修复 sds 项目中的视觉、逻辑与无障碍问题。
+请在项目根目录（包含 src 和 public 的目录）下运行此脚本。
+修复内容：
+1. 移除 App.vue 中重复的 mdui 导入
+2. 为 MapView 添加滚动位置保存与恢复
+3. 进一步紧凑卡片设计
+4. 保持详情页返回按钮直接跳转并保留滚动
+"""
+from pathlib import Path
+import re
+
+def fix_app_vue():
+    path = Path('src/App.vue')
+    content = path.read_text(encoding='utf-8')
+    
+    # 合并重复的 mdui 导入（可能重复了三次）
+    pattern = r"(import 'mdui/components/navigation-bar\.js'\nimport 'mdui/components/navigation-bar-item\.js'\n){2,}"
+    replacement = "import 'mdui/components/navigation-bar.js'\nimport 'mdui/components/navigation-bar-item.js'\n"
+    content = re.sub(pattern, replacement, content)
+    
+    path.write_text(content, encoding='utf-8')
+    print("已修复 App.vue：移除重复导入")
+
+def fix_map_view_vue():
+    path = Path('src/views/MapView.vue')
+    content = path.read_text(encoding='utf-8')
+    
+    # 1. 添加 onActivated, onDeactivated, nextTick 导入
+    old_import = "import { ref, computed, onMounted } from 'vue'"
+    new_import = "import { ref, computed, onMounted, onActivated, onDeactivated, nextTick } from 'vue'"
+    content = content.replace(old_import, new_import)
+    
+    # 2. 添加滚动位置保存变量
+    old_loading = "const loading = ref(true)"
+    new_loading = "const loading = ref(true)\nconst scrollPosition = ref(0)"
+    content = content.replace(old_loading, new_loading)
+    
+    # 3. 在 goToDetail 函数后添加生命周期钩子
+    old_go = """const goToDetail = (id: number) => {
+  router.push(`/map/${id}`)
+}"""
+    new_go = """const goToDetail = (id: number) => {
+  router.push(`/map/${id}`)
+}
+
+// 保存滚动位置（离开页面时）
+onDeactivated(() => {
+  const container = document.querySelector('.content') as HTMLElement | null
+  scrollPosition.value = container?.scrollTop || 0
+})
+
+// 恢复滚动位置（回到页面时）
+onActivated(() => {
+  nextTick(() => {
+    const container = document.querySelector('.content') as HTMLElement | null
+    if (container) {
+      container.scrollTop = scrollPosition.value
+    }
+  })
+})"""
+    content = content.replace(old_go, new_go)
+    
+    # 4. 调整卡片图片高度，使卡片更紧凑（桌面端）
+    old_img_height = ".card-image {\n  width: 100%;\n  height: 120px;\n  object-fit: cover;\n  display: block;\n}"
+    new_img_height = ".card-image {\n  width: 100%;\n  height: 100px;\n  object-fit: cover;\n  display: block;\n}"
+    content = content.replace(old_img_height, new_img_height)
+    
+    # 5. 调整移动端图片高度
+    old_mobile_img = ".card-image {\n    height: 100px;\n  }"
+    new_mobile_img = ".card-image {\n    height: 80px;\n  }"
+    content = content.replace(old_mobile_img, new_mobile_img)
+    
+    # 6. 减小卡片内容内边距
+    old_padding = ".card-content {\n  padding: 12px 16px 16px;\n}"
+    new_padding = ".card-content {\n  padding: 10px 14px 14px;\n}"
+    content = content.replace(old_padding, new_padding)
+    
+    path.write_text(content, encoding='utf-8')
+    print("已修复 MapView.vue：添加滚动恢复、紧凑卡片设计")
+
+def fix_map_detail_vue():
+    path = Path('src/views/MapDetail.vue')
+    content = path.read_text(encoding='utf-8')
+    
+    # 确保返回按钮使用 router.push 并保留滚动位置（配合 MapView 的 onActivated）
+    # 无需修改，但可以优化 aria-label
+    old_btn = """<mdui-button
+        variant="text"
+        icon="arrow_back"
+        @click="goBack"
+        class="back-btn"
+        aria-label="返回"
+      ></mdui-button>"""
+    new_btn = """<mdui-button
+        variant="text"
+        icon="arrow_back"
+        @click="goBack"
+        class="back-btn"
+        aria-label="返回地图列表"
+      ></mdui-button>"""
+    content = content.replace(old_btn, new_btn)
+    
+    path.write_text(content, encoding='utf-8')
+    print("已修复 MapDetail.vue：优化返回按钮无障碍标签")
+
+if __name__ == '__main__':
+    print("开始修复...")
+    fix_app_vue()
+    fix_map_view_vue()
+    fix_map_detail_vue()
+    print("所有修复已完成！")

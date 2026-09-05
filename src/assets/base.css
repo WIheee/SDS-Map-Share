@@ -1,0 +1,36 @@
+/* 引入 MDUI 默认样式，确保设计令牌可用 */
+/* MDUI 的设计令牌会通过 JS 动态注入，此处无需额外导入 */
+
+/* 全局样式重置，使用 MDUI 的颜色令牌 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+body {
+  min-height: 100vh;
+  color: rgb(var(--mdui-color-on-surface));
+  background: rgb(var(--mdui-color-surface));
+  transition: color 0.5s, background-color 0.5s;
+  line-height: 1.6;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
