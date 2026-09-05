@@ -49,7 +49,18 @@
         <div v-for="member in team" :key="member.name" class="team-member">
           <img :src="member.avatar" :alt="member.name" class="avatar" loading="lazy" />
           <div class="member-info">
-            <div class="member-name">{{ member.name }}</div>
+            <div class="member-name">
+              <a
+                v-if="member.github"
+                :href="member.github"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="github-link"
+              >
+                {{ member.name }}
+              </a>
+              <span v-else>{{ member.name }}</span>
+            </div>
             <div class="member-role">{{ member.role }}</div>
           </div>
         </div>
@@ -67,6 +78,7 @@ interface TeamMember {
   name: string
   role: string
   avatar: string
+  github?: string // 可选，有则显示为链接
 }
 
 const team: TeamMember[] = [
@@ -74,6 +86,7 @@ const team: TeamMember[] = [
     name: 'WIheee',
     role: '首席开发者/维护者',
     avatar: '/team/WIhee.webp',
+    github: 'https://github.com/WIheee', // 新增
   },
 ]
 </script>
@@ -182,9 +195,18 @@ h1 {
 
 .member-name {
   font-weight: 500;
-  color: rgb(var(--mdui-color-on-surface));
   font-size: 16px;
+  color: rgb(var(--mdui-color-on-surface));
 }
+
+.github-link {
+  color: rgb(var(--mdui-color-primary));
+  text-decoration: none;
+}
+.github-link:hover {
+  text-decoration: underline;
+}
+
 .member-role {
   font-size: 12px;
   color: rgb(var(--mdui-color-on-surface-variant));

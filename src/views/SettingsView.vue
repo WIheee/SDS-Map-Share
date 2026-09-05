@@ -85,7 +85,7 @@ onMounted(() => {
 .settings-page {
   display: flex;
   flex-direction: column;
-  align-items: center; /* 水平居中 */
+  align-items: center;
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
