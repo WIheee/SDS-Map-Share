@@ -3,10 +3,6 @@ import { ref } from 'vue'
 import type { MapItem } from '@/types/map'
 import { FILE_CATEGORY } from '@/constants/map'
 
-/**
- * 地图数据 store（唯一数据源）
- * MapView / MapDetail 统一从这里取数，不再各自重复 import.meta.glob
- */
 export const useMapsStore = defineStore('maps', () => {
   const maps = ref<MapItem[]>([])
   const loaded = ref(false)
@@ -18,12 +14,19 @@ export const useMapsStore = defineStore('maps', () => {
       const modules = import.meta.glob('@/data/map/json/*.json', { eager: true })
       const all: MapItem[] = []
       for (const path in modules) {
-        // 按文件名自动注入分类（battle -> 对战 ...），JSON 中无需再手写 category
-        const filename = path.split('/').pop()?.replace(/\.json$/, '') ?? ''
+        const filename =
+          path
+            .split('/')
+            .pop()
+            ?.replace(/\.json$/, '') ?? ''
         const data = (modules[path] as { default: MapItem[] }).default
         if (Array.isArray(data)) {
           for (const item of data) {
-            all.push({ ...item, category: FILE_CATEGORY[filename] ?? item.category })
+            // 确保 category 是数组
+            let cat = item.category
+            if (typeof cat === 'string') cat = [cat]
+            else if (!Array.isArray(cat)) cat = []
+            all.push({ ...item, category: cat })
           }
         }
       }
@@ -32,7 +35,7 @@ export const useMapsStore = defineStore('maps', () => {
       error.value = false
     } catch {
       error.value = true
-      loaded.value = true // 标记为已尝试加载
+      loaded.value = true
     }
   }
 

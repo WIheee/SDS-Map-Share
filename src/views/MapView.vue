@@ -19,20 +19,19 @@ const mapsStore = useMapsStore()
 const selectedCategory = ref<string>('')
 const searchQuery = ref('')
 
-// eager glob 为同步数据，直接在 setup 中加载即可（幂等，已加载则跳过）
 mapsStore.loadMaps()
 
-// 数据与加载状态统一来自 maps store，不再在视图里重复加载逻辑
 const maps = computed(() => mapsStore.maps)
 const loading = computed(() => !mapsStore.loaded)
 
 const filteredMaps = computed(() => {
   const query = searchQuery.value.trim().toLowerCase()
   return maps.value.filter((map) => {
-    const matchCategory = selectedCategory.value ? map.category === selectedCategory.value : true
+    const matchCategory = selectedCategory.value
+      ? map.category.includes(selectedCategory.value)
+      : true
     if (!matchCategory) return false
     if (!query) return true
-    // 搜索标题、描述、作者
     return (
       map.title.toLowerCase().includes(query) ||
       map.description.toLowerCase().includes(query) ||
@@ -59,7 +58,7 @@ const goToDetail = (id: number) => {
   <div class="map-view">
     <div class="header">
       <mdui-icon name="map" class="header-icon" aria-hidden="true"></mdui-icon>
-      <h1>Map View</h1>
+      <h1>地图资源</h1>
     </div>
 
     <div class="search-box">
@@ -73,9 +72,15 @@ const goToDetail = (id: number) => {
     </div>
 
     <div class="categories">
-      <mdui-segmented-button-group selects="single" :value="selectedCategory" @change="onCategoryChange">
+      <mdui-segmented-button-group
+        selects="single"
+        :value="selectedCategory"
+        @change="onCategoryChange"
+      >
         <mdui-segmented-button value="">全部</mdui-segmented-button>
-        <mdui-segmented-button v-for="cat in CATEGORIES" :key="cat" :value="cat">{{ cat }}</mdui-segmented-button>
+        <mdui-segmented-button v-for="cat in CATEGORIES" :key="cat" :value="cat">{{
+          cat
+        }}</mdui-segmented-button>
       </mdui-segmented-button-group>
     </div>
 
@@ -104,7 +109,7 @@ const goToDetail = (id: number) => {
           <mdui-divider></mdui-divider>
           <p>{{ map.description.slice(0, 20) }}{{ map.description.length > 20 ? '...' : '' }}</p>
           <div class="card-footer">
-            <span class="category-tag">{{ map.category }}</span>
+            <span class="category-tag">{{ map.category.join(' · ') }}</span>
             <span class="author-tag">{{ map.author }}</span>
           </div>
         </div>
@@ -174,7 +179,9 @@ h1 {
 .map-card {
   overflow: hidden;
   background: rgb(var(--mdui-color-surface-container));
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   cursor: pointer;
 }
 

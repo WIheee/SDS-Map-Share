@@ -5,7 +5,7 @@
     "description": "此起彼伏的海浪，飞舞的蝴蝶，壮观的海洋地图",
     "image": "/map/image/battle/断沧渊.webp",
     "file": "/map/fun/battle/断沧渊.7z",
-    "category": "对战",
+    "category": ["对战", "观赏"],
     "author": "美酒FineWine"
   },
   {
@@ -14,7 +14,7 @@
     "description": "与朋友一起前往熔岩公司战斗是什么感觉呢?",
     "image": "/map/image/battle/熔岩公司.webp",
     "file": "/map/fun/battle/熔岩公司.7z",
-    "category": "对战",
+    "category": ["对战"],
     "author": "南南南"
   }
 ]

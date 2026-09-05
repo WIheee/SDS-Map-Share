@@ -4,6 +4,6 @@ export interface MapItem {
   description: string
   image: string
   file: string
-  category: string
+  category: string[]
   author: string
 }

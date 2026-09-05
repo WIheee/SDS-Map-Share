@@ -1,5 +1,4 @@
 一键使用进行压缩(地图文件/图片)
-
 `python tools/compress_images.py & python tools/compress_fun.py`
 
 PROMPT

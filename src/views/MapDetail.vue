@@ -28,7 +28,9 @@ const downloadMap = () => {
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)
-  setTimeout(() => { downloading.value = false }, 1500)
+  setTimeout(() => {
+    downloading.value = false
+  }, 1500)
 }
 
 const goBack = () => {
@@ -56,7 +58,13 @@ onMounted(async () => {
 <template>
   <div class="detail-page">
     <div class="back-bar">
-      <mdui-button variant="text" icon="arrow_back" @click="goBack" class="back-btn" aria-label="返回地图列表"></mdui-button>
+      <mdui-button
+        variant="text"
+        icon="arrow_back"
+        @click="goBack"
+        class="back-btn"
+        aria-label="返回地图列表"
+      ></mdui-button>
     </div>
 
     <div v-if="loading" class="loading-state">
@@ -71,13 +79,27 @@ onMounted(async () => {
     <div v-else-if="mapData" class="detail-content">
       <h1 class="map-title">{{ mapData.title }}</h1>
 
+      <div class="category-badges">
+        <span v-for="cat in mapData.category" :key="cat" class="detail-category-tag">
+          {{ cat }}
+        </span>
+      </div>
+
       <div class="panorama">
         <img :src="mapData.image" :alt="mapData.title" />
       </div>
 
       <div class="download-section">
-        <mdui-button variant="filled" :disabled="downloading" @click="downloadMap" class="download-btn">
-          <mdui-icon :name="downloading ? 'hourglass_empty' : 'file_download'" slot="icon"></mdui-icon>
+        <mdui-button
+          variant="filled"
+          :disabled="downloading"
+          @click="downloadMap"
+          class="download-btn"
+        >
+          <mdui-icon
+            :name="downloading ? 'hourglass_empty' : 'file_download'"
+            slot="icon"
+          ></mdui-icon>
           {{ downloading ? '下载中...' : '下载地图' }}
         </mdui-button>
       </div>
@@ -101,13 +123,13 @@ onMounted(async () => {
       </mdui-card>
 
       <!-- ====== 评论区域 ====== -->
-      <div class="giscus-container" style="margin-top: 24px; width: 100%;">
+      <div class="giscus-container" style="margin-top: 24px; width: 100%">
         <Giscus
           id="comments"
           repo="WIheee/SDS-Map-Share"
           repoId="R_kgDOUPE0UA"
-          category="Announcements"
-          categoryId="DIC_kwDOUPE0UM4DE8IZ"
+          category="Q&A"
+          categoryId="DIC_kwDOUPE0UM4DE8Ib"
           mapping="specific"
           :term="String(mapData.id)"
           reactionsEnabled="1"
@@ -169,8 +191,24 @@ onMounted(async () => {
 .map-title {
   font-size: 28px;
   text-align: center;
-  margin: 0 0 16px 0;
+  margin: 0 0 8px 0;
   color: rgb(var(--mdui-color-on-surface));
+}
+
+.category-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.detail-category-tag {
+  font-size: 13px;
+  padding: 2px 14px;
+  border-radius: 14px;
+  background: rgb(var(--mdui-color-primary-container));
+  color: rgb(var(--mdui-color-on-primary-container));
 }
 
 .panorama {
