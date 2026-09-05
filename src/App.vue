@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import 'mdui/components/navigation-bar.js'
 import 'mdui/components/navigation-bar-item.js'
+// 导入 MDUI 主题函数
+import { setTheme } from 'mdui/functions/setTheme.js'
+import { setColorScheme } from 'mdui/functions/setColorScheme.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -22,6 +25,34 @@ const onTabChange = (event: Event) => {
     router.push(`/${newTab}`)
   }
 }
+
+// 应用用户保存的主题和配色
+const applySavedSettings = () => {
+  // 读取保存的主题
+  const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | 'auto' | null
+  if (savedTheme) {
+    setTheme(savedTheme)
+  }
+
+  // 读取保存的配色方案
+  const savedColor = localStorage.getItem('colorScheme')
+  if (savedColor) {
+    // 配色预设映射
+    const colorPresets: Record<string, string> = {
+      purple: '#6750A4',
+      blue: '#0061A4',
+      green: '#1E7A5E',
+      pink: '#B93A6C',
+    }
+    if (colorPresets[savedColor]) {
+      setColorScheme(colorPresets[savedColor])
+    }
+  }
+}
+
+onMounted(() => {
+  applySavedSettings()
+})
 </script>
 
 <template>
@@ -36,31 +67,11 @@ const onTabChange = (event: Event) => {
       </router-view>
     </div>
 
-    <mdui-navigation-bar
-      placement="bottom"
-      :value="activeTab"
-      @change="onTabChange"
-    >
-      <mdui-navigation-bar-item 
-        value="map" 
-        icon="map" 
-        label="地图资源" 
-      />
-      <mdui-navigation-bar-item 
-        value="activity" 
-        icon="event" 
-        label="活动" 
-      />
-      <mdui-navigation-bar-item 
-        value="announcement" 
-        icon="announcement" 
-        label="公告/关于" 
-      />
-      <mdui-navigation-bar-item 
-        value="settings" 
-        icon="settings" 
-        label="网站设置" 
-      />
+    <mdui-navigation-bar placement="bottom" :value="activeTab" @change="onTabChange">
+      <mdui-navigation-bar-item value="map" icon="map" label="地图资源" />
+      <mdui-navigation-bar-item value="activity" icon="event" label="活动" />
+      <mdui-navigation-bar-item value="announcement" icon="announcement" label="公告/关于" />
+      <mdui-navigation-bar-item value="settings" icon="settings" label="网站设置" />
     </mdui-navigation-bar>
   </div>
 </template>

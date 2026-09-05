@@ -15,7 +15,7 @@ const colorPresets: Record<ColorPreset, string> = {
   purple: '#6750A4',
   blue: '#0061A4',
   green: '#1E7A5E',
-  pink: '#B93A6C'
+  pink: '#B93A6C',
 }
 
 const savedTheme = localStorage.getItem('theme') as Theme | null
@@ -32,7 +32,7 @@ const applyTheme = (value: Theme) => {
 
 const applyColorScheme = (preset: ColorPreset) => {
   currentColor.value = preset
-  setColorScheme(colorPresets[preset])  // 使用 MDUI 动态配色[reference:1]
+  setColorScheme(colorPresets[preset]) // 使用 MDUI 动态配色[reference:1]
   localStorage.setItem('colorScheme', preset)
 }
 
@@ -49,11 +49,7 @@ onMounted(() => {
     <!-- ====== 主题模式 ====== -->
     <div class="setting-section">
       <p>主题模式</p>
-      <mdui-segmented-button-group
-        selects="single"
-        required
-        :value="theme"
-      >
+      <mdui-segmented-button-group selects="single" required :value="theme">
         <mdui-segmented-button value="light" @click="applyTheme('light')">
           <mdui-icon name="light_mode" slot="icon"></mdui-icon>
           浅色

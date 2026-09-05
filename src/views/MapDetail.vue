@@ -34,7 +34,7 @@ const loadMap = (id: number) => {
       allData.push(...data)
     }
   }
-  const found = allData.find(item => item.id === id)
+  const found = allData.find((item) => item.id === id)
   if (found) {
     mapData.value = found
     loading.value = false
@@ -50,8 +50,8 @@ const downloadMap = () => {
   // 使用 import.meta.env.BASE_URL 确保路径正确
   const fullPath = import.meta.env.BASE_URL + filePath.replace(/^\//, '')
   fetch(fullPath)
-    .then(res => res.blob())
-    .then(blob => {
+    .then((res) => res.blob())
+    .then((blob) => {
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
@@ -166,7 +166,7 @@ onMounted(() => {
 }
 
 .back-btn {
-  min-width: 56px !important;    /* 放大尺寸 */
+  min-width: 56px !important; /* 放大尺寸 */
   height: 56px !important;
   border-radius: 50% !important;
   padding: 0 !important;

@@ -5,38 +5,38 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/map'
+      redirect: '/map',
     },
     {
       path: '/map',
       name: 'map',
-      component: () => import('../views/MapView.vue')
+      component: () => import('../views/MapView.vue'),
     },
     {
       path: '/map/:id',
       name: 'mapDetail',
-      component: () => import('../views/MapDetail.vue')
+      component: () => import('../views/MapDetail.vue'),
     },
     {
       path: '/activity',
       name: 'activity',
-      component: () => import('../views/ActivityView.vue')
+      component: () => import('../views/ActivityView.vue'),
     },
     {
       path: '/announcement',
       name: 'announcement',
-      component: () => import('../views/AnnouncementView.vue')
+      component: () => import('../views/AnnouncementView.vue'),
     },
     {
       path: '/settings',
       name: 'settings',
-      component: () => import('../views/SettingsView.vue')
+      component: () => import('../views/SettingsView.vue'),
     },
     {
       path: '/:pathMatch(.*)*',
-      redirect: '/map'
-    }
-  ]
+      redirect: '/map',
+    },
+  ],
 })
 
 export default router

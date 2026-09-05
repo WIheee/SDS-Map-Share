@@ -44,9 +44,10 @@ const loadData = () => {
 }
 
 const filteredMaps = computed(() => {
-  return maps.value.filter(map => {
+  return maps.value.filter((map) => {
     const matchCategory = selectedCategory.value ? map.category === selectedCategory.value : true
-    const matchSearch = map.title.includes(searchQuery.value) || map.description.includes(searchQuery.value)
+    const matchSearch =
+      map.title.includes(searchQuery.value) || map.description.includes(searchQuery.value)
     return matchCategory && matchSearch
   })
 })
@@ -109,11 +110,9 @@ onMounted(() => {
         @change="onCategoryChange"
       >
         <mdui-segmented-button value="">全部</mdui-segmented-button>
-        <mdui-segmented-button
-          v-for="cat in categories"
-          :key="cat"
-          :value="cat"
-        >{{ cat }}</mdui-segmented-button>
+        <mdui-segmented-button v-for="cat in categories" :key="cat" :value="cat">{{
+          cat
+        }}</mdui-segmented-button>
       </mdui-segmented-button-group>
     </div>
 
@@ -209,7 +208,9 @@ h1 {
 .map-card {
   overflow: hidden;
   background: rgb(var(--mdui-color-surface-container));
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   cursor: pointer;
 }
 
