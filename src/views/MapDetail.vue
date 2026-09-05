@@ -1,95 +1,66 @@
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { MapItem } from '@/types/map'
+import { useMapsStore } from '@/stores/maps'
 import 'mdui/components/card.js'
 import 'mdui/components/button.js'
 import 'mdui/components/icon.js'
 import 'mdui/components/divider.js'
 import 'mdui/components/circular-progress.js'
 
-interface MapItem {
-  id: number
-  title: string
-  description: string
-  image: string
-  file: string
-  category: string
-  author: string
-}
-
 const route = useRoute()
 const router = useRouter()
+const mapsStore = useMapsStore()
+
 const mapData = ref<MapItem | null>(null)
 const loading = ref(true)
 const error = ref(false)
-
-const modules = import.meta.glob('@/data/map/json/*.json', { eager: true })
-
-const loadMap = (id: number) => {
-  const allData: MapItem[] = []
-  for (const path in modules) {
-    const data = (modules[path] as { default: MapItem[] }).default
-    if (Array.isArray(data)) {
-      allData.push(...data)
-    }
-  }
-  const found = allData.find((item) => item.id === id)
-  if (found) {
-    mapData.value = found
-    loading.value = false
-  } else {
-    error.value = true
-    loading.value = false
-  }
-}
+const downloading = ref(false)
 
 const downloadMap = () => {
-  if (!mapData.value) return
-  const filePath = mapData.value.file
-  const fullPath = import.meta.env.BASE_URL + filePath.replace(/^\//, '')
-  fetch(fullPath)
-    .then((res) => res.blob())
-    .then((blob) => {
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = filePath.split('/').pop() || 'map.7z'
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-    })
-    .catch(() => alert('下载失败，请稍后重试'))
+  if (!mapData.value || downloading.value) return
+  downloading.value = true
+  // 同源静态资源直接用 a[download]，避免把整个 7z 读进内存（原来 fetch+blob 会卡大文件）
+  const a = document.createElement('a')
+  a.href = import.meta.env.BASE_URL + mapData.value.file.replace(/^\//, '')
+  a.download = mapData.value.file.split('/').pop() ?? 'map.7z'
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  // 简单节流，防止连续点击重复触发下载
+  setTimeout(() => {
+    downloading.value = false
+  }, 1500)
 }
 
 const goBack = () => {
-  router.back()
+  // 直链进入时没有上一页历史，退回列表页而不是退出站点
+  if (window.history.state?.back) {
+    router.back()
+  } else {
+    router.replace('/map')
+  }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await mapsStore.loadMaps()
   const id = parseInt(route.params.id as string)
-  if (isNaN(id)) {
+  const found = isNaN(id) ? undefined : mapsStore.getMapById(id)
+  if (found) {
+    mapData.value = found
+    error.value = false
+  } else {
     error.value = true
-    loading.value = false
-    return
   }
-  loadMap(id)
-  nextTick(() => {
-    window.scrollTo(0, 0)
-  })
+  loading.value = false
 })
 </script>
 
 <template>
   <div class="detail-page">
     <div class="back-bar">
-      <mdui-button
-        variant="text"
-        icon="arrow_back"
-        @click="goBack"
-        class="back-btn"
-        aria-label="返回地图列表"
-      ></mdui-button>
+      <mdui-button variant="text" icon="arrow_back" @click="goBack" class="back-btn" aria-label="返回地图列表"></mdui-button>
     </div>
 
     <div v-if="loading" class="loading-state">
@@ -109,9 +80,9 @@ onMounted(() => {
       </div>
 
       <div class="download-section">
-        <mdui-button variant="filled" @click="downloadMap" class="download-btn">
-          <mdui-icon name="file_download" slot="icon"></mdui-icon>
-          下载地图
+        <mdui-button variant="filled" :disabled="downloading" @click="downloadMap" class="download-btn">
+          <mdui-icon :name="downloading ? 'hourglass_empty' : 'file_download'" slot="icon"></mdui-icon>
+          {{ downloading ? '下载中...' : '下载地图' }}
         </mdui-button>
       </div>
 
@@ -121,9 +92,7 @@ onMounted(() => {
           <span>描述</span>
         </div>
         <mdui-divider></mdui-divider>
-        <div class="card-body">
-          {{ mapData.description }}
-        </div>
+        <div class="card-body">{{ mapData.description }}</div>
       </mdui-card>
 
       <mdui-card class="info-card">
@@ -132,9 +101,7 @@ onMounted(() => {
           <span>作者</span>
         </div>
         <mdui-divider></mdui-divider>
-        <div class="card-body">
-          {{ mapData.author }}
-        </div>
+        <div class="card-body">{{ mapData.author }}</div>
       </mdui-card>
     </div>
   </div>

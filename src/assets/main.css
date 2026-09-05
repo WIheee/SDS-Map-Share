@@ -1,11 +1,10 @@
-/* 应用容器样式，使用 MDUI 设计令牌 */
+/* 应用容器样式（使用 MDUI 设计令牌） */
+/* 布局职责统一由 App.vue 的 .app-container / .content 承担。
+   已移除 create-vue 脚手架遗留的桌面端样式（body flex + #app 两列 grid），
+   该样式曾导致 >=1024px 时页面内容被强制分成两列，以及双重留白。 */
 #app {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   font-weight: normal;
-  background: rgb(var(--mdui-color-surface));
-  color: rgb(var(--mdui-color-on-surface));
 }
 
 a,
@@ -20,18 +19,5 @@ a,
   a:hover {
     background-color: rgb(var(--mdui-color-primary-container));
     color: rgb(var(--mdui-color-on-primary-container));
-  }
-}
-
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
   }
 }

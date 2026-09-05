@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import 'mdui/components/navigation-bar.js'
 import 'mdui/components/navigation-bar-item.js'
-import { setTheme } from 'mdui/functions/setTheme.js'
-import { setColorScheme } from 'mdui/functions/setColorScheme.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -22,25 +20,6 @@ const onTabChange = (event: Event) => {
     router.push(`/${newTab}`)
   }
 }
-
-const applySavedSettings = () => {
-  const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | 'auto' | null
-  if (savedTheme) setTheme(savedTheme)
-  const savedColor = localStorage.getItem('colorScheme')
-  if (savedColor) {
-    const colorPresets: Record<string, string> = {
-      purple: '#6750A4',
-      blue: '#0061A4',
-      green: '#1E7A5E',
-      pink: '#B93A6C',
-    }
-    if (colorPresets[savedColor]) setColorScheme(colorPresets[savedColor])
-  }
-}
-
-onMounted(() => {
-  applySavedSettings()
-})
 </script>
 
 <template>
@@ -76,7 +55,8 @@ onMounted(() => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center; /* 水平居中 */
+  align-items: center;
+  /* 水平居中 */
   padding: 20px;
   padding-top: 40px;
   padding-bottom: 80px;
@@ -89,10 +69,12 @@ onMounted(() => {
 .fade-slide-leave-active {
   transition: all 0.25s ease;
 }
+
 .fade-slide-enter-from {
   opacity: 0;
   transform: translateY(12px);
 }
+
 .fade-slide-leave-to {
   opacity: 0;
   transform: translateY(-12px);

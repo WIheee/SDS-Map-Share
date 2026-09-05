@@ -83,7 +83,7 @@ interface TeamMember {
 
 const team: TeamMember[] = [
   {
-    name: 'WIheee',
+    name: 'WIhee',
     role: '首席开发者/维护者',
     avatar: '/team/WIhee.webp',
     github: 'https://github.com/WIheee', // 新增

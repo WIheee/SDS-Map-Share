@@ -2,38 +2,35 @@
 import { ref, onMounted } from 'vue'
 import { setTheme } from 'mdui/functions/setTheme.js'
 import { setColorScheme } from 'mdui/functions/setColorScheme.js'
+import {
+  colorPresets,
+  STORAGE_KEYS,
+  safeGetItem,
+  safeSetItem,
+  type Theme,
+  type ColorPreset,
+} from '@/constants/theme'
 import 'mdui/components/segmented-button-group.js'
 import 'mdui/components/segmented-button.js'
 import 'mdui/components/icon.js'
 
 defineOptions({ name: 'SettingsPage' })
 
-type Theme = 'light' | 'dark' | 'auto'
-type ColorPreset = 'purple' | 'blue' | 'green' | 'pink'
-
-const colorPresets: Record<ColorPreset, string> = {
-  purple: '#6750A4',
-  blue: '#0061A4',
-  green: '#1E7A5E',
-  pink: '#B93A6C',
-}
-
-const savedTheme = localStorage.getItem('theme') as Theme | null
-const theme = ref<Theme>(savedTheme || 'auto')
-
-const savedColor = localStorage.getItem('colorScheme') as ColorPreset | null
-const currentColor = ref<ColorPreset>(savedColor || 'purple')
+const theme = ref<Theme>((safeGetItem(STORAGE_KEYS.theme) as Theme | null) || 'auto')
+const currentColor = ref<ColorPreset>(
+  (safeGetItem(STORAGE_KEYS.colorScheme) as ColorPreset | null) || 'purple',
+)
 
 const applyTheme = (value: Theme) => {
   theme.value = value
   setTheme(value)
-  localStorage.setItem('theme', value)
+  safeSetItem(STORAGE_KEYS.theme, value)
 }
 
 const applyColorScheme = (preset: ColorPreset) => {
   currentColor.value = preset
   setColorScheme(colorPresets[preset])
-  localStorage.setItem('colorScheme', preset)
+  safeSetItem(STORAGE_KEYS.colorScheme, preset)
 }
 
 onMounted(() => {

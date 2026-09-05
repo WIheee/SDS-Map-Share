@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onActivated, onDeactivated, nextTick } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { CATEGORIES } from '@/constants/map'
+import { useMapsStore } from '@/stores/maps'
 import 'mdui/components/text-field.js'
 import 'mdui/components/segmented-button-group.js'
 import 'mdui/components/segmented-button.js'
@@ -11,37 +13,18 @@ import 'mdui/components/circular-progress.js'
 
 defineOptions({ name: 'MapView' })
 
-interface MapItem {
-  id: number
-  title: string
-  description: string
-  image: string
-  file: string
-  category: string
-  author: string
-}
-
 const router = useRouter()
-const categories = ['对战', '观赏', '机关', '生存']
+const mapsStore = useMapsStore()
+
 const selectedCategory = ref<string>('')
 const searchQuery = ref('')
-const maps = ref<MapItem[]>([])
-const loading = ref(true)
-const scrollPosition = ref(0)
 
-const modules = import.meta.glob('@/data/map/json/*.json', { eager: true })
+// eager glob 为同步数据，直接在 setup 中加载即可（幂等，已加载则跳过）
+mapsStore.loadMaps()
 
-const loadData = () => {
-  const allData: MapItem[] = []
-  for (const path in modules) {
-    const data = (modules[path] as { default: MapItem[] }).default
-    if (Array.isArray(data)) {
-      allData.push(...data)
-    }
-  }
-  maps.value = allData
-  loading.value = false
-}
+// 数据与加载状态统一来自 maps store，不再在视图里重复加载逻辑
+const maps = computed(() => mapsStore.maps)
+const loading = computed(() => !mapsStore.loaded)
 
 const filteredMaps = computed(() => {
   const query = searchQuery.value.trim().toLowerCase()
@@ -70,24 +53,6 @@ const onCategoryChange = (event: Event) => {
 const goToDetail = (id: number) => {
   router.push(`/map/${id}`)
 }
-
-onDeactivated(() => {
-  const container = document.querySelector('.content') as HTMLElement | null
-  scrollPosition.value = container?.scrollTop || 0
-})
-
-onActivated(() => {
-  nextTick(() => {
-    const container = document.querySelector('.content') as HTMLElement | null
-    if (container) {
-      container.scrollTop = scrollPosition.value
-    }
-  })
-})
-
-onMounted(() => {
-  loadData()
-})
 </script>
 
 <template>
@@ -108,21 +73,16 @@ onMounted(() => {
     </div>
 
     <div class="categories">
-      <mdui-segmented-button-group
-        selects="single"
-        :value="selectedCategory"
-        @change="onCategoryChange"
-      >
+      <mdui-segmented-button-group selects="single" :value="selectedCategory" @change="onCategoryChange">
         <mdui-segmented-button value="">全部</mdui-segmented-button>
-        <mdui-segmented-button v-for="cat in categories" :key="cat" :value="cat">{{
-          cat
-        }}</mdui-segmented-button>
+        <mdui-segmented-button v-for="cat in CATEGORIES" :key="cat" :value="cat">{{ cat }}</mdui-segmented-button>
       </mdui-segmented-button-group>
     </div>
 
     <div v-if="loading" class="loading-state">
       <mdui-circular-progress></mdui-circular-progress>
     </div>
+
     <div v-else class="card-grid">
       <mdui-card
         v-for="map in filteredMaps"
@@ -149,6 +109,7 @@ onMounted(() => {
           </div>
         </div>
       </mdui-card>
+
       <div v-if="filteredMaps.length === 0" class="empty-state">
         <p>没有找到匹配的地图</p>
       </div>
@@ -213,9 +174,7 @@ h1 {
 .map-card {
   overflow: hidden;
   background: rgb(var(--mdui-color-surface-container));
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
 }
 
