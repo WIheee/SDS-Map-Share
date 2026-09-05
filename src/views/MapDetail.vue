@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Giscus from '@giscus/vue'
 import type { MapItem } from '@/types/map'
@@ -19,12 +19,36 @@ const loading = ref(true)
 const error = ref(false)
 const downloading = ref(false)
 
+/**
+ * 安全校验：仅放行站内相对路径。
+ * 防御 JSON 数据被污染时的：
+ *  - javascript: 等伪协议注入（base 为空串时可被直接执行造成 XSS）
+ *  - //evil.com 协议相对地址导致的跨站跳转
+ *  - ../ 目录穿越访问站内任意托管文件
+ */
+function isSafeLocalPath(p: unknown): p is string {
+  if (typeof p !== 'string' || p.length === 0) return false
+  if (!p.startsWith('/')) return false // 必须以 / 开头，天然排除一切带 scheme 的 URL
+  if (p.startsWith('//')) return false // 排除协议相对地址
+  if (p.includes('\\') || p.includes('..')) return false // 排除反斜杠与目录穿越
+  return true
+}
+
+/** 图片地址仅在合法时使用，非法时回退为空（不渲染），正常数据完全不受影响 */
+const safeImage = computed(() => {
+  const img = mapData.value?.image
+  return isSafeLocalPath(img) ? img : ''
+})
+
 const downloadMap = () => {
   if (!mapData.value || downloading.value) return
+  const file = mapData.value.file
+  if (!isSafeLocalPath(file)) return // 路径非法，拒绝构造下载链接
   downloading.value = true
   const a = document.createElement('a')
-  a.href = import.meta.env.BASE_URL + mapData.value.file.replace(/^\//, '')
-  a.download = mapData.value.file.split('/').pop() ?? 'map.7z'
+  a.href = import.meta.env.BASE_URL + file.replace(/^\//, '')
+  // 仅取最后一段作为下载文件名，避免把路径带入 download 属性
+  a.download = file.split('/').pop() || 'map.7z'
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)
@@ -41,18 +65,28 @@ const goBack = () => {
   }
 }
 
-onMounted(async () => {
+const loadMap = async () => {
+  loading.value = true
   await mapsStore.loadMaps()
-  const id = parseInt(route.params.id as string)
-  const found = isNaN(id) ? undefined : mapsStore.getMapById(id)
-  if (found) {
-    mapData.value = found
-    error.value = false
-  } else {
-    error.value = true
-  }
+  const raw = route.params.id
+  const idStr = Array.isArray(raw) ? raw[0] : raw
+  const id = parseInt(idStr ?? '', 10)
+  const found = Number.isNaN(id) ? undefined : mapsStore.getMapById(id)
+  mapData.value = found ?? null
+  error.value = !found
   loading.value = false
-})
+}
+
+onMounted(loadMap)
+
+// 修复数据串页：/map/1 与 /map/2 复用同一组件实例，
+// 必须监听参数变化重新加载，否则改 URL 切换地图时会残留上一张地图的数据
+watch(
+  () => route.params.id,
+  () => {
+    if (route.name === 'mapDetail') void loadMap()
+  },
+)
 </script>
 
 <template>
@@ -86,7 +120,7 @@ onMounted(async () => {
       </div>
 
       <div class="panorama">
-        <img :src="mapData.image" :alt="mapData.title" />
+        <img v-if="safeImage" :src="safeImage" :alt="mapData.title" />
       </div>
 
       <div class="download-section">
@@ -124,7 +158,9 @@ onMounted(async () => {
 
       <!-- ====== 评论区域 ====== -->
       <div class="giscus-container" style="margin-top: 24px; width: 100%">
+        <!-- :key 使切换地图时重建评论组件，避免评论串到其它地图 -->
         <Giscus
+          :key="mapData.id"
           id="comments"
           repo="WIheee/SDS-Map-Share"
           repoId="R_kgDOUPE0UA"
