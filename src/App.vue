@@ -7,18 +7,21 @@ import 'mdui/components/navigation-bar-item.js'
 const route = useRoute()
 const router = useRouter()
 
+// 详情页 /map/:id 时稳定映射回 'map'，避免底部导航栏指示条抖动
 const activeTab = computed(() => {
-  const path = route.path.replace('/', '') || 'map'
-  return ['map', 'activity', 'announcement', 'settings'].includes(path) ? path : 'map'
+  const path = route.path.replace(/^\/+/, '')
+  if (path === 'map' || path.startsWith('map/')) return 'map'
+  return ['activity', 'announcement', 'settings'].includes(path) ? path : 'map'
 })
 
 const onTabChange = (event: Event) => {
   const detail = (event as CustomEvent).detail
   const target = event.target as HTMLElement & { value?: string }
   const newTab = detail?.value ?? target?.value
-  if (newTab) {
-    router.push(`/${newTab}`)
-  }
+  if (!newTab || typeof newTab !== 'string') return
+  // 点击当前已激活的 tab 时直接忽略，避免重复导航导致指示条动画乱跳
+  if (newTab === activeTab.value) return
+  router.push(`/${newTab}`)
 }
 </script>
 
@@ -55,8 +58,7 @@ const onTabChange = (event: Event) => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  /* 水平居中 */
+  align-items: center; /* 水平居中 */
   padding: 20px;
   padding-top: 40px;
   padding-bottom: 80px;

@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { CATEGORIES } from '@/constants/map'
 import { useMapsStore } from '@/stores/maps'
+import { useFavoritesStore } from '@/stores/favorites'
 import 'mdui/components/text-field.js'
 import 'mdui/components/segmented-button-group.js'
 import 'mdui/components/segmented-button.js'
@@ -15,7 +16,10 @@ defineOptions({ name: 'MapView' })
 
 const router = useRouter()
 const mapsStore = useMapsStore()
+const favoritesStore = useFavoritesStore()
 
+// 「收藏」是虚拟分类，用保留值 FAV 与真实分类区分开
+const FAV = '__favorite__'
 const selectedCategory = ref<string>('')
 const searchQuery = ref('')
 
@@ -27,10 +31,12 @@ const loading = computed(() => !mapsStore.loaded)
 const filteredMaps = computed(() => {
   const query = searchQuery.value.trim().toLowerCase()
   return maps.value.filter((map) => {
-    const matchCategory = selectedCategory.value
-      ? map.category.includes(selectedCategory.value)
-      : true
-    if (!matchCategory) return false
+    // 「收藏」筛选：只显示已收藏的地图
+    if (selectedCategory.value === FAV && !favoritesStore.has(map.id)) return false
+    // 普通分类筛选
+    if (selectedCategory.value !== FAV && selectedCategory.value) {
+      if (!map.category.includes(selectedCategory.value)) return false
+    }
     if (!query) return true
     return (
       map.title.toLowerCase().includes(query) ||
@@ -51,6 +57,18 @@ const onCategoryChange = (event: Event) => {
 
 const goToDetail = (id: number) => {
   router.push(`/map/${id}`)
+}
+
+/**
+ * 收藏/取消收藏
+ * .stop + .prevent 已在模板上彻底阻断冒泡与默认行为，
+ * 此处再主动 blur，防止焦点残留在按钮上导致空格/回车误触卡片跳转
+ */
+const toggleFavorite = (id: number, event: Event) => {
+  event.stopPropagation()
+  event.preventDefault()
+  favoritesStore.toggle(id)
+  ;(event.currentTarget as HTMLElement | null)?.blur?.()
 }
 </script>
 
@@ -78,6 +96,7 @@ const goToDetail = (id: number) => {
         @change="onCategoryChange"
       >
         <mdui-segmented-button value="">全部</mdui-segmented-button>
+        <mdui-segmented-button :value="FAV">收藏</mdui-segmented-button>
         <mdui-segmented-button v-for="cat in CATEGORIES" :key="cat" :value="cat">{{
           cat
         }}</mdui-segmented-button>
@@ -101,6 +120,21 @@ const goToDetail = (id: number) => {
         @keydown.space.prevent="goToDetail(map.id)"
       >
         <img :src="map.image" :alt="map.title" class="card-image" loading="lazy" />
+        <button
+          type="button"
+          class="fav-btn"
+          :class="{ active: favoritesStore.has(map.id) }"
+          :aria-label="favoritesStore.has(map.id) ? '取消收藏' : '收藏'"
+          :aria-pressed="favoritesStore.has(map.id)"
+          @click.stop.prevent="toggleFavorite(map.id, $event)"
+          @keydown.stop
+          @keydown.enter.stop.prevent="toggleFavorite(map.id, $event)"
+          @keydown.space.stop.prevent="toggleFavorite(map.id, $event)"
+        >
+          <mdui-icon
+            :name="favoritesStore.has(map.id) ? 'favorite' : 'favorite_border'"
+          ></mdui-icon>
+        </button>
         <div class="card-content">
           <div class="card-header">
             <h3>{{ map.title }}</h3>
@@ -116,7 +150,7 @@ const goToDetail = (id: number) => {
       </mdui-card>
 
       <div v-if="filteredMaps.length === 0" class="empty-state">
-        <p>没有找到匹配的地图</p>
+        <p>{{ selectedCategory === FAV ? '还没有收藏任何地图' : '没有找到匹配的地图' }}</p>
       </div>
     </div>
   </div>
@@ -177,6 +211,7 @@ h1 {
 }
 
 .map-card {
+  position: relative;
   overflow: hidden;
   background: rgb(var(--mdui-color-surface-container));
   transition:
@@ -195,6 +230,42 @@ h1 {
   height: 150px;
   object-fit: cover;
   display: block;
+}
+
+/* 收藏按钮：悬浮在卡片图片右上角 */
+.fav-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  transition:
+    transform 0.15s ease,
+    background-color 0.2s ease;
+}
+
+.fav-btn:hover {
+  transform: scale(1.12);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.fav-btn.active {
+  color: rgb(var(--mdui-color-primary));
+}
+
+.fav-btn mdui-icon {
+  font-size: 20px;
+  pointer-events: none;
 }
 
 .card-content {
@@ -269,16 +340,20 @@ h1 {
   .map-view {
     padding: 12px;
   }
+
   .header-icon {
     font-size: 26px;
   }
+
   h1 {
     font-size: 20px;
   }
+
   .card-grid {
     grid-template-columns: 1fr;
     gap: 12px;
   }
+
   .card-image {
     height: 120px;
   }

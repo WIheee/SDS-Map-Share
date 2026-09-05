@@ -4,57 +4,63 @@ import { useRoute, useRouter } from 'vue-router'
 import Giscus from '@giscus/vue'
 import type { MapItem } from '@/types/map'
 import { useMapsStore } from '@/stores/maps'
+import { useFavoritesStore } from '@/stores/favorites'
 import 'mdui/components/card.js'
 import 'mdui/components/button.js'
 import 'mdui/components/icon.js'
 import 'mdui/components/divider.js'
 import 'mdui/components/circular-progress.js'
+import 'mdui/components/snackbar.js'
 
 const route = useRoute()
 const router = useRouter()
 const mapsStore = useMapsStore()
+const favoritesStore = useFavoritesStore()
 
 const mapData = ref<MapItem | null>(null)
 const loading = ref(true)
 const error = ref(false)
 const downloading = ref(false)
+const showHint = ref(false)
 
-/**
- * 安全校验：仅放行站内相对路径。
- * 防御 JSON 数据被污染时的：
- *  - javascript: 等伪协议注入（base 为空串时可被直接执行造成 XSS）
- *  - //evil.com 协议相对地址导致的跨站跳转
- *  - ../ 目录穿越访问站内任意托管文件
- */
-function isSafeLocalPath(p: unknown): p is string {
-  if (typeof p !== 'string' || p.length === 0) return false
-  if (!p.startsWith('/')) return false // 必须以 / 开头，天然排除一切带 scheme 的 URL
-  if (p.startsWith('//')) return false // 排除协议相对地址
-  if (p.includes('\\') || p.includes('..')) return false // 排除反斜杠与目录穿越
-  return true
+const isFavorite = computed(() => (mapData.value ? favoritesStore.has(mapData.value.id) : false))
+
+const toggleFavorite = () => {
+  if (mapData.value) favoritesStore.toggle(mapData.value.id)
 }
 
-/** 图片地址仅在合法时使用，非法时回退为空（不渲染），正常数据完全不受影响 */
-const safeImage = computed(() => {
-  const img = mapData.value?.image
-  return isSafeLocalPath(img) ? img : ''
-})
+const safeImage = computed(() => mapData.value?.image || '')
+
+const downloadUrl = (file: string): string => {
+  const base = import.meta.env.BASE_URL.replace(/\/+$/, '')
+  return `${base}${file}`
+}
 
 const downloadMap = () => {
   if (!mapData.value || downloading.value) return
   const file = mapData.value.file
-  if (!isSafeLocalPath(file)) return // 路径非法，拒绝构造下载链接
+
   downloading.value = true
+
+  const hadFocus = document.hasFocus()
+
   const a = document.createElement('a')
-  a.href = import.meta.env.BASE_URL + file.replace(/^\//, '')
-  // 仅取最后一段作为下载文件名，避免把路径带入 download 属性
+  a.href = downloadUrl(file)
   a.download = file.split('/').pop() || 'map.7z'
+  a.rel = 'noopener'
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)
+
   setTimeout(() => {
     downloading.value = false
-  }, 1500)
+  }, 300)
+
+  setTimeout(() => {
+    if (hadFocus && document.hasFocus() && !document.hidden) {
+      showHint.value = true
+    }
+  }, 3000)
 }
 
 const goBack = () => {
@@ -79,8 +85,6 @@ const loadMap = async () => {
 
 onMounted(loadMap)
 
-// 修复数据串页：/map/1 与 /map/2 复用同一组件实例，
-// 必须监听参数变化重新加载，否则改 URL 切换地图时会残留上一张地图的数据
 watch(
   () => route.params.id,
   () => {
@@ -136,6 +140,16 @@ watch(
           ></mdui-icon>
           {{ downloading ? '下载中...' : '下载地图' }}
         </mdui-button>
+        <mdui-button
+          :variant="isFavorite ? 'filled-tonal' : 'outlined'"
+          @click="toggleFavorite"
+          class="fav-btn"
+          :aria-pressed="isFavorite"
+          :aria-label="isFavorite ? '取消收藏' : '收藏'"
+        >
+          <mdui-icon :name="isFavorite ? 'favorite' : 'favorite_border'" slot="icon"></mdui-icon>
+          {{ isFavorite ? '已收藏' : '收藏' }}
+        </mdui-button>
       </div>
 
       <mdui-card class="info-card">
@@ -158,7 +172,6 @@ watch(
 
       <!-- ====== 评论区域 ====== -->
       <div class="giscus-container" style="margin-top: 24px; width: 100%">
-        <!-- :key 使切换地图时重建评论组件，避免评论串到其它地图 -->
         <Giscus
           :key="mapData.id"
           id="comments"
@@ -177,6 +190,10 @@ watch(
         />
       </div>
     </div>
+
+    <mdui-snackbar v-model="showHint" placement="top" :timeout="4000" closeable
+      >若浏览器未开始下载，请检查网络后重试</mdui-snackbar
+    >
   </div>
 </template>
 
@@ -261,7 +278,11 @@ watch(
 }
 
 .download-section {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-bottom: 24px;
 }
 
