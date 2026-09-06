@@ -15,5 +15,22 @@ A: 试着询问ai或者把你的fun地图文件发往到邮件bywihee [at] outlo
 
 ---
 
+# 规范的地图提交格式
+1. 压缩包内包含地图文件夹
+2. 文件夹内包含,地图文件,图片,config.json文件
+config.json文件内容
+```json
+{
+  "title": "地图名称",
+  "description": "地图描述",
+  "category": ["对战", "观赏"],
+  "author": "作者名",
+  "authorUrl": "https://作者主页链接.com"
+}
+```
+category需要按照自己的地图类型自己填,authorUrl可选择删除不填
+
+---
+
 # 网址
 > https://sds-map-share.pages.dev/
