@@ -5,8 +5,8 @@ import { CATEGORIES } from '@/constants/map'
 import { useMapsStore } from '@/stores/maps'
 import { useFavoritesStore } from '@/stores/favorites'
 import 'mdui/components/text-field.js'
-import 'mdui/components/segmented-button-group.js'
-import 'mdui/components/segmented-button.js'
+import 'mdui/components/select.js'
+import 'mdui/components/menu-item.js'
 import 'mdui/components/card.js'
 import 'mdui/components/icon.js'
 import 'mdui/components/divider.js'
@@ -18,7 +18,6 @@ const router = useRouter()
 const mapsStore = useMapsStore()
 const favoritesStore = useFavoritesStore()
 
-// 「收藏」是虚拟分类，用保留值 FAV 与真实分类区分开
 const FAV = '__favorite__'
 const selectedCategory = ref<string>('')
 const searchQuery = ref('')
@@ -28,12 +27,18 @@ mapsStore.loadMaps()
 const maps = computed(() => mapsStore.maps)
 const loading = computed(() => !mapsStore.loaded)
 
+// 下拉选项：占位 + 全部 + 收藏（带图标）+ 各分类
+const categoryOptions = [
+  { value: '', label: '选择你想要的分类', disabled: true },
+  { value: '', label: '全部' },
+  { value: FAV, label: '收藏', icon: 'favorite' },
+  ...CATEGORIES.map((cat) => ({ value: cat, label: cat })),
+]
+
 const filteredMaps = computed(() => {
   const query = searchQuery.value.trim().toLowerCase()
   return maps.value.filter((map) => {
-    // 「收藏」筛选：只显示已收藏的地图
     if (selectedCategory.value === FAV && !favoritesStore.has(map.id)) return false
-    // 普通分类筛选
     if (selectedCategory.value !== FAV && selectedCategory.value) {
       if (!map.category.includes(selectedCategory.value)) return false
     }
@@ -47,23 +52,14 @@ const filteredMaps = computed(() => {
 })
 
 const onCategoryChange = (event: Event) => {
-  const detail = (event as CustomEvent).detail
-  const target = event.target as HTMLElement & { value?: string }
-  const newValue = detail?.value ?? target?.value
-  if (typeof newValue === 'string') {
-    selectedCategory.value = newValue
-  }
+  const target = event.target as HTMLSelectElement
+  selectedCategory.value = target.value
 }
 
 const goToDetail = (id: number) => {
   router.push(`/map/${id}`)
 }
 
-/**
- * 收藏/取消收藏
- * .stop + .prevent 已在模板上彻底阻断冒泡与默认行为，
- * 此处再主动 blur，防止焦点残留在按钮上导致空格/回车误触卡片跳转
- */
 const toggleFavorite = (id: number, event: Event) => {
   event.stopPropagation()
   event.preventDefault()
@@ -79,28 +75,32 @@ const toggleFavorite = (id: number, event: Event) => {
       <h1>地图资源</h1>
     </div>
 
-    <div class="search-box">
+    <div class="filter-row">
       <mdui-text-field
         v-model="searchQuery"
         placeholder="搜索地图、作者..."
         clearable
         icon="search"
         aria-label="搜索地图"
+        class="search-box"
       ></mdui-text-field>
-    </div>
 
-    <div class="categories">
-      <mdui-segmented-button-group
-        selects="single"
+      <mdui-select
         :value="selectedCategory"
         @change="onCategoryChange"
+        class="category-select"
+        aria-label="选择分类"
       >
-        <mdui-segmented-button value="">全部</mdui-segmented-button>
-        <mdui-segmented-button :value="FAV">收藏</mdui-segmented-button>
-        <mdui-segmented-button v-for="cat in CATEGORIES" :key="cat" :value="cat">{{
-          cat
-        }}</mdui-segmented-button>
-      </mdui-segmented-button-group>
+        <mdui-menu-item
+          v-for="opt in categoryOptions"
+          :key="opt.label"
+          :value="opt.value"
+          :disabled="opt.disabled"
+        >
+          <mdui-icon v-if="opt.icon" :name="opt.icon" slot="icon"></mdui-icon>
+          {{ opt.label }}
+        </mdui-menu-item>
+      </mdui-select>
     </div>
 
     <div v-if="loading" class="loading-state">
@@ -161,7 +161,6 @@ const toggleFavorite = (id: number, event: Event) => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
@@ -191,16 +190,22 @@ h1 {
   color: rgb(var(--mdui-color-on-surface));
 }
 
-.search-box {
-  width: 100%;
-  max-width: 600px;
-  margin-bottom: 16px;
-}
-
-.categories {
+.filter-row {
+  display: flex;
+  gap: 12px;
   width: 100%;
   max-width: 600px;
   margin-bottom: 20px;
+}
+
+.search-box {
+  flex: 1;
+  min-width: 0;
+}
+
+.category-select {
+  width: 200px;
+  flex-shrink: 0;
 }
 
 .card-grid {
@@ -232,7 +237,6 @@ h1 {
   display: block;
 }
 
-/* 收藏按钮：悬浮在卡片图片右上角 */
 .fav-btn {
   position: absolute;
   top: 8px;
@@ -347,6 +351,15 @@ h1 {
 
   h1 {
     font-size: 20px;
+  }
+
+  .filter-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .category-select {
+    width: 100%;
   }
 
   .card-grid {
