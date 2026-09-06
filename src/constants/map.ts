@@ -3,7 +3,7 @@
  * CATEGORIES 与 src/data/map/json 下的文件一一对应
  */
 
-export const CATEGORIES = ['对战', '观赏', '机关', '生存'] as const
+export const CATEGORIES = ['对战', '观赏', '趣味', '跑酷', '其他'] as const
 
 export type Category = (typeof CATEGORIES)[number]
 
@@ -14,6 +14,7 @@ export type Category = (typeof CATEGORIES)[number]
 export const FILE_CATEGORY: Record<string, string> = {
   battle: '对战',
   scenery: '观赏',
-  mechanism: '机关',
-  survival: '生存',
+  fun: '趣味',
+  parkour: '跑酷',
+  other: '其他',
 }

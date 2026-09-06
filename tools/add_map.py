@@ -20,14 +20,16 @@ TOOLS = BASE / "tools"
 CATEGORY_MAP = {
     "1": "对战",
     "2": "观赏",
-    "3": "机关",
-    "4": "生存"
+    "3": "趣味",
+    "4": "跑酷",
+    "5": "其他"
 }
 CATEGORY_EN = {
     "对战": "battle",
     "观赏": "scenery",
-    "机关": "mechanism",
-    "生存": "survival"
+    "趣味": "fun",
+    "跑酷": "parkour",
+    "其他": "other"
 }
 
 
@@ -143,7 +145,7 @@ def main():
     img = get_input("Image path: ", file_exists, "Image path does not exist or is invalid.")
     fun = get_input("Map file path: ", file_exists, "Map file path does not exist or is invalid.")
 
-    print("\nCategories (enter numbers, comma-separated): 1-Battle 2-Scenery 3-Mechanism 4-Survival")
+    print("\nCategories (enter numbers, comma-separated): 1-对战 2-观赏 3-趣味 4-跑酷 5-其他")
     cat_input = get_input("Category: ", categories_valid, "Please select valid categories (1-4).")
     categories = [CATEGORY_MAP[num.strip()] for num in cat_input.split(',') if num.strip()]
 

@@ -15,7 +15,7 @@ MAX_FILE_SIZE = 1024 * 1024  # 1 MB
 OUTPUT_FILE = "tree.txt"
 
 DEFAULT_SKIP_PATTERNS = [
-    "LICENSE"
+    "LICENSE",
     "README.md",
     ".git/",
     "node_modules/",
@@ -28,8 +28,7 @@ DEFAULT_SKIP_PATTERNS = [
     "package-lock.json",
     "tree.txt",
     "t",
-    "a",
-    "tools/"
+    "a"
 ]
 
 # Load additional custom skip patterns from .skip_patterns if present

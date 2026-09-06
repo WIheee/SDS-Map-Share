@@ -29,14 +29,16 @@ TOOLS = BASE / "tools"
 CATEGORY_MAP = {
     "1": "对战",
     "2": "观赏",
-    "3": "机关",
-    "4": "生存"
+    "3": "趣味",
+    "4": "跑酷",
+    "5": "其他"
 }
 CATEGORY_EN = {
     "对战": "battle",
     "观赏": "scenery",
-    "机关": "mechanism",
-    "生存": "survival"
+    "趣味": "fun",
+    "跑酷": "parkour",
+    "其他": "other"
 }
 
 # Allowed image extensions for auto-detection
@@ -57,7 +59,7 @@ def load_global_config(root: Path) -> dict:
     config_path = root / "config.json"
     defaults = {
         "defaultAuthor": "Anonymous",
-        "defaultCategory": ["生存"],
+        "defaultCategory": ["其他"],
         "autoCompress": True,
         "skipInvalid": True
     }
@@ -119,7 +121,7 @@ def validate_config(data: dict, global_config: dict) -> dict:
             return None
 
     # Validate category
-    valid_categories = ["对战", "观赏", "机关", "生存"]
+    valid_categories = ['对战', '观赏', '趣味', '跑酷', '其他']
     if isinstance(data["category"], str):
         data["category"] = [data["category"]]
     data["category"] = [c for c in data["category"] if c in valid_categories]

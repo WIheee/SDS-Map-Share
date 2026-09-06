@@ -5,7 +5,10 @@
     "description": "此起彼伏的海浪，飞舞的蝴蝶，壮观的海洋地图",
     "image": "/map/image/battle/断沧渊.webp",
     "file": "/map/fun/battle/断沧渊.7z",
-    "category": ["对战", "观赏"],
+    "category": [
+      "对战",
+      "观赏"
+    ],
     "author": "美酒FineWine"
   },
   {
@@ -14,7 +17,9 @@
     "description": "与朋友一起前往熔岩公司战斗是什么感觉呢?",
     "image": "/map/image/battle/熔岩公司.webp",
     "file": "/map/fun/battle/熔岩公司.7z",
-    "category": ["对战"],
+    "category": [
+      "对战"
+    ],
     "author": "南南南"
   },
   {
@@ -23,7 +28,10 @@
     "description": "在一所浩浩荡荡的科技城上方决斗,与朋友一起玩究竟有多舒服呢?",
     "image": "/map/image/battle/科技城.webp",
     "file": "/map/fun/battle/科技城.7z",
-    "category": ["对战", "观赏"],
+    "category": [
+      "对战",
+      "观赏"
+    ],
     "author": "W(地图工程师)"
   },
   {
@@ -32,7 +40,9 @@
     "description": "地板正在急,与朋友一起战斗速战速决",
     "image": "/map/image/battle/黄金金字塔.webp",
     "file": "/map/fun/battle/黄金金字塔.7z",
-    "category": ["对战"],
+    "category": [
+      "对战"
+    ],
     "author": "南南南"
   },
   {
@@ -41,7 +51,9 @@
     "description": "你敢在现实中前往教室打一场架吗!哈哈你肯定不敢的但是在这里你可以随心所欲的打架!",
     "image": "/map/image/battle/教室.webp",
     "file": "/map/fun/battle/教室.7z",
-    "category": ["对战"],
+    "category": [
+      "对战"
+    ],
     "author": "南南南"
   }
 ]

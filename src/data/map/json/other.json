@@ -3,9 +3,11 @@
     "id": 3,
     "title": "Level-!",
     "description": "当你来到这个黑暗恐怖的地方,你脑子里就只剩下一个字RUN!!! 笑脸:你跑不过我你信吗?",
-    "image": "/map/image/survival/Level-.webp",
-    "file": "/map/fun/survival/Level-.7z",
-    "category": ["生存"],
+    "image": "/map/image/other/Level-.webp",
+    "file": "/map/fun/other/Level-.7z",
+    "category": [
+      "其他"
+    ],
     "author": "W(地图工程师)"
   }
 ]
