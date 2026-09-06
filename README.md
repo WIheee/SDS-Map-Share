@@ -27,8 +27,9 @@ config.json文件内容
   "author": "作者名",
   "authorUrl": "https://作者主页链接.com"
 }
-```
-category需要按照自己的地图类型自己填,authorUrl可选择删除不填
+```  
+category需要按照自己的地图类型自己填,authorUrl可选择删除不填  
+源代码中有这个文件`Map_Upload_Sample_Archive.7z`这是一个示例
 
 ---
 
