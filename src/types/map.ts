@@ -6,4 +6,5 @@ export interface MapItem {
   file: string
   category: string[]
   author: string
+  authorUrl?: string // 新增：作者社交媒体链接，可选
 }

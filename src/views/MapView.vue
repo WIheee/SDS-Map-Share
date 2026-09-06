@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { CATEGORIES } from '@/constants/map'
 import { useMapsStore } from '@/stores/maps'
 import { useFavoritesStore } from '@/stores/favorites'
@@ -15,6 +15,7 @@ import 'mdui/components/circular-progress.js'
 defineOptions({ name: 'MapView' })
 
 const router = useRouter()
+const route = useRoute()
 const mapsStore = useMapsStore()
 const favoritesStore = useFavoritesStore()
 
@@ -27,7 +28,6 @@ mapsStore.loadMaps()
 const maps = computed(() => mapsStore.maps)
 const loading = computed(() => !mapsStore.loaded)
 
-// 下拉选项：占位 + 全部 + 收藏（带图标）+ 各分类
 const categoryOptions = [
   { value: '', label: '选择你想要的分类', disabled: true },
   { value: '', label: '全部' },
@@ -66,6 +66,31 @@ const toggleFavorite = (id: number, event: Event) => {
   favoritesStore.toggle(id)
   ;(event.currentTarget as HTMLElement | null)?.blur?.()
 }
+
+/**
+ * 从路由参数中读取 author，自动填入搜索框
+ */
+const applyAuthorFilter = () => {
+  const authorParam = route.query.author
+  if (authorParam && typeof authorParam === 'string' && authorParam.trim()) {
+    searchQuery.value = authorParam.trim()
+    router.replace({ path: '/map' })
+  }
+}
+
+onMounted(() => {
+  applyAuthorFilter()
+})
+
+watch(
+  () => route.query.author,
+  (newVal) => {
+    if (newVal && typeof newVal === 'string' && newVal.trim()) {
+      searchQuery.value = newVal.trim()
+      router.replace({ path: '/map' })
+    }
+  },
+)
 </script>
 
 <template>

@@ -71,6 +71,25 @@ const goBack = () => {
   }
 }
 
+/**
+ * 点击作者：
+ * - 有 authorUrl → 新窗口打开社交媒体链接
+ * - 没有 authorUrl → 跳转到地图列表并搜索该作者
+ */
+const goToAuthor = () => {
+  if (!mapData.value) return
+
+  const url = mapData.value.authorUrl
+  if (url) {
+    window.open(url, '_blank', 'noopener,noreferrer')
+  } else {
+    router.push({
+      path: '/map',
+      query: { author: mapData.value.author },
+    })
+  }
+}
+
 const loadMap = async () => {
   loading.value = true
   await mapsStore.loadMaps()
@@ -163,14 +182,29 @@ watch(
         <div class="container-description">{{ mapData.description }}</div>
       </div>
 
-      <!-- 作者列表项 -->
-      <div class="author-item">
+      <!-- 作者列表项 - 点击跳转 -->
+      <div
+        class="author-item"
+        @click="goToAuthor"
+        role="button"
+        tabindex="0"
+        :aria-label="
+          mapData.authorUrl ? `访问 ${mapData.author} 的主页` : `查看 ${mapData.author} 的所有地图`
+        "
+      >
         <div class="author-avatar">
           <mdui-icon name="person" class="author-icon"></mdui-icon>
         </div>
         <div class="author-info">
           <div class="author-label">作者</div>
-          <div class="author-name">{{ mapData.author }}</div>
+          <div class="author-name">
+            {{ mapData.author }}
+            <mdui-icon
+              v-if="mapData.authorUrl"
+              name="open_in_new"
+              class="external-icon"
+            ></mdui-icon>
+          </div>
         </div>
         <mdui-icon name="chevron_right" class="author-arrow"></mdui-icon>
       </div>
@@ -204,7 +238,6 @@ watch(
 </template>
 
 <style scoped>
-/* ===== 页面容器 ===== */
 .detail-page {
   display: flex;
   flex-direction: column;
@@ -220,7 +253,6 @@ watch(
   color: rgb(var(--mdui-color-on-surface));
 }
 
-/* ===== 顶部：返回按钮 + 图片 ===== */
 .top-section {
   position: relative;
   width: 100%;
@@ -282,7 +314,6 @@ watch(
   opacity: 0.5;
 }
 
-/* ===== 加载 / 错误状态 ===== */
 .loading-state,
 .error-state {
   display: flex;
@@ -298,7 +329,6 @@ watch(
   gap: 16px;
 }
 
-/* ===== 按钮组（连接按钮组） ===== */
 .button-group {
   display: flex;
   gap: 3px;
@@ -354,7 +384,6 @@ watch(
   border-radius: 8px 28px 28px 8px !important;
 }
 
-/* ===== 容器框 ===== */
 .info-container {
   width: 100%;
   max-width: 380px;
@@ -391,7 +420,6 @@ watch(
   word-break: break-word;
 }
 
-/* ===== 作者列表项 ===== */
 .author-item {
   display: flex;
   align-items: center;
@@ -403,8 +431,20 @@ watch(
   border-radius: 28px;
   margin-bottom: 24px;
   box-sizing: border-box;
-  transition: background 0.2s ease;
-  cursor: default;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.author-item:hover {
+  background: rgb(var(--mdui-color-surface-container));
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.author-item:active {
+  transform: scale(0.98);
 }
 
 .author-avatar {
@@ -441,9 +481,17 @@ watch(
 .author-name {
   font-size: 16px;
   font-weight: 500;
-  color: rgb(var(--mdui-color-on-surface));
+  color: rgb(var(--mdui-color-primary));
   line-height: 1.4;
   word-break: break-word;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.external-icon {
+  font-size: 16px;
+  color: rgb(var(--mdui-color-primary));
 }
 
 .author-arrow {
@@ -453,14 +501,12 @@ watch(
   margin-left: 8px;
 }
 
-/* ===== 评论区域 ===== */
 .giscus-container {
   width: 100%;
   max-width: 380px;
   margin-top: 4px;
 }
 
-/* ===== 暗色模式适配 ===== */
 @media (prefers-color-scheme: dark) {
   .back-btn {
     background: rgba(var(--mdui-color-surface-container), 0.85);
@@ -473,9 +519,12 @@ watch(
   .info-container {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
   }
+
+  .author-item:hover {
+    background: rgb(var(--mdui-color-surface-container-high));
+  }
 }
 
-/* ===== 小屏适配 ===== */
 @media (max-width: 420px) {
   .detail-page {
     padding: 12px 12px 32px 12px;
