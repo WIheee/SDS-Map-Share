@@ -56,7 +56,7 @@
   "announcement": {
     "title": "公告与关于",
     "announcement": "公告",
-    "announcementContent": "欢迎使用 SDS 地图分享平台！当前版本为 v1.0，更多功能即将上线。",
+    "announcementContent": "目前仍然处于开发阶段所以会存在不稳定的问题,反馈去项目仓库提交issue \n SDS地图社区:991240270",
     "license": "开源协议",
     "licenseContent": "该网站是开源的，并且遵循 GPL-3.0 开源协议。",
     "repoAddress": "开源地址：",

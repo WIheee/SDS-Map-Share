@@ -84,7 +84,7 @@ interface TeamMember {
 const team: TeamMember[] = [
   {
     name: 'WIhee',
-    role: '首席开发者/维护者',
+    role: '首席开发者/维护者/地图管理员',
     avatar: '/team/WIhee.webp',
     github: 'https://github.com/WIheee',
   },
@@ -152,6 +152,7 @@ h1 {
   font-size: 16px;
   line-height: 1.6;
   color: rgb(var(--mdui-color-on-surface));
+  white-space: pre-line;
 }
 
 .repo-link {

@@ -5,10 +5,7 @@
     "description": "此起彼伏的海浪，飞舞的蝴蝶，壮观的海洋地图",
     "image": "/map/image/battle/断沧渊.webp",
     "file": "/map/fun/battle/断沧渊.7z",
-    "category": [
-      "对战",
-      "观赏"
-    ],
+    "category": ["对战", "观赏"],
     "author": "美酒FineWine",
     "authorUrl": "https://youtube.com/@finewine-meijiunb?si=lRsWmXjFfWbvEs-o"
   },
@@ -18,9 +15,7 @@
     "description": "与朋友一起前往熔岩公司战斗是什么感觉呢?",
     "image": "/map/image/battle/熔岩公司.webp",
     "file": "/map/fun/battle/熔岩公司.7z",
-    "category": [
-      "对战"
-    ],
+    "category": ["对战"],
     "author": "南南南"
   },
   {
@@ -29,11 +24,8 @@
     "description": "在一所浩浩荡荡的科技城上方决斗,与朋友一起玩究竟有多舒服呢?",
     "image": "/map/image/battle/科技城.webp",
     "file": "/map/fun/battle/科技城.7z",
-    "category": [
-      "对战",
-      "观赏"
-    ],
-    "author": "W(地图工程师)"
+    "category": ["对战", "观赏"],
+    "author": "WLurker"
   },
   {
     "id": "186fd4b5a97e4559a6361bb5e83b1a60",
@@ -41,9 +33,7 @@
     "description": "地板正在急,与朋友一起战斗速战速决",
     "image": "/map/image/battle/黄金金字塔.webp",
     "file": "/map/fun/battle/黄金金字塔.7z",
-    "category": [
-      "对战"
-    ],
+    "category": ["对战"],
     "author": "南南南"
   },
   {
@@ -52,9 +42,97 @@
     "description": "你敢在现实中前往教室打一场架吗!哈哈你肯定不敢的但是在这里你可以随心所欲的打架!",
     "image": "/map/image/battle/教室.webp",
     "file": "/map/fun/battle/教室.7z",
-    "category": [
-      "对战"
-    ],
+    "category": ["对战"],
     "author": "南南南"
+  },
+  {
+    "id": "90a557fe5bb644e3b695a5bd41489114",
+    "title": "仙境",
+    "description": "四周白茫茫的,仿佛只有自己,宛如水墨画一般的地图",
+    "image": "/map/image/battle/仙境.webp",
+    "file": "/map/fun/battle/仙境.7z",
+    "category": ["对战", "观赏"],
+    "author": "WLurker"
+  },
+  {
+    "id": "69ed333e52ed424e99fea0143516f6e3",
+    "title": "矿区",
+    "description": "这天你与你的朋友来到了一个充满宝石的地方,准备开始一决高下",
+    "image": "/map/image/battle/矿区.webp",
+    "file": "/map/fun/battle/矿区.7z",
+    "category": ["对战", "观赏"],
+    "author": "WLurker"
+  },
+  {
+    "id": "7c8aa1cf8de349edb0b33f567d978f17",
+    "title": "Minecraft",
+    "description": "是不是很熟悉?那想必不用我说你也明白吧?",
+    "image": "/map/image/battle/Minecraft.webp",
+    "file": "/map/fun/battle/Minecraft.7z",
+    "category": ["对战", "观赏"],
+    "author": "未知"
+  },
+  {
+    "id": "39149d8a169649c890ffbfd04e3a6253",
+    "title": "终焉之地",
+    "description": "这里是地狱吗?...",
+    "image": "/map/image/battle/终焉之地.webp",
+    "file": "/map/fun/battle/终焉之地.7z",
+    "category": ["对战", "观赏"],
+    "author": "WLurker"
+  },
+  {
+    "id": "95c27828826e4b93a0877c2eb776ea16",
+    "title": "血眼祭坛",
+    "description": "队友队友镭射关一下影响到我操作了",
+    "image": "/map/image/battle/血眼祭坛.webp",
+    "file": "/map/fun/battle/血眼祭坛.7z",
+    "category": ["对战", "观赏"],
+    "author": "WLurker"
+  },
+  {
+    "id": "6e7aa25534204fe88f43e65ff4ea5324",
+    "title": "咒硕",
+    "description": "scp-001破晓之时...",
+    "image": "/map/image/battle/咒硕.webp",
+    "file": "/map/fun/battle/咒硕.7z",
+    "category": ["对战", "观赏"],
+    "author": "WLurker"
+  },
+  {
+    "id": "c6a6c67b16f9441a8f0220e575ed46bf",
+    "title": "咒硕",
+    "description": "怎么?见到我从地狱回来很意外是吗?",
+    "image": "/map/image/battle/咒硕.webp",
+    "file": "/map/fun/battle/咒硕.7z",
+    "category": ["对战", "观赏"],
+    "author": "WLurker"
+  },
+  {
+    "id": "27f5a543d2614cc29a0bb97dd6ba4859",
+    "title": "审判日",
+    "description": "来到了审判的日子,但是枷锁困不住真正想逃的人",
+    "image": "/map/image/battle/审判日.webp",
+    "file": "/map/fun/battle/审判日.7z",
+    "category": ["对战", "观赏"],
+    "author": "WLurker"
+  },
+  {
+    "id": "c7c58b3e44844808b4882ee10f8f843b",
+    "title": "甲板海战",
+    "description": "在大海上作战,你和你的朋友互相为敌",
+    "image": "/map/image/battle/甲板海战.webp",
+    "file": "/map/fun/battle/甲板海战.7z",
+    "category": ["对战", "观赏"],
+    "author": "WLurker"
+  },
+  {
+    "id": "f5ee92824383420a954ea3cb9c6bfaa0",
+    "title": "研究所",
+    "description": "一座生化实验室爆炸了,你和你的朋友前来此处调查...",
+    "image": "/map/image/battle/研究所.webp",
+    "file": "/map/fun/battle/研究所.7z",
+    "category": ["对战"],
+    "author": "WLurker"
   }
 ]

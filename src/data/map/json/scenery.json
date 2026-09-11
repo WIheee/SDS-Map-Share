@@ -1,1 +1,85 @@
-[]
+[
+  {
+    "id": "83df70b9f27a45499c8809e77703314e",
+    "title": "克苏鲁之眼",
+    "description": "被深渊凝视不好受对吧?那如果还要战斗呢",
+    "image": "/map/image/scenery/克苏鲁之眼.webp",
+    "file": "/map/fun/scenery/克苏鲁之眼.7z",
+    "category": ["观赏", "对战"],
+    "author": "WLurker"
+  },
+  {
+    "id": "16188479e0f64f7487fa69ade34dcb9b",
+    "title": "温暖的家",
+    "description": "战斗了一天也累了吧?这里没有战斗只有温暖的家,2025新年快乐!",
+    "image": "/map/image/scenery/温暖的家.webp",
+    "file": "/map/fun/scenery/温暖的家.7z",
+    "category": ["观赏"],
+    "author": "WLurker"
+  },
+  {
+    "id": "f449cd441cab430eb2493841cb5173a1",
+    "title": "FloatingTori",
+    "description": "在悠远的天空 苍穹的尽头…享受在天空战斗的乐趣",
+    "image": "/map/image/scenery/FloatingTori.webp",
+    "file": "/map/fun/scenery/FloatingTori.7z",
+    "category": ["观赏", "对战"],
+    "author": "未知"
+  },
+  {
+    "id": "17ea7b17cd814b7eadf1882866120198",
+    "title": "山村老屋",
+    "description": "一座在荒山野岭的小屋子,里面可能就坐着一位恐怖的老奶奶...",
+    "image": "/map/image/scenery/山村老屋.webp",
+    "file": "/map/fun/scenery/山村老屋.7z",
+    "category": ["观赏", "对战"],
+    "author": "WLurker"
+  },
+  {
+    "id": "a3bf3a2381534cb781c431e1a9c61891",
+    "title": "星空之旅",
+    "description": "人类到如今已经繁衍了250000年,只有最近的400年是有意义的,我们不妨大胆想象一下为什么不在星空对战呢?",
+    "image": "/map/image/scenery/星空之旅.webp",
+    "file": "/map/fun/scenery/星空之旅.7z",
+    "category": ["观赏", "对战"],
+    "author": "一只小小的乌鸦"
+  },
+  {
+    "id": "e5d72192d3b0445ba53166f38bb1a7c7",
+    "title": "挣脱",
+    "description": "残败的封印，飘荡的铁链，壮观的地狱地图",
+    "image": "/map/image/scenery/挣脱.webp",
+    "file": "/map/fun/scenery/挣脱.7z",
+    "category": ["观赏", "对战"],
+    "author": "美酒FineWine",
+    "authorUrl": "https://youtube.com/@finewine-meijiunb?si=lRsWmXjFfWbvEs-o"
+  },
+  {
+    "id": "f34d866ccb664b9697598767421c5ffa",
+    "title": "遗忘之剑",
+    "description": "不知道是哪位勇者打完魔王之后忘记拿的",
+    "image": "/map/image/scenery/遗忘之剑.webp",
+    "file": "/map/fun/scenery/遗忘之剑.7z",
+    "category": ["观赏"],
+    "author": "Sooy"
+  },
+  {
+    "id": "d381b784d1c145bf8daff4359f01628e",
+    "title": "枷锁",
+    "description": "森严的戒备，祥和的边境，最后的宁静",
+    "image": "/map/image/scenery/枷锁.webp",
+    "file": "/map/fun/scenery/枷锁.7z",
+    "category": ["观赏", "对战"],
+    "author": "美酒FineWine",
+    "authorUrl": "https://youtube.com/@finewine-meijiunb?si=lRsWmXjFfWbvEs-o"
+  },
+  {
+    "id": "ccbf8d768f344eb98d1be3bb4cb34073",
+    "title": "诡树",
+    "description": "我跟你说,我小时候天天来这棵树玩你看...不对快跑!",
+    "image": "/map/image/scenery/诡树.webp",
+    "file": "/map/fun/scenery/诡树.7z",
+    "category": ["观赏"],
+    "author": "WLurker"
+  }
+]

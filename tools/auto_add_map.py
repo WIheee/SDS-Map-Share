@@ -137,7 +137,8 @@ def run_compress(script: str) -> bool:
 
 
 def process_map(folder: Path, config: dict, global_config: dict,
-                map_id: int, img_src: Path, fun_src: Path) -> bool:
+                map_id: str, img_src: Path, fun_src: Path) -> bool:
+    """复制文件 + 写 JSON，不再负责压缩（压缩已提到 main 循环外）"""
     title = config["title"]
     description = config["description"]
     categories = config["category"]
@@ -148,6 +149,7 @@ def process_map(folder: Path, config: dict, global_config: dict,
     cat_en = CATEGORY_EN[main_cat]
     safe_title = sanitize_filename(title)
 
+    # ---- 复制封面 ----
     img_ext = img_src.suffix.lower()
     img_dst_dir = PUBLIC_MAP / "image" / cat_en
     img_dst_dir.mkdir(parents=True, exist_ok=True)
@@ -155,20 +157,17 @@ def process_map(folder: Path, config: dict, global_config: dict,
     shutil.copy2(img_src, img_dst)
     print(f"  Cover image: {img_src.name} -> {safe_title}{img_ext}")
 
+    # ---- 复制 .fun ----
     fun_dst_dir = PUBLIC_MAP / "fun" / cat_en
     fun_dst_dir.mkdir(parents=True, exist_ok=True)
     fun_dst = fun_dst_dir / (safe_title + ".fun")
     shutil.copy2(fun_src, fun_dst)
     print(f"  Map file: {fun_src.name} -> {safe_title}.fun")
 
-    if global_config.get("autoCompress", True):
-        run_compress("compress_images.py")
-        run_compress("compress_fun.py")
-
-    img_webp = img_dst_dir / (safe_title + ".webp")
-    fun_7z = fun_dst_dir / (safe_title + ".7z")
-    image_url = f"/map/image/{cat_en}/{img_webp.name if img_webp.exists() else img_dst.name}"
-    file_url = f"/map/fun/{cat_en}/{fun_7z.name if fun_7z.exists() else fun_dst.name}"
+    # ---- 生成 URL（此时压缩还没跑，先按源文件名写；main 循环结束会统一压缩）----
+    # 压缩后 .webp / .7z 会替换源文件，URL 用 basename 一致即可
+    image_url = f"/map/image/{cat_en}/{safe_title}.webp"
+    file_url = f"/map/fun/{cat_en}/{safe_title}.7z"
 
     map_data = {
         "id": map_id,
@@ -235,9 +234,11 @@ def main():
     next_id = new_map_id()
     success_count = 0
     failed_count = 0
+    added_any = False  # 记录是否真的添加了地图，只有加了才需要压缩
 
+    # ============ 第 1 阶段：复制文件 + 写 JSON ============
     for folder in folders:
-        print(f"\n[{next_id}] Processing: {folder.name}")
+        print(f"\nProcessing: {folder.name}")
 
         raw_config = load_map_config(folder)
         if raw_config is None:
@@ -279,9 +280,18 @@ def main():
 
         if process_map(folder, config, global_config, next_id, img_src, fun_src):
             success_count += 1
+            added_any = True
             next_id = new_map_id()
         else:
             failed_count += 1
+
+    # ============ 第 2 阶段：所有地图都复制完，统一压缩一次 ============
+    if added_any and global_config.get("autoCompress", True):
+        print("\n" + "-" * 60)
+        print("Running compression (once for all newly added maps)...")
+        print("-" * 60)
+        run_compress("compress_images.py")
+        run_compress("compress_fun.py")
 
     print("\n" + "=" * 60)
     print("Upload complete!")
