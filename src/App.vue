@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import 'mdui/components/navigation-bar.js'
@@ -7,7 +7,7 @@ import 'mdui/components/navigation-bar-item.js'
 
 const route = useRoute()
 const router = useRouter()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 // 详情页 /map/:id 时稳定映射回 'map'，避免底部导航栏指示条抖动
 const activeTab = computed(() => {
@@ -16,28 +16,42 @@ const activeTab = computed(() => {
   return ['activity', 'announcement', 'settings'].includes(path) ? path : 'map'
 })
 
-const onTabChange = (event: Event) => {
-  const detail = (event as CustomEvent).detail
-  const target = event.target as HTMLElement & { value?: string }
-  const newTab = detail?.value ?? target?.value
-  if (!newTab || typeof newTab !== 'string') return
-  // 点击当前已激活的 tab 时直接忽略，避免重复导航导致指示条动画乱跳
-  if (newTab === activeTab.value) return
-  router.push(`/${newTab}`)
-}
+/**
+ * 兼容多种事件结构：
+ * - MDUI 2.x: event.detail.value
+ * - 部分版本可能把 value 放在 event.target.value
+ * - 极端情况 detail 本身就是字符串
+ */
+const extractValue = (event: Event): string | undefined => {
+  const target = event.target as (HTMLElement & { value?: unknown }) | null
+  const custom = event as CustomEvent
+  const detail = custom.detail
 
-onMounted(() => {
-  // 确保 html lang 属性与当前语言一致
-  document.querySelector('html')?.setAttribute('lang', i18nLocale())
-})
+  const candidates: unknown[] = [
+    detail && typeof detail === 'object' ? (detail as { value?: unknown }).value : undefined,
+    typeof detail === 'string' ? detail : undefined,
+    target?.value,
+  ]
 
-function i18nLocale(): string {
-  try {
-    return localStorage.getItem('locale') || 'zh-CN'
-  } catch {
-    return 'zh-CN'
+  for (const c of candidates) {
+    if (typeof c === 'string' && c.length > 0) return c
   }
+  return undefined
 }
+
+const onTabChange = (event: Event) => {
+  const value = extractValue(event)
+  if (!value || value === activeTab.value) return
+  router.push(`/${value}`)
+}
+
+// 确保 html lang 属性与当前语言一致
+const syncHtmlLang = () => {
+  document.querySelector('html')?.setAttribute('lang', locale.value)
+}
+
+onMounted(syncHtmlLang)
+watch(locale, syncHtmlLang)
 </script>
 
 <template>
@@ -45,7 +59,7 @@ function i18nLocale(): string {
     <div class="content">
       <router-view v-slot="{ Component }">
         <transition name="fade-slide" mode="out-in">
-          <keep-alive include="MapView">
+          <keep-alive :include="['MapView']" :max="5">
             <component :is="Component" />
           </keep-alive>
         </transition>
@@ -55,7 +69,11 @@ function i18nLocale(): string {
     <mdui-navigation-bar placement="bottom" :value="activeTab" @change="onTabChange">
       <mdui-navigation-bar-item value="map" icon="map" :label="t('nav.map')" />
       <mdui-navigation-bar-item value="activity" icon="event" :label="t('nav.activity')" />
-      <mdui-navigation-bar-item value="announcement" icon="announcement" :label="t('nav.announcement')" />
+      <mdui-navigation-bar-item
+        value="announcement"
+        icon="announcement"
+        :label="t('nav.announcement')"
+      />
       <mdui-navigation-bar-item value="settings" icon="settings" :label="t('nav.settings')" />
     </mdui-navigation-bar>
   </div>

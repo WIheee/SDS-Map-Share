@@ -18,6 +18,7 @@ export const colorPresets: Record<ColorPreset, string> = {
 export const STORAGE_KEYS = {
   theme: 'theme',
   colorScheme: 'colorScheme',
+  customColor: 'customColor',
 } as const
 
 /** 安全读取 localStorage（隐私模式 / 存储被禁用时返回 null，不抛异常） */
@@ -35,5 +36,14 @@ export function safeSetItem(key: string, value: string): void {
     localStorage.setItem(key, value)
   } catch {
     // 配额满 / 隐私模式 / 存储被禁用时静默失败
+  }
+}
+
+/** 安全删除 localStorage 项（存储不可用时静默失败） */
+export function safeRemoveItem(key: string): void {
+  try {
+    localStorage.removeItem(key)
+  } catch {
+    // 静默失败
   }
 }

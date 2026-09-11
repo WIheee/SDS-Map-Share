@@ -32,11 +32,26 @@
     "dark": "ダーク",
     "auto": "自動",
     "themeColor": "テーマカラー",
-    "language": "言語"
+    "language": "言語",
+    "customColor": "カスタムカラー",
+    "hexHelper": "#39C5BB のような16進数カラーを入力",
+    "invalidHex": "無効な色です。#RGB または #RRGGBB を入力してください"
   },
   "activity": {
     "title": "イベント",
-    "noActivities": "イベントはありません"
+    "noActivities": "イベントはありません",
+    "test1": {
+      "title": "テストイベント 1",
+      "description": "これはカードレイアウト用のテストイベントの説明です。"
+    },
+    "test2": {
+      "title": "テストイベント 2",
+      "description": "2番目のテストイベント、プレースホルダーテキストです。"
+    },
+    "test3": {
+      "title": "テストイベント 3",
+      "description": "3番目のテストイベント、実際のデータに置き換えてください。"
+    }
   },
   "announcement": {
     "title": "お知らせと概要",
@@ -46,5 +61,9 @@
     "licenseContent": "このウェブサイトは GPL-3.0 ライセンスの下でオープンソースです。",
     "repoAddress": "リポジトリ：",
     "team": "チーム"
+  },
+  "common": {
+    "cancel": "キャンセル",
+    "confirm": "OK"
   }
 }

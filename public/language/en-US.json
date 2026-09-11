@@ -32,11 +32,26 @@
     "dark": "Dark",
     "auto": "Auto",
     "themeColor": "Theme Color",
-    "language": "Language"
+    "language": "Language",
+    "customColor": "Custom Color",
+    "hexHelper": "Enter a hex color value, e.g. #39C5BB",
+    "invalidHex": "Invalid color. Please enter #RGB or #RRGGBB"
   },
   "activity": {
     "title": "Events",
-    "noActivities": "No events yet"
+    "noActivities": "No events yet",
+    "test1": {
+      "title": "Test Event 1",
+      "description": "This is a test event description for card layout."
+    },
+    "test2": {
+      "title": "Test Event 2",
+      "description": "Second test event, placeholder text."
+    },
+    "test3": {
+      "title": "Test Event 3",
+      "description": "Third test event, replace with real data."
+    }
   },
   "announcement": {
     "title": "Announcements & About",
@@ -46,5 +61,9 @@
     "licenseContent": "This website is open source under the GPL-3.0 license.",
     "repoAddress": "Repository:",
     "team": "Our Team"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "confirm": "OK"
   }
 }

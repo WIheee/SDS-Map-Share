@@ -32,11 +32,26 @@
     "dark": "深色",
     "auto": "自動",
     "themeColor": "主題色",
-    "language": "語言"
+    "language": "語言",
+    "customColor": "自訂顏色",
+    "hexHelper": "輸入十六進位顏色值，如 #39C5BB",
+    "invalidHex": "無效的顏色值，請輸入 #RGB 或 #RRGGBB"
   },
   "activity": {
     "title": "活動",
-    "noActivities": "暫無活動"
+    "noActivities": "暫無活動",
+    "test1": {
+      "title": "測試活動 1",
+      "description": "這是一個測試活動的描述，用於展示卡片樣式。"
+    },
+    "test2": {
+      "title": "測試活動 2",
+      "description": "第二個測試活動，內容同樣為佔位文字。"
+    },
+    "test3": {
+      "title": "測試活動 3",
+      "description": "第三個測試活動，可替換為真實資料。"
+    }
   },
   "announcement": {
     "title": "公告與關於",
@@ -46,5 +61,9 @@
     "licenseContent": "該網站是開源的，並且遵循 GPL-3.0 開源協議。",
     "repoAddress": "開源地址：",
     "team": "我們的團隊"
+  },
+  "common": {
+    "cancel": "取消",
+    "confirm": "確定"
   }
 }

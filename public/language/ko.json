@@ -32,11 +32,26 @@
     "dark": "다크",
     "auto": "자동",
     "themeColor": "테마 색상",
-    "language": "언어"
+    "language": "언어",
+    "customColor": "사용자 지정 색상",
+    "hexHelper": "#39C5BB와 같은 16진수 색상을 입력하세요",
+    "invalidHex": "잘못된 색상입니다. #RGB 또는 #RRGGBB를 입력하세요"
   },
   "activity": {
     "title": "이벤트",
-    "noActivities": "이벤트가 없습니다"
+    "noActivities": "이벤트가 없습니다",
+    "test1": {
+      "title": "테스트 이벤트 1",
+      "description": "카드 레이아웃용 테스트 이벤트 설명입니다."
+    },
+    "test2": {
+      "title": "테스트 이벤트 2",
+      "description": "두 번째 테스트 이벤트, 자리 표시자 텍스트."
+    },
+    "test3": {
+      "title": "테스트 이벤트 3",
+      "description": "세 번째 테스트 이벤트, 실제 데이터로 교체하세요."
+    }
   },
   "announcement": {
     "title": "공지 및 정보",
@@ -46,5 +61,9 @@
     "licenseContent": "이 웹사이트는 GPL-3.0 라이선스 하에 오픈소스입니다.",
     "repoAddress": "저장소:",
     "team": "팀"
+  },
+  "common": {
+    "cancel": "취소",
+    "confirm": "확인"
   }
 }
