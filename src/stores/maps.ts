@@ -61,6 +61,7 @@ export const useMapsStore = defineStore('maps', () => {
             file,
             category,
             author: typeof item.author === 'string' ? item.author : '',
+            authorUrl: typeof item.authorUrl === 'string' ? item.authorUrl : '',
           }
 
           all.push(normalized)
