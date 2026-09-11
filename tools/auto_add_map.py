@@ -17,7 +17,6 @@ import sys
 from pathlib import Path
 from typing import Optional, Tuple
 
-# ==================== Configuration ====================
 SCAN_ROOT = Path("/storage/emulated/0/sds")
 
 BASE = Path(__file__).parent.parent
@@ -25,7 +24,6 @@ PUBLIC_MAP = BASE / "public" / "map"
 JSON_DIR = BASE / "src" / "data" / "map" / "json"
 TOOLS = BASE / "tools"
 
-# Category mapping - DO NOT MODIFY
 CATEGORY_MAP = {
     "1": "对战",
     "2": "观赏",
@@ -41,21 +39,20 @@ CATEGORY_EN = {
     "其他": "other"
 }
 
-# Allowed image extensions for auto-detection
 IMAGE_EXTENSIONS = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'}
-# ======================================================
 
 
 def sanitize_filename(name: str) -> str:
-    """Clean filename: keep Chinese, letters, digits, underscore, dot, hyphen."""
     name = name.strip()
     name = re.sub(r'\s+', '_', name)
-    name = re.sub(r'[^\w\u4e00-\u9fff\-_.]', '', name)
+    name = name.replace('..', '_').replace('/', '_').replace('\\', '_')
+    name = re.sub(r'[^\w\-_.]', '', name)
+    if len(name.encode('utf-8')) > 200:
+        name = name[:60]
     return name
 
 
 def load_global_config(root: Path) -> dict:
-    """Load global configuration (optional)."""
     config_path = root / "config.json"
     defaults = {
         "defaultAuthor": "Anonymous",
@@ -74,7 +71,6 @@ def load_global_config(root: Path) -> dict:
 
 
 def load_map_config(folder: Path) -> Optional[dict]:
-    """Load config.json for a single map folder."""
     config_path = folder / "config.json"
     if not config_path.exists():
         return None
@@ -87,21 +83,15 @@ def load_map_config(folder: Path) -> Optional[dict]:
 
 
 def detect_assets(folder: Path) -> Tuple[Optional[Path], Optional[Path]]:
-    """
-    Auto-detect cover image and map file inside the folder.
-    Returns (image_path, fun_path) where either can be None.
-    """
     image_path = None
     fun_path = None
 
-    # Look for first image file
     for ext in IMAGE_EXTENSIONS:
         matches = list(folder.glob(f"*{ext}"))
         if matches:
             image_path = matches[0]
             break
 
-    # Look for first .fun file
     fun_matches = list(folder.glob("*.fun"))
     if fun_matches:
         fun_path = fun_matches[0]
@@ -110,17 +100,12 @@ def detect_assets(folder: Path) -> Tuple[Optional[Path], Optional[Path]]:
 
 
 def validate_config(data: dict, global_config: dict) -> dict:
-    """
-    Validate and complete map configuration.
-    No longer checks for file existence; files are auto-detected later.
-    """
     required = ["title", "description", "category", "author"]
     for field in required:
         if field not in data or not data[field]:
             print(f"  [ERROR] Missing required field: {field}")
             return None
 
-    # Validate category
     valid_categories = ['对战', '观赏', '趣味', '跑酷', '其他']
     if isinstance(data["category"], str):
         data["category"] = [data["category"]]
@@ -133,7 +118,6 @@ def validate_config(data: dict, global_config: dict) -> dict:
 
 
 def get_next_id() -> int:
-    """Get the next available ID."""
     max_id = 0
     for f in JSON_DIR.glob("*.json"):
         try:
@@ -149,7 +133,6 @@ def get_next_id() -> int:
 
 
 def run_compress(script: str) -> bool:
-    """Run a compression script."""
     sp = TOOLS / script
     if not sp.exists():
         print(f"  [WARN] Compression script not found: {sp}")
@@ -164,13 +147,6 @@ def run_compress(script: str) -> bool:
 
 def process_map(folder: Path, config: dict, global_config: dict,
                 map_id: int, img_src: Path, fun_src: Path) -> bool:
-    """
-    Process a single map:
-    1. Use title, description, categories, author from config
-    2. Rename provided image and .fun files to title‑based names
-    3. Copy to project directories
-    4. Update JSON
-    """
     title = config["title"]
     description = config["description"]
     categories = config["category"]
@@ -181,7 +157,6 @@ def process_map(folder: Path, config: dict, global_config: dict,
     cat_en = CATEGORY_EN[main_cat]
     safe_title = sanitize_filename(title)
 
-    # ---- Copy cover image ----
     img_ext = img_src.suffix.lower()
     img_dst_dir = PUBLIC_MAP / "image" / cat_en
     img_dst_dir.mkdir(parents=True, exist_ok=True)
@@ -189,25 +164,21 @@ def process_map(folder: Path, config: dict, global_config: dict,
     shutil.copy2(img_src, img_dst)
     print(f"  Cover image: {img_src.name} -> {safe_title}{img_ext}")
 
-    # ---- Copy map file ----
     fun_dst_dir = PUBLIC_MAP / "fun" / cat_en
     fun_dst_dir.mkdir(parents=True, exist_ok=True)
     fun_dst = fun_dst_dir / (safe_title + ".fun")
     shutil.copy2(fun_src, fun_dst)
     print(f"  Map file: {fun_src.name} -> {safe_title}.fun")
 
-    # ---- Compress ----
     if global_config.get("autoCompress", True):
         run_compress("compress_images.py")
         run_compress("compress_fun.py")
 
-    # ---- Generate URLs (prefer compressed files if present) ----
     img_webp = img_dst_dir / (safe_title + ".webp")
     fun_7z = fun_dst_dir / (safe_title + ".7z")
     image_url = f"/map/image/{cat_en}/{img_webp.name if img_webp.exists() else img_dst.name}"
     file_url = f"/map/fun/{cat_en}/{fun_7z.name if fun_7z.exists() else fun_dst.name}"
 
-    # ---- Write JSON ----
     map_data = {
         "id": map_id,
         "title": title,
@@ -232,7 +203,6 @@ def process_map(folder: Path, config: dict, global_config: dict,
     else:
         data = []
 
-    # Remove duplicate ID (overwrite)
     data = [item for item in data if not (isinstance(item, dict) and item.get("id") == map_id)]
     data.append(map_data)
 
@@ -244,7 +214,6 @@ def process_map(folder: Path, config: dict, global_config: dict,
 
 
 def main():
-    """Main entry point."""
     PUBLIC_MAP.mkdir(parents=True, exist_ok=True)
     (PUBLIC_MAP / "image").mkdir(parents=True, exist_ok=True)
     (PUBLIC_MAP / "fun").mkdir(parents=True, exist_ok=True)
@@ -299,7 +268,6 @@ def main():
                 print("  ERROR: Invalid config")
                 return
 
-        # Auto-detect assets
         img_src, fun_src = detect_assets(folder)
         if img_src is None:
             print("  WARN: Skipping - no image file found in folder")

@@ -32,11 +32,26 @@
     "dark": "Oscuro",
     "auto": "Auto",
     "themeColor": "Color del tema",
-    "language": "Idioma"
+    "language": "Idioma",
+    "customColor": "Color personalizado",
+    "hexHelper": "Ingrese un color hexadecimal, ej. #39C5BB",
+    "invalidHex": "Color inválido. Ingrese #RGB o #RRGGBB"
   },
   "activity": {
     "title": "Eventos",
-    "noActivities": "Sin eventos"
+    "noActivities": "Sin eventos",
+    "test1": {
+      "title": "Evento de prueba 1",
+      "description": "Esta es una descripción de evento de prueba para el diseño."
+    },
+    "test2": {
+      "title": "Evento de prueba 2",
+      "description": "Segundo evento de prueba, texto de marcador."
+    },
+    "test3": {
+      "title": "Evento de prueba 3",
+      "description": "Tercer evento de prueba, reemplazar con datos reales."
+    }
   },
   "announcement": {
     "title": "Anuncios y acerca de",
@@ -46,5 +61,9 @@
     "licenseContent": "Este sitio es de código abierto bajo la licencia GPL-3.0.",
     "repoAddress": "Repositorio:",
     "team": "Nuestro equipo"
+  },
+  "common": {
+    "cancel": "Cancelar",
+    "confirm": "Aceptar"
   }
 }

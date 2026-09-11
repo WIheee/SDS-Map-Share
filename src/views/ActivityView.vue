@@ -13,6 +13,8 @@
           <p>{{ activity.description }}</p>
         </div>
       </mdui-card>
+      <!-- 空状态预留：activities 目前由 i18n 提供固定占位数据，长度恒为 3；
+           将来接入真实数据源（API / JSON）后可自然生效。 -->
       <div v-if="activities.length === 0" class="empty-state">
         <p>{{ t('activity.noActivities') }}</p>
       </div>
@@ -21,6 +23,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import 'mdui/components/card.js'
 import 'mdui/components/icon.js'
@@ -34,11 +37,11 @@ interface Activity {
   description: string
 }
 
-const activities: Activity[] = [
-  { id: 1, title: '测试活动 1', description: '这是一个测试活动的描述，用于展示卡片样式。' },
-  { id: 2, title: '测试活动 2', description: '第二个测试活动，内容同样为占位文字。' },
-  { id: 3, title: '测试活动 3', description: '第三个测试活动，可替换为真实数据。' },
-]
+const activities = computed<Activity[]>(() => [
+  { id: 1, title: t('activity.test1.title'), description: t('activity.test1.description') },
+  { id: 2, title: t('activity.test2.title'), description: t('activity.test2.description') },
+  { id: 3, title: t('activity.test3.title'), description: t('activity.test3.description') },
+])
 </script>
 
 <style scoped>

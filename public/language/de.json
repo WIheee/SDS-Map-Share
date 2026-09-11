@@ -32,11 +32,26 @@
     "dark": "Dunkel",
     "auto": "Auto",
     "themeColor": "Themenfarbe",
-    "language": "Sprache"
+    "language": "Sprache",
+    "customColor": "Benutzerdefinierte Farbe",
+    "hexHelper": "Hex-Farbwert eingeben, z.B. #39C5BB",
+    "invalidHex": "Ungültige Farbe. Bitte #RGB oder #RRGGBB eingeben"
   },
   "activity": {
     "title": "Veranstaltungen",
-    "noActivities": "Keine Veranstaltungen"
+    "noActivities": "Keine Veranstaltungen",
+    "test1": {
+      "title": "Test-Veranstaltung 1",
+      "description": "Dies ist eine Test-Veranstaltungsbeschreibung für das Kartenlayout."
+    },
+    "test2": {
+      "title": "Test-Veranstaltung 2",
+      "description": "Zweite Test-Veranstaltung, Platzhaltertext."
+    },
+    "test3": {
+      "title": "Test-Veranstaltung 3",
+      "description": "Dritte Test-Veranstaltung, durch echte Daten ersetzen."
+    }
   },
   "announcement": {
     "title": "Ankündigungen & Über",
@@ -46,5 +61,9 @@
     "licenseContent": "Diese Website ist Open Source unter der GPL-3.0-Lizenz.",
     "repoAddress": "Repository:",
     "team": "Unser Team"
+  },
+  "common": {
+    "cancel": "Abbrechen",
+    "confirm": "OK"
   }
 }

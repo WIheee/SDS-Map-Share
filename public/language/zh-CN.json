@@ -32,11 +32,26 @@
     "dark": "深色",
     "auto": "自动",
     "themeColor": "主题色",
-    "language": "语言"
+    "language": "语言",
+    "customColor": "自定义颜色",
+    "hexHelper": "输入十六进制颜色值，如 #39C5BB",
+    "invalidHex": "无效的颜色值，请输入 #RGB 或 #RRGGBB"
   },
   "activity": {
     "title": "活动",
-    "noActivities": "暂无活动"
+    "noActivities": "暂无活动",
+    "test1": {
+      "title": "测试活动 1",
+      "description": "这是一个测试活动的描述，用于展示卡片样式。"
+    },
+    "test2": {
+      "title": "测试活动 2",
+      "description": "第二个测试活动，内容同样为占位文字。"
+    },
+    "test3": {
+      "title": "测试活动 3",
+      "description": "第三个测试活动，可替换为真实数据。"
+    }
   },
   "announcement": {
     "title": "公告与关于",
@@ -46,5 +61,9 @@
     "licenseContent": "该网站是开源的，并且遵循 GPL-3.0 开源协议。",
     "repoAddress": "开源地址：",
     "team": "我们的团队"
+  },
+  "common": {
+    "cancel": "取消",
+    "confirm": "确定"
   }
 }

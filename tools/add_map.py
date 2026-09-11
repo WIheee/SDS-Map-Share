@@ -16,7 +16,6 @@ PUBLIC_MAP = BASE / "public" / "map"
 JSON_DIR = BASE / "src" / "data" / "map" / "json"
 TOOLS = BASE / "tools"
 
-# ---- 修复：分类用中文，与前端 CATEGORIES 保持一致 ----
 CATEGORY_MAP = {
     "1": "对战",
     "2": "观赏",
@@ -34,15 +33,16 @@ CATEGORY_EN = {
 
 
 def sanitize_filename(name: str) -> str:
-    """Sanitize filename: keep word characters, hyphens, and dots; replace spaces with underscores."""
     name = name.strip()
     name = re.sub(r'\s+', '_', name)
-    name = re.sub(r'[^\w\-.]', '', name, flags=re.UNICODE)
+    name = name.replace('..', '_').replace('/', '_').replace('\\', '_')
+    name = re.sub(r'[^\w\-_.]', '', name)
+    if len(name.encode('utf-8')) > 200:
+        name = name[:60]
     return name
 
 
 def get_input(prompt: str, validator, error_msg: str = "Invalid input, please try again.") -> str:
-    """Prompt for input and retry until validator passes."""
     while True:
         value = input(prompt).strip()
         if validator(value):
@@ -66,7 +66,6 @@ def categories_valid(value: str) -> bool:
 
 
 def get_next_id() -> int:
-    """Scan all JSON files and return max ID + 1."""
     max_id = 0
     for f in JSON_DIR.glob("*.json"):
         try:
@@ -82,7 +81,6 @@ def get_next_id() -> int:
 
 
 def run_compress(script: str) -> bool:
-    """Run a compression script in the tools directory."""
     sp = TOOLS / script
     if not sp.exists():
         print(f"[WARN] Compression script not found: {sp}")
@@ -96,7 +94,8 @@ def run_compress(script: str) -> bool:
 
 
 def copy_file(src: Path, dest_dir: Path, base_name: str, ext: str, compressed_ext: str) -> tuple[Path, Path]:
-    """Copy a file to destination directory and return both target path and expected compressed path."""
+    if ext == compressed_ext:
+        raise ValueError(f"ext 和 compressed_ext 不能相同: {ext}")
     dest_dir.mkdir(parents=True, exist_ok=True)
     dst = dest_dir / (base_name + ext)
     shutil.copy2(src, dst)
@@ -105,7 +104,6 @@ def copy_file(src: Path, dest_dir: Path, base_name: str, ext: str, compressed_ex
 
 
 def update_json(cat_en: str, map_data: dict) -> None:
-    """Update the JSON file for the given category."""
     path = JSON_DIR / f"{cat_en}.json"
     if path.exists():
         try:
@@ -118,7 +116,6 @@ def update_json(cat_en: str, map_data: dict) -> None:
     else:
         data = []
 
-    # Remove any existing entry with the same ID (overwrite)
     existing = any(isinstance(item, dict) and item.get("id") == map_data["id"] for item in data)
     if existing:
         print(f"[WARN] ID {map_data['id']} already exists, overwriting.")
@@ -130,7 +127,6 @@ def update_json(cat_en: str, map_data: dict) -> None:
 
 
 def main():
-    # Ensure required directories exist
     PUBLIC_MAP.mkdir(parents=True, exist_ok=True)
     (PUBLIC_MAP / "image").mkdir(parents=True, exist_ok=True)
     (PUBLIC_MAP / "fun").mkdir(parents=True, exist_ok=True)
@@ -195,7 +191,7 @@ def main():
         "description": desc,
         "image": image_url,
         "file": file_url,
-        "category": categories,  # ← 现在是中文了
+        "category": categories,
         "author": author
     }
     if author_url:

@@ -15,7 +15,7 @@ import 'mdui/components/snackbar.js'
 
 const route = useRoute()
 const router = useRouter()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const mapsStore = useMapsStore()
 const favoritesStore = useFavoritesStore()
 
@@ -25,6 +25,22 @@ const error = ref(false)
 const downloading = ref(false)
 const showHint = ref(false)
 
+const giscusLang = computed(() => {
+  const map: Record<string, string> = {
+    'zh-CN': 'zh-CN',
+    'zh-TW': 'zh-TW',
+    'en-US': 'en',
+    'en-GB': 'en',
+    ja: 'ja',
+    ko: 'ko',
+    fr: 'fr',
+    de: 'de',
+    es: 'es',
+    ru: 'ru',
+  }
+  return map[locale.value] ?? 'en'
+})
+
 const isFavorite = computed(() => (mapData.value ? favoritesStore.has(mapData.value.id) : false))
 
 const toggleFavorite = () => {
@@ -33,9 +49,11 @@ const toggleFavorite = () => {
 
 const safeImage = computed(() => mapData.value?.image || '')
 
+// 统一的 URL 拼接：BASE_URL 结尾的 / 与 file 开头的 / 保持兼容
 const downloadUrl = (file: string): string => {
   const base = import.meta.env.BASE_URL.replace(/\/+$/, '')
-  return `${base}${file}`
+  const normalized = file.startsWith('/') ? file : '/' + file
+  return `${base}${normalized}`
 }
 
 const downloadMap = () => {
@@ -87,16 +105,29 @@ const goToAuthor = () => {
   }
 }
 
+// 竞态保护：用递增 token 标识最新请求，旧请求即使完成也会被丢弃
+let loadToken = 0
+
 const loadMap = async () => {
+  const token = ++loadToken
   loading.value = true
-  await mapsStore.loadMaps()
-  const raw = route.params.id
-  const idStr = Array.isArray(raw) ? raw[0] : raw
-  const id = parseInt(idStr ?? '', 10)
-  const found = Number.isNaN(id) ? undefined : mapsStore.getMapById(id)
-  mapData.value = found ?? null
-  error.value = !found
-  loading.value = false
+  try {
+    await mapsStore.loadMaps()
+    if (token !== loadToken) return
+
+    const raw = route.params.id
+    const idStr = Array.isArray(raw) ? raw[0] : raw
+    const id = parseInt(idStr ?? '', 10)
+    const found = Number.isNaN(id) ? undefined : mapsStore.getMapById(id)
+
+    if (token !== loadToken) return
+
+    mapData.value = found ?? null
+    error.value = !found
+  } finally {
+    // 只有当自己是当前最新请求时才复位 loading，避免旧请求把新请求的 loading 提前清掉
+    if (token === loadToken) loading.value = false
+  }
 }
 
 onMounted(loadMap)
@@ -178,7 +209,9 @@ watch(
         @click="goToAuthor"
         role="button"
         tabindex="0"
-        :aria-label="mapData.authorUrl ? `访问 ${mapData.author} 的主页` : `查看 ${mapData.author} 的所有地图`"
+        :aria-label="
+          mapData.authorUrl ? `访问 ${mapData.author} 的主页` : `查看 ${mapData.author} 的所有地图`
+        "
       >
         <div class="author-avatar">
           <mdui-icon name="person" class="author-icon"></mdui-icon>
@@ -199,19 +232,19 @@ watch(
 
       <div class="giscus-container">
         <Giscus
-          :key="mapData.id"
+          :key="String(mapData.id)"
           id="comments"
           repo="WIheee/SDS-Map-Share"
           repoId="R_kgDOUPE0UA"
           category="Q&A"
           categoryId="DIC_kwDOUPE0UM4DE8Ib"
           mapping="specific"
-          :term="String(mapData.id)"
+          :term="`map-${mapData.id}`"
           reactionsEnabled="1"
           emitMetadata="0"
           inputPosition="bottom"
           theme="fro"
-          lang="zh-CN"
+          :lang="giscusLang"
           loading="lazy"
         />
       </div>

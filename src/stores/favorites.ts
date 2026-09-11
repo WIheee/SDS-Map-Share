@@ -1,25 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { safeGetItem, safeSetItem } from '@/constants/theme'
 
 const STORAGE_KEY = 'favoriteMaps'
-
-/** 安全读取 localStorage（隐私模式 / 存储被禁用时返回 null，不抛异常） */
-function safeGetItem(key: string): string | null {
-  try {
-    return localStorage.getItem(key)
-  } catch {
-    return null
-  }
-}
-
-/** 安全写入 localStorage（存储不可用时静默降级，不抛异常） */
-function safeSetItem(key: string, value: string): void {
-  try {
-    localStorage.setItem(key, value)
-  } catch {
-    // 配额满 / 隐私模式 / 存储被禁用时静默失败
-  }
-}
 
 function loadIds(): number[] {
   const raw = safeGetItem(STORAGE_KEY)
@@ -33,10 +16,6 @@ function loadIds(): number[] {
   }
 }
 
-/**
- * 收藏 store：收藏列表持久化到 localStorage
- * ids 为响应式数组，跨页面/组件共享同一份状态
- */
 export const useFavoritesStore = defineStore('favorites', () => {
   const ids = ref<number[]>(loadIds())
 

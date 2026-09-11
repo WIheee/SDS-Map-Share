@@ -25,13 +25,11 @@ const FAV = '__favorite__'
 const selectedCategory = ref<string>('')
 const searchQuery = ref('')
 
-mapsStore.loadMaps()
-
 const maps = computed(() => mapsStore.maps)
 const loading = computed(() => !mapsStore.loaded)
 
 const categoryOptions = computed(() => [
-  { value: '', label: t('map.categoryPlaceholder'), disabled: true },
+  { value: '__placeholder__', label: t('map.categoryPlaceholder'), disabled: true },
   { value: '', label: t('map.all') },
   { value: FAV, label: t('map.favorites'), icon: 'favorite' },
   ...CATEGORIES.map((cat) => ({ value: cat, label: cat })),
@@ -77,7 +75,10 @@ const applyAuthorFilter = () => {
   }
 }
 
-onMounted(() => {
+// 滚动恢复完全交由 vue-router 的 scrollBehavior + keep-alive 处理，
+// 不再在组件内手动记录/恢复 scrollY，避免两套机制互相覆盖。
+onMounted(async () => {
+  await mapsStore.loadMaps()
   applyAuthorFilter()
 })
 
@@ -119,7 +120,7 @@ watch(
           v-for="opt in categoryOptions"
           :key="opt.label"
           :value="opt.value"
-          :disabled="opt.disabled"
+          :disabled="!!opt.disabled"
         >
           <mdui-icon v-if="opt.icon" :name="opt.icon" slot="icon"></mdui-icon>
           {{ opt.label }}

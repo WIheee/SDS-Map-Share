@@ -1,4 +1,5 @@
 import { createI18n } from 'vue-i18n'
+import type { Composer } from 'vue-i18n'
 
 export const SUPPORT_LOCALES = [
   'zh-CN',
@@ -57,7 +58,7 @@ async function loadLocaleMessages(locale: string): Promise<void> {
 
 export async function setLocale(locale: SupportedLocale): Promise<void> {
   await loadLocaleMessages(locale)
-  const composer = i18n.global as any
+  const composer = i18n.global as unknown as Composer
   composer.locale.value = locale
   document.querySelector('html')?.setAttribute('lang', locale)
   try {
@@ -75,7 +76,6 @@ export async function initI18n(): Promise<void> {
       return null
     }
   })()
-  const locale =
-    saved && SUPPORT_LOCALES.includes(saved) ? saved : detectBrowserLocale()
+  const locale = saved && SUPPORT_LOCALES.includes(saved) ? saved : detectBrowserLocale()
   await setLocale(locale)
 }

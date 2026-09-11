@@ -32,24 +32,17 @@ const router = createRouter({
       name: 'settings',
       component: () => import('../views/SettingsView.vue'),
     },
-    // 兜底路由：未匹配的路径一律回到地图列表
     {
       path: '/:pathMatch(.*)*',
       redirect: '/map',
     },
   ],
-  // 滚动策略：
-  // - 浏览器前进/后退：恢复历史位置
-  // - 从详情页返回列表：保留滚动位置
-  // - 其余导航：滚动到顶部
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) return savedPosition
-    if (to.name === 'map' && from.name === 'mapDetail') return false
     return { top: 0 }
   },
 })
 
-// 页面标题统一管理
 const titles: Record<string, string> = {
   map: '地图资源',
   mapDetail: '地图详情',
