@@ -11,6 +11,7 @@ and updates the corresponding JSON data file.
 
 import json
 import re
+import uuid
 import shutil
 import subprocess
 import sys
@@ -117,19 +118,9 @@ def validate_config(data: dict, global_config: dict) -> dict:
     return data
 
 
-def get_next_id() -> int:
-    max_id = 0
-    for f in JSON_DIR.glob("*.json"):
-        try:
-            with open(f, 'r', encoding='utf-8') as fp:
-                data = json.load(fp)
-            if isinstance(data, list):
-                for item in data:
-                    if isinstance(item, dict) and "id" in item:
-                        max_id = max(max_id, item["id"])
-        except (json.JSONDecodeError, OSError):
-            continue
-    return max_id + 1
+def new_map_id() -> str:
+    """生成地图 UUID（32 位十六进制字符串）"""
+    return uuid.uuid4().hex
 
 
 def run_compress(script: str) -> bool:
@@ -241,7 +232,7 @@ def main():
         print(f"  - {f.name}")
     print("-" * 60)
 
-    next_id = get_next_id()
+    next_id = new_map_id()
     success_count = 0
     failed_count = 0
 
@@ -288,7 +279,7 @@ def main():
 
         if process_map(folder, config, global_config, next_id, img_src, fun_src):
             success_count += 1
-            next_id += 1
+            next_id = new_map_id()
         else:
             failed_count += 1
 

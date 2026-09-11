@@ -56,11 +56,11 @@ const onCategoryChange = (event: Event) => {
   selectedCategory.value = target.value
 }
 
-const goToDetail = (id: number) => {
+const goToDetail = (id: string) => {
   router.push(`/map/${id}`)
 }
 
-const toggleFavorite = (id: number, event: Event) => {
+const toggleFavorite = (id: string, event: Event) => {
   event.stopPropagation()
   event.preventDefault()
   favoritesStore.toggle(id)

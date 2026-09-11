@@ -117,8 +117,7 @@ const loadMap = async () => {
 
     const raw = route.params.id
     const idStr = Array.isArray(raw) ? raw[0] : raw
-    const id = parseInt(idStr ?? '', 10)
-    const found = Number.isNaN(id) ? undefined : mapsStore.getMapById(id)
+    const found = idStr ? mapsStore.getMapById(idStr) : undefined
 
     if (token !== loadToken) return
 
@@ -232,7 +231,7 @@ watch(
 
       <div class="giscus-container">
         <Giscus
-          :key="String(mapData.id)"
+          :key="mapData.id"
           id="comments"
           repo="WIheee/SDS-Map-Share"
           repoId="R_kgDOUPE0UA"

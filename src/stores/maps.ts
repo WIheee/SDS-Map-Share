@@ -9,7 +9,7 @@ export const useMapsStore = defineStore('maps', () => {
   const error = ref(false)
 
   // id -> MapItem 索引（普通闭包变量即可，无需响应式），getMapById 由 O(n) 降为 O(1)
-  let index = new Map<number, MapItem>()
+  let index = new Map<string, MapItem>()
 
   // Promise 单例缓存：防止并发调用（如 MapView 与 MapDetail 同时挂载）重复加载
   let loadPromise: Promise<void> | null = null
@@ -22,7 +22,7 @@ export const useMapsStore = defineStore('maps', () => {
       try {
         const modules = import.meta.glob('@/data/map/json/*.json', { eager: true })
         const all: MapItem[] = []
-        const idx = new Map<number, MapItem>()
+        const idx = new Map<string, MapItem>()
 
         for (const path in modules) {
           const filename =
@@ -43,7 +43,7 @@ export const useMapsStore = defineStore('maps', () => {
             const title = item.title
             const image = item.image
             const file = item.file
-            if (typeof id !== 'number' || typeof title !== 'string') continue
+            if (typeof id !== 'string' || typeof title !== 'string') continue
             if (typeof image !== 'string' || typeof file !== 'string') continue
 
             let category: string[] = []
@@ -87,7 +87,7 @@ export const useMapsStore = defineStore('maps', () => {
     return loadPromise
   }
 
-  function getMapById(id: number): MapItem | undefined {
+  function getMapById(id: string): MapItem | undefined {
     return index.get(id)
   }
 

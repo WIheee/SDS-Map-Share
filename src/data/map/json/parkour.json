@@ -1,11 +1,13 @@
 [
   {
-    "id": 8,
+    "id": "54a9b2bf45f9464e9ba31fd81c25ba63",
     "title": "噩梦跑酷",
     "description": "噩梦般的跑酷，有解！",
     "image": "/map/image/parkour/噩梦跑酷.webp",
     "file": "/map/fun/parkour/噩梦跑酷.7z",
-    "category": ["跑酷"],
+    "category": [
+      "跑酷"
+    ],
     "author": "美酒FineWine",
     "authorUrl": "https://youtube.com/@finewine-meijiunb?si=lRsWmXjFfWbvEs-o"
   }
