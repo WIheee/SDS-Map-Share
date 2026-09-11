@@ -1,0 +1,50 @@
+{
+  "nav": {
+    "map": "地图资源",
+    "activity": "活动",
+    "announcement": "公告/关于",
+    "settings": "网站设置"
+  },
+  "map": {
+    "title": "地图资源",
+    "searchPlaceholder": "搜索地图、作者...",
+    "categoryPlaceholder": "选择你想要的分类",
+    "all": "全部",
+    "favorites": "收藏",
+    "noFavorites": "还没有收藏任何地图",
+    "noResults": "没有找到匹配的地图"
+  },
+  "detail": {
+    "download": "下载",
+    "downloading": "下载中...",
+    "favorite": "收藏",
+    "favorited": "已收藏",
+    "author": "作者",
+    "description": "描述",
+    "mapNotFound": "地图不存在或加载失败",
+    "back": "返回",
+    "downloadHint": "若浏览器未开始下载，请检查网络后重试"
+  },
+  "settings": {
+    "title": "设置",
+    "themeMode": "主题模式",
+    "light": "浅色",
+    "dark": "深色",
+    "auto": "自动",
+    "themeColor": "主题色",
+    "language": "语言"
+  },
+  "activity": {
+    "title": "活动",
+    "noActivities": "暂无活动"
+  },
+  "announcement": {
+    "title": "公告与关于",
+    "announcement": "公告",
+    "announcementContent": "欢迎使用 SDS 地图分享平台！当前版本为 v1.0，更多功能即将上线。",
+    "license": "开源协议",
+    "licenseContent": "该网站是开源的，并且遵循 GPL-3.0 开源协议。",
+    "repoAddress": "开源地址：",
+    "team": "我们的团队"
+  }
+}

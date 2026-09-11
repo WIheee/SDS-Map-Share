@@ -1,0 +1,50 @@
+{
+  "nav": {
+    "map": "Maps",
+    "activity": "Events",
+    "announcement": "About",
+    "settings": "Settings"
+  },
+  "map": {
+    "title": "Maps",
+    "searchPlaceholder": "Search maps, authors...",
+    "categoryPlaceholder": "Select a category",
+    "all": "All",
+    "favorites": "Favorites",
+    "noFavorites": "No favorites yet",
+    "noResults": "No maps found"
+  },
+  "detail": {
+    "download": "Download",
+    "downloading": "Downloading...",
+    "favorite": "Favorite",
+    "favorited": "Favorited",
+    "author": "Author",
+    "description": "Description",
+    "mapNotFound": "Map not found or failed to load",
+    "back": "Back",
+    "downloadHint": "If download doesn't start, check your network and try again"
+  },
+  "settings": {
+    "title": "Settings",
+    "themeMode": "Theme Mode",
+    "light": "Light",
+    "dark": "Dark",
+    "auto": "Auto",
+    "themeColor": "Theme Color",
+    "language": "Language"
+  },
+  "activity": {
+    "title": "Events",
+    "noActivities": "No events yet"
+  },
+  "announcement": {
+    "title": "Announcements & About",
+    "announcement": "Announcement",
+    "announcementContent": "Welcome to SDS Map Share! Current version is v1.0. More features coming soon.",
+    "license": "License",
+    "licenseContent": "This website is open source under the GPL-3.0 license.",
+    "repoAddress": "Repository:",
+    "team": "Our Team"
+  }
+}

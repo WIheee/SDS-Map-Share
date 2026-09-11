@@ -1,0 +1,50 @@
+{
+  "nav": {
+    "map": "Карты",
+    "activity": "События",
+    "announcement": "О сайте",
+    "settings": "Настройки"
+  },
+  "map": {
+    "title": "Ресурсы карт",
+    "searchPlaceholder": "Поиск карт, авторов...",
+    "categoryPlaceholder": "Выберите категорию",
+    "all": "Все",
+    "favorites": "Избранное",
+    "noFavorites": "Нет избранного",
+    "noResults": "Карты не найдены"
+  },
+  "detail": {
+    "download": "Скачать",
+    "downloading": "Загрузка...",
+    "favorite": "В избранное",
+    "favorited": "В избранном",
+    "author": "Автор",
+    "description": "Описание",
+    "mapNotFound": "Карта не найдена или ошибка загрузки",
+    "back": "Назад",
+    "downloadHint": "Если загрузка не началась, проверьте сеть"
+  },
+  "settings": {
+    "title": "Настройки",
+    "themeMode": "Режим темы",
+    "light": "Светлая",
+    "dark": "Тёмная",
+    "auto": "Авто",
+    "themeColor": "Цвет темы",
+    "language": "Язык"
+  },
+  "activity": {
+    "title": "События",
+    "noActivities": "Нет событий"
+  },
+  "announcement": {
+    "title": "Объявления и о сайте",
+    "announcement": "Объявление",
+    "announcementContent": "Добро пожаловать в SDS Map Share! Текущая версия: v1.0.",
+    "license": "Лицензия",
+    "licenseContent": "Этот сайт имеет открытый исходный код под лицензией GPL-3.0.",
+    "repoAddress": "Репозиторий:",
+    "team": "Наша команда"
+  }
+}

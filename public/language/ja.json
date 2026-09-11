@@ -1,0 +1,50 @@
+{
+  "nav": {
+    "map": "マップ",
+    "activity": "イベント",
+    "announcement": "お知らせ",
+    "settings": "設定"
+  },
+  "map": {
+    "title": "マップリソース",
+    "searchPlaceholder": "マップ・作者を検索...",
+    "categoryPlaceholder": "カテゴリを選択",
+    "all": "すべて",
+    "favorites": "お気に入り",
+    "noFavorites": "お気に入りはありません",
+    "noResults": "マップが見つかりません"
+  },
+  "detail": {
+    "download": "ダウンロード",
+    "downloading": "ダウンロード中...",
+    "favorite": "お気に入り",
+    "favorited": "お気に入り済み",
+    "author": "作者",
+    "description": "説明",
+    "mapNotFound": "マップが見つからないか、読み込みに失敗しました",
+    "back": "戻る",
+    "downloadHint": "ダウンロードが始まらない場合は、ネットワークを確認して再試行してください"
+  },
+  "settings": {
+    "title": "設定",
+    "themeMode": "テーマモード",
+    "light": "ライト",
+    "dark": "ダーク",
+    "auto": "自動",
+    "themeColor": "テーマカラー",
+    "language": "言語"
+  },
+  "activity": {
+    "title": "イベント",
+    "noActivities": "イベントはありません"
+  },
+  "announcement": {
+    "title": "お知らせと概要",
+    "announcement": "お知らせ",
+    "announcementContent": "SDS マップ共有へようこそ！現在のバージョンは v1.0 です。",
+    "license": "ライセンス",
+    "licenseContent": "このウェブサイトは GPL-3.0 ライセンスの下でオープンソースです。",
+    "repoAddress": "リポジトリ：",
+    "team": "チーム"
+  }
+}

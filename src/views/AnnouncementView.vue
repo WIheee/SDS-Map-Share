@@ -2,30 +2,28 @@
   <div class="about-page">
     <div class="header">
       <mdui-icon name="info" class="header-icon" aria-hidden="true"></mdui-icon>
-      <h1>公告与关于</h1>
+      <h1>{{ t('announcement.title') }}</h1>
     </div>
 
-    <!-- 公告卡片 -->
     <mdui-card class="info-card">
       <div class="card-header">
         <mdui-icon name="announcement" class="card-icon"></mdui-icon>
-        <span>公告</span>
+        <span>{{ t('announcement.announcement') }}</span>
       </div>
       <mdui-divider></mdui-divider>
-      <div class="card-body">欢迎使用 SDS 地图分享平台！当前版本为 v1.0，更多功能即将上线。</div>
+      <div class="card-body">{{ t('announcement.announcementContent') }}</div>
     </mdui-card>
 
-    <!-- 开源信息卡片 -->
     <mdui-card class="info-card">
       <div class="card-header">
         <mdui-icon name="code" class="card-icon"></mdui-icon>
-        <span>开源协议</span>
+        <span>{{ t('announcement.license') }}</span>
       </div>
       <mdui-divider></mdui-divider>
       <div class="card-body">
-        <p>该网站是开源的，并且遵循 <strong>GPL-3.0</strong> 开源协议。</p>
+        <p>{{ t('announcement.licenseContent') }}</p>
         <p style="margin-top: 8px">
-          开源地址：
+          {{ t('announcement.repoAddress') }}
           <a
             href="https://github.com/WIheee/SDS-Map-Share"
             target="_blank"
@@ -38,11 +36,10 @@
       </div>
     </mdui-card>
 
-    <!-- 团队卡片 -->
     <mdui-card class="info-card">
       <div class="card-header">
         <mdui-icon name="group" class="card-icon"></mdui-icon>
-        <span>我们的团队</span>
+        <span>{{ t('announcement.team') }}</span>
       </div>
       <mdui-divider></mdui-divider>
       <div class="team-grid">
@@ -70,15 +67,18 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import 'mdui/components/card.js'
 import 'mdui/components/icon.js'
 import 'mdui/components/divider.js'
+
+const { t } = useI18n()
 
 interface TeamMember {
   name: string
   role: string
   avatar: string
-  github?: string // 可选，有则显示为链接
+  github?: string
 }
 
 const team: TeamMember[] = [
@@ -86,7 +86,7 @@ const team: TeamMember[] = [
     name: 'WIhee',
     role: '首席开发者/维护者',
     avatar: '/team/WIhee.webp',
-    github: 'https://github.com/WIheee', // 新增
+    github: 'https://github.com/WIheee',
   },
 ]
 </script>

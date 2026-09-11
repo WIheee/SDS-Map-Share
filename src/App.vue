@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import 'mdui/components/navigation-bar.js'
 import 'mdui/components/navigation-bar-item.js'
 
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 
 // 详情页 /map/:id 时稳定映射回 'map'，避免底部导航栏指示条抖动
 const activeTab = computed(() => {
@@ -23,6 +25,19 @@ const onTabChange = (event: Event) => {
   if (newTab === activeTab.value) return
   router.push(`/${newTab}`)
 }
+
+onMounted(() => {
+  // 确保 html lang 属性与当前语言一致
+  document.querySelector('html')?.setAttribute('lang', i18nLocale())
+})
+
+function i18nLocale(): string {
+  try {
+    return localStorage.getItem('locale') || 'zh-CN'
+  } catch {
+    return 'zh-CN'
+  }
+}
 </script>
 
 <template>
@@ -38,10 +53,10 @@ const onTabChange = (event: Event) => {
     </div>
 
     <mdui-navigation-bar placement="bottom" :value="activeTab" @change="onTabChange">
-      <mdui-navigation-bar-item value="map" icon="map" label="地图资源" />
-      <mdui-navigation-bar-item value="activity" icon="event" label="活动" />
-      <mdui-navigation-bar-item value="announcement" icon="announcement" label="公告/关于" />
-      <mdui-navigation-bar-item value="settings" icon="settings" label="网站设置" />
+      <mdui-navigation-bar-item value="map" icon="map" :label="t('nav.map')" />
+      <mdui-navigation-bar-item value="activity" icon="event" :label="t('nav.activity')" />
+      <mdui-navigation-bar-item value="announcement" icon="announcement" :label="t('nav.announcement')" />
+      <mdui-navigation-bar-item value="settings" icon="settings" :label="t('nav.settings')" />
     </mdui-navigation-bar>
   </div>
 </template>
@@ -58,7 +73,7 @@ const onTabChange = (event: Event) => {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center; /* 水平居中 */
+  align-items: center;
   padding: 20px;
   padding-top: 40px;
   padding-bottom: 80px;
@@ -66,7 +81,6 @@ const onTabChange = (event: Event) => {
   box-sizing: border-box;
 }
 
-/* 过渡动画 */
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: all 0.25s ease;

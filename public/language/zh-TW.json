@@ -1,0 +1,50 @@
+{
+  "nav": {
+    "map": "地圖資源",
+    "activity": "活動",
+    "announcement": "公告/關於",
+    "settings": "網站設定"
+  },
+  "map": {
+    "title": "地圖資源",
+    "searchPlaceholder": "搜尋地圖、作者...",
+    "categoryPlaceholder": "選擇你想要的類別",
+    "all": "全部",
+    "favorites": "收藏",
+    "noFavorites": "還沒有收藏任何地圖",
+    "noResults": "沒有找到符合的地圖"
+  },
+  "detail": {
+    "download": "下載",
+    "downloading": "下載中...",
+    "favorite": "收藏",
+    "favorited": "已收藏",
+    "author": "作者",
+    "description": "描述",
+    "mapNotFound": "地圖不存在或載入失敗",
+    "back": "返回",
+    "downloadHint": "若瀏覽器未開始下載，請檢查網路後重試"
+  },
+  "settings": {
+    "title": "設定",
+    "themeMode": "主題模式",
+    "light": "淺色",
+    "dark": "深色",
+    "auto": "自動",
+    "themeColor": "主題色",
+    "language": "語言"
+  },
+  "activity": {
+    "title": "活動",
+    "noActivities": "暫無活動"
+  },
+  "announcement": {
+    "title": "公告與關於",
+    "announcement": "公告",
+    "announcementContent": "歡迎使用 SDS 地圖分享平台！目前版本為 v1.0，更多功能即將上線。",
+    "license": "開源協議",
+    "licenseContent": "該網站是開源的，並且遵循 GPL-3.0 開源協議。",
+    "repoAddress": "開源地址：",
+    "team": "我們的團隊"
+  }
+}

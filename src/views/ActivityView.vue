@@ -2,7 +2,7 @@
   <div class="activity-page">
     <div class="header">
       <mdui-icon name="event" class="header-icon" aria-hidden="true"></mdui-icon>
-      <h1>活动</h1>
+      <h1>{{ t('activity.title') }}</h1>
     </div>
 
     <div class="card-grid">
@@ -14,16 +14,19 @@
         </div>
       </mdui-card>
       <div v-if="activities.length === 0" class="empty-state">
-        <p>暂无活动</p>
+        <p>{{ t('activity.noActivities') }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import 'mdui/components/card.js'
 import 'mdui/components/icon.js'
 import 'mdui/components/divider.js'
+
+const { t } = useI18n()
 
 interface Activity {
   id: number
@@ -32,21 +35,9 @@ interface Activity {
 }
 
 const activities: Activity[] = [
-  {
-    id: 1,
-    title: '测试活动 1',
-    description: '这是一个测试活动的描述，用于展示卡片样式。',
-  },
-  {
-    id: 2,
-    title: '测试活动 2',
-    description: '第二个测试活动，内容同样为占位文字。',
-  },
-  {
-    id: 3,
-    title: '测试活动 3',
-    description: '第三个测试活动，可替换为真实数据。',
-  },
+  { id: 1, title: '测试活动 1', description: '这是一个测试活动的描述，用于展示卡片样式。' },
+  { id: 2, title: '测试活动 2', description: '第二个测试活动，内容同样为占位文字。' },
+  { id: 3, title: '测试活动 3', description: '第三个测试活动，可替换为真实数据。' },
 ]
 </script>
 

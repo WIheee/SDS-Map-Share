@@ -7,6 +7,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
+import { i18n, initI18n } from './i18n'
 import {
   colorPresets,
   STORAGE_KEYS,
@@ -24,9 +25,16 @@ if (savedColor && savedColor in colorPresets) {
   setColorScheme(colorPresets[savedColor])
 }
 
-const app = createApp(App)
+async function bootstrap() {
+  await initI18n()
 
-app.use(createPinia())
-app.use(router)
+  const app = createApp(App)
 
-app.mount('#app')
+  app.use(createPinia())
+  app.use(router)
+  app.use(i18n)
+
+  app.mount('#app')
+}
+
+bootstrap()

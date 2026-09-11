@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import Giscus from '@giscus/vue'
 import type { MapItem } from '@/types/map'
 import { useMapsStore } from '@/stores/maps'
@@ -14,6 +15,7 @@ import 'mdui/components/snackbar.js'
 
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 const mapsStore = useMapsStore()
 const favoritesStore = useFavoritesStore()
 
@@ -71,11 +73,6 @@ const goBack = () => {
   }
 }
 
-/**
- * 点击作者：
- * - 有 authorUrl → 新窗口打开社交媒体链接
- * - 没有 authorUrl → 跳转到地图列表并搜索该作者
- */
 const goToAuthor = () => {
   if (!mapData.value) return
 
@@ -114,20 +111,19 @@ watch(
 
 <template>
   <div class="detail-page">
-    <!-- 顶部：返回按钮 + 16:9 图片 -->
     <div class="top-section">
       <mdui-button-icon
         class="back-btn"
         variant="standard"
         icon="arrow_back"
         @click="goBack"
-        aria-label="返回"
+        :aria-label="t('detail.back')"
       ></mdui-button-icon>
       <div class="image-wrapper">
         <img
           v-if="safeImage"
           :src="safeImage"
-          :alt="mapData?.title || '地图图片'"
+          :alt="mapData?.title || t('detail.description')"
           class="map-image"
           loading="lazy"
         />
@@ -137,20 +133,16 @@ watch(
       </div>
     </div>
 
-    <!-- 加载状态 -->
     <div v-if="loading" class="loading-state">
       <mdui-circular-progress></mdui-circular-progress>
     </div>
 
-    <!-- 错误状态 -->
     <div v-else-if="error" class="error-state">
-      <p>地图不存在或加载失败</p>
-      <mdui-button variant="text" @click="goBack">返回</mdui-button>
+      <p>{{ t('detail.mapNotFound') }}</p>
+      <mdui-button variant="text" @click="goBack">{{ t('detail.back') }}</mdui-button>
     </div>
 
-    <!-- 内容 -->
     <template v-else-if="mapData">
-      <!-- 按钮组：下载 + 收藏 -->
       <div class="button-group">
         <mdui-button
           variant="filled"
@@ -162,7 +154,7 @@ watch(
             :name="downloading ? 'hourglass_empty' : 'file_download'"
             slot="icon"
           ></mdui-icon>
-          {{ downloading ? '下载中...' : '下载' }}
+          {{ downloading ? t('detail.downloading') : t('detail.download') }}
         </mdui-button>
         <mdui-button
           :variant="isFavorite ? 'filled' : 'outlined'"
@@ -171,32 +163,28 @@ watch(
           :aria-pressed="isFavorite"
         >
           <mdui-icon :name="isFavorite ? 'favorite' : 'favorite_border'" slot="icon"></mdui-icon>
-          {{ isFavorite ? '已收藏' : '收藏' }}
+          {{ isFavorite ? t('detail.favorited') : t('detail.favorite') }}
         </mdui-button>
       </div>
 
-      <!-- 容器框：标题 + 分割线 + 描述 -->
       <div class="info-container">
         <div class="container-title">{{ mapData.title }}</div>
         <mdui-divider class="container-divider"></mdui-divider>
         <div class="container-description">{{ mapData.description }}</div>
       </div>
 
-      <!-- 作者列表项 - 点击跳转 -->
       <div
         class="author-item"
         @click="goToAuthor"
         role="button"
         tabindex="0"
-        :aria-label="
-          mapData.authorUrl ? `访问 ${mapData.author} 的主页` : `查看 ${mapData.author} 的所有地图`
-        "
+        :aria-label="mapData.authorUrl ? `访问 ${mapData.author} 的主页` : `查看 ${mapData.author} 的所有地图`"
       >
         <div class="author-avatar">
           <mdui-icon name="person" class="author-icon"></mdui-icon>
         </div>
         <div class="author-info">
-          <div class="author-label">作者</div>
+          <div class="author-label">{{ t('detail.author') }}</div>
           <div class="author-name">
             {{ mapData.author }}
             <mdui-icon
@@ -209,7 +197,6 @@ watch(
         <mdui-icon name="chevron_right" class="author-arrow"></mdui-icon>
       </div>
 
-      <!-- 评论区域 -->
       <div class="giscus-container">
         <Giscus
           :key="mapData.id"
@@ -230,9 +217,8 @@ watch(
       </div>
     </template>
 
-    <!-- 下载提示 -->
     <mdui-snackbar v-model="showHint" placement="top" :timeout="4000" closeable>
-      若浏览器未开始下载，请检查网络后重试
+      {{ t('detail.downloadHint') }}
     </mdui-snackbar>
   </div>
 </template>

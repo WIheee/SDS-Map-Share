@@ -1,0 +1,50 @@
+{
+  "nav": {
+    "map": "Cartes",
+    "activity": "Événements",
+    "announcement": "À propos",
+    "settings": "Paramètres"
+  },
+  "map": {
+    "title": "Ressources de cartes",
+    "searchPlaceholder": "Rechercher des cartes, auteurs...",
+    "categoryPlaceholder": "Sélectionner une catégorie",
+    "all": "Tout",
+    "favorites": "Favoris",
+    "noFavorites": "Aucun favori",
+    "noResults": "Aucune carte trouvée"
+  },
+  "detail": {
+    "download": "Télécharger",
+    "downloading": "Téléchargement...",
+    "favorite": "Favori",
+    "favorited": "Ajouté aux favoris",
+    "author": "Auteur",
+    "description": "Description",
+    "mapNotFound": "Carte introuvable ou échec du chargement",
+    "back": "Retour",
+    "downloadHint": "Si le téléchargement ne démarre pas, vérifiez votre réseau"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "themeMode": "Mode de thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "auto": "Auto",
+    "themeColor": "Couleur du thème",
+    "language": "Langue"
+  },
+  "activity": {
+    "title": "Événements",
+    "noActivities": "Aucun événement"
+  },
+  "announcement": {
+    "title": "Annonces et à propos",
+    "announcement": "Annonce",
+    "announcementContent": "Bienvenue sur SDS Map Share ! Version actuelle : v1.0.",
+    "license": "Licence",
+    "licenseContent": "Ce site est open source sous licence GPL-3.0.",
+    "repoAddress": "Dépôt :",
+    "team": "Notre équipe"
+  }
+}

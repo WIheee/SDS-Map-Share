@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { CATEGORIES } from '@/constants/map'
 import { useMapsStore } from '@/stores/maps'
 import { useFavoritesStore } from '@/stores/favorites'
@@ -16,6 +17,7 @@ defineOptions({ name: 'MapView' })
 
 const router = useRouter()
 const route = useRoute()
+const { t } = useI18n()
 const mapsStore = useMapsStore()
 const favoritesStore = useFavoritesStore()
 
@@ -28,12 +30,12 @@ mapsStore.loadMaps()
 const maps = computed(() => mapsStore.maps)
 const loading = computed(() => !mapsStore.loaded)
 
-const categoryOptions = [
-  { value: '', label: '选择你想要的分类', disabled: true },
-  { value: '', label: '全部' },
-  { value: FAV, label: '收藏', icon: 'favorite' },
+const categoryOptions = computed(() => [
+  { value: '', label: t('map.categoryPlaceholder'), disabled: true },
+  { value: '', label: t('map.all') },
+  { value: FAV, label: t('map.favorites'), icon: 'favorite' },
   ...CATEGORIES.map((cat) => ({ value: cat, label: cat })),
-]
+])
 
 const filteredMaps = computed(() => {
   const query = searchQuery.value.trim().toLowerCase()
@@ -67,9 +69,6 @@ const toggleFavorite = (id: number, event: Event) => {
   ;(event.currentTarget as HTMLElement | null)?.blur?.()
 }
 
-/**
- * 从路由参数中读取 author，自动填入搜索框
- */
 const applyAuthorFilter = () => {
   const authorParam = route.query.author
   if (authorParam && typeof authorParam === 'string' && authorParam.trim()) {
@@ -97,16 +96,16 @@ watch(
   <div class="map-view">
     <div class="header">
       <mdui-icon name="map" class="header-icon" aria-hidden="true"></mdui-icon>
-      <h1>地图资源</h1>
+      <h1>{{ t('map.title') }}</h1>
     </div>
 
     <div class="filter-row">
       <mdui-text-field
         v-model="searchQuery"
-        placeholder="搜索地图、作者..."
+        :placeholder="t('map.searchPlaceholder')"
         clearable
         icon="search"
-        aria-label="搜索地图"
+        :aria-label="t('map.searchPlaceholder')"
         class="search-box"
       ></mdui-text-field>
 
@@ -114,7 +113,7 @@ watch(
         :value="selectedCategory"
         @change="onCategoryChange"
         class="category-select"
-        aria-label="选择分类"
+        :aria-label="t('map.categoryPlaceholder')"
       >
         <mdui-menu-item
           v-for="opt in categoryOptions"
@@ -149,7 +148,7 @@ watch(
           type="button"
           class="fav-btn"
           :class="{ active: favoritesStore.has(map.id) }"
-          :aria-label="favoritesStore.has(map.id) ? '取消收藏' : '收藏'"
+          :aria-label="favoritesStore.has(map.id) ? t('detail.favorited') : t('detail.favorite')"
           :aria-pressed="favoritesStore.has(map.id)"
           @click.stop.prevent="toggleFavorite(map.id, $event)"
           @keydown.stop
@@ -175,7 +174,7 @@ watch(
       </mdui-card>
 
       <div v-if="filteredMaps.length === 0" class="empty-state">
-        <p>{{ selectedCategory === FAV ? '还没有收藏任何地图' : '没有找到匹配的地图' }}</p>
+        <p>{{ selectedCategory === FAV ? t('map.noFavorites') : t('map.noResults') }}</p>
       </div>
     </div>
   </div>

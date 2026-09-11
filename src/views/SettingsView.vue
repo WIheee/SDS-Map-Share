@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { setTheme } from 'mdui/functions/setTheme.js'
 import { setColorScheme } from 'mdui/functions/setColorScheme.js'
 import {
@@ -10,16 +11,34 @@ import {
   type Theme,
   type ColorPreset,
 } from '@/constants/theme'
+import { SUPPORT_LOCALES, setLocale as setI18nLocale } from '@/i18n'
 import 'mdui/components/segmented-button-group.js'
 import 'mdui/components/segmented-button.js'
+import 'mdui/components/select.js'
+import 'mdui/components/menu-item.js'
 import 'mdui/components/icon.js'
 
 defineOptions({ name: 'SettingsPage' })
+
+const { t, locale } = useI18n()
 
 const theme = ref<Theme>((safeGetItem(STORAGE_KEYS.theme) as Theme | null) || 'auto')
 const currentColor = ref<ColorPreset>(
   (safeGetItem(STORAGE_KEYS.colorScheme) as ColorPreset | null) || 'purple',
 )
+
+const languageOptions: { value: string; label: string }[] = [
+  { value: 'zh-CN', label: '简体中文' },
+  { value: 'zh-TW', label: '繁體中文' },
+  { value: 'en-US', label: 'English (US)' },
+  { value: 'en-GB', label: 'English (UK)' },
+  { value: 'ja', label: '日本語' },
+  { value: 'ko', label: '한국어' },
+  { value: 'fr', label: 'Français' },
+  { value: 'de', label: 'Deutsch' },
+  { value: 'es', label: 'Español' },
+  { value: 'ru', label: 'Русский' },
+]
 
 const applyTheme = (value: Theme) => {
   theme.value = value
@@ -33,6 +52,12 @@ const applyColorScheme = (preset: ColorPreset) => {
   safeSetItem(STORAGE_KEYS.colorScheme, preset)
 }
 
+const onLanguageChange = async (event: Event) => {
+  const target = event.target as HTMLSelectElement
+  const newLocale = target.value
+  await setI18nLocale(newLocale as any)
+}
+
 onMounted(() => {
   setTheme(theme.value)
   setColorScheme(colorPresets[currentColor.value])
@@ -41,28 +66,28 @@ onMounted(() => {
 
 <template>
   <div class="settings-page">
-    <h1>设置</h1>
+    <h1>{{ t('settings.title') }}</h1>
 
     <div class="setting-section">
-      <p>主题模式</p>
+      <p>{{ t('settings.themeMode') }}</p>
       <mdui-segmented-button-group selects="single" required :value="theme">
         <mdui-segmented-button value="light" @click="applyTheme('light')">
           <mdui-icon name="light_mode" slot="icon"></mdui-icon>
-          浅色
+          {{ t('settings.light') }}
         </mdui-segmented-button>
         <mdui-segmented-button value="dark" @click="applyTheme('dark')">
           <mdui-icon name="dark_mode" slot="icon"></mdui-icon>
-          深色
+          {{ t('settings.dark') }}
         </mdui-segmented-button>
         <mdui-segmented-button value="auto" @click="applyTheme('auto')">
           <mdui-icon name="brightness_auto" slot="icon"></mdui-icon>
-          自动
+          {{ t('settings.auto') }}
         </mdui-segmented-button>
       </mdui-segmented-button-group>
     </div>
 
     <div class="setting-section">
-      <p>主题色</p>
+      <p>{{ t('settings.themeColor') }}</p>
       <div class="color-presets">
         <button
           v-for="preset in Object.keys(colorPresets) as ColorPreset[]"
@@ -74,6 +99,24 @@ onMounted(() => {
           :aria-label="`切换到 ${preset} 主题`"
         ></button>
       </div>
+    </div>
+
+    <div class="setting-section">
+      <p>{{ t('settings.language') }}</p>
+      <mdui-select
+        :value="locale"
+        @change="onLanguageChange"
+        class="language-select"
+        aria-label="Language"
+      >
+        <mdui-menu-item
+          v-for="opt in languageOptions"
+          :key="opt.value"
+          :value="opt.value"
+        >
+          {{ opt.label }}
+        </mdui-menu-item>
+      </mdui-select>
     </div>
   </div>
 </template>
@@ -115,6 +158,10 @@ h1 {
 }
 
 mdui-segmented-button-group {
+  width: 100%;
+}
+
+.language-select {
   width: 100%;
 }
 

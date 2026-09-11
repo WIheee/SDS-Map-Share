@@ -1,0 +1,50 @@
+{
+  "nav": {
+    "map": "맵",
+    "activity": "이벤트",
+    "announcement": "공지/정보",
+    "settings": "설정"
+  },
+  "map": {
+    "title": "맵 리소스",
+    "searchPlaceholder": "맵, 작성자 검색...",
+    "categoryPlaceholder": "카테고리 선택",
+    "all": "전체",
+    "favorites": "즐겨찾기",
+    "noFavorites": "즐겨찾기가 없습니다",
+    "noResults": "맵을 찾을 수 없습니다"
+  },
+  "detail": {
+    "download": "다운로드",
+    "downloading": "다운로드 중...",
+    "favorite": "즐겨찾기",
+    "favorited": "즐겨찾기됨",
+    "author": "작성자",
+    "description": "설명",
+    "mapNotFound": "맵을 찾을 수 없거나 로드에 실패했습니다",
+    "back": "뒤로",
+    "downloadHint": "다운로드가 시작되지 않으면 네트워크를 확인하고 다시 시도하세요"
+  },
+  "settings": {
+    "title": "설정",
+    "themeMode": "테마 모드",
+    "light": "라이트",
+    "dark": "다크",
+    "auto": "자동",
+    "themeColor": "테마 색상",
+    "language": "언어"
+  },
+  "activity": {
+    "title": "이벤트",
+    "noActivities": "이벤트가 없습니다"
+  },
+  "announcement": {
+    "title": "공지 및 정보",
+    "announcement": "공지",
+    "announcementContent": "SDS 맵 공유에 오신 것을 환영합니다! 현재 버전은 v1.0입니다.",
+    "license": "라이선스",
+    "licenseContent": "이 웹사이트는 GPL-3.0 라이선스 하에 오픈소스입니다.",
+    "repoAddress": "저장소:",
+    "team": "팀"
+  }
+}
