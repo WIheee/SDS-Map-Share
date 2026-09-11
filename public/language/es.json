@@ -60,7 +60,14 @@
     "license": "Licencia",
     "licenseContent": "Este sitio es de código abierto bajo la licencia GPL-3.0.",
     "repoAddress": "Repositorio:",
-    "team": "Nuestro equipo"
+    "team": "Nuestro equipo",
+    "joinGroup": "Únete a nuestro grupo",
+    "joinGroupDesc": "Haz clic en el botón de abajo para unirte a la comunidad SDS Map y charlar con otros creadores.",
+    "joinGroupButton": "Unirse al grupo",
+    "email": "Correo de WIhee",
+    "emailDesc": "Puedes enviar tus propios mapas (.fun) a este correo. Reviso periódicamente cada semana y los añadiré al sitio tras verificarlos. Por favor, sé amable.",
+    "emailSubject": "Envío de mapa",
+    "emailBody": "Nombre del mapa:\nDescripción del mapa:\nNombre del autor:\nTu enlace de redes sociales:\n\n(Por favor adjunta tu archivo .fun a este correo)"
   },
   "common": {
     "cancel": "Cancelar",

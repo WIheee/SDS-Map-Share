@@ -60,7 +60,14 @@
     "license": "라이선스",
     "licenseContent": "이 웹사이트는 GPL-3.0 라이선스 하에 오픈소스입니다.",
     "repoAddress": "저장소:",
-    "team": "팀"
+    "team": "팀",
+    "joinGroup": "그룹 채팅 참여",
+    "joinGroupDesc": "아래 버튼을 클릭하여 SDS 맵 커뮤니티에 참여하고 다른 맵 제작자들과 교류하세요.",
+    "joinGroupButton": "그룹 참여",
+    "email": "WIhee 이메일",
+    "emailDesc": "자신의 맵(.fun)을 이 이메일로 보내주세요. 매주 부정기적으로 확인 후 사이트에 추가합니다. 예의를 지켜주세요.",
+    "emailSubject": "맵 제출",
+    "emailBody": "맵 이름:\n맵 설명:\n작성자 이름:\n소셜 미디어 링크:\n\n(.fun 파일을 첨부해 주세요)"
   },
   "common": {
     "cancel": "취소",

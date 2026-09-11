@@ -60,7 +60,14 @@
     "license": "開源協議",
     "licenseContent": "該網站是開源的，並且遵循 GPL-3.0 開源協議。",
     "repoAddress": "開源地址：",
-    "team": "我們的團隊"
+    "team": "我們的團隊",
+    "joinGroup": "加入我們的群聊",
+    "joinGroupDesc": "點擊下方按鈕加入 SDS 地圖社群，與其他地圖創作者一起交流。",
+    "joinGroupButton": "點擊加入群聊",
+    "email": "WIhee 信箱",
+    "emailDesc": "你自己的地圖(.fun)可以寄到該信箱，每週會不定期查看，檢查完畢之後就會加入到網站上。請文明用語，謝謝。",
+    "emailSubject": "地圖提交",
+    "emailBody": "地圖名稱：\n地圖描述：\n作者名：\n你的社群媒體連結：\n\n（請將 .fun 檔案作為附件加入本郵件）"
   },
   "common": {
     "cancel": "取消",

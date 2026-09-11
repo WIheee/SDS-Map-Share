@@ -60,7 +60,14 @@
     "license": "ライセンス",
     "licenseContent": "このウェブサイトは GPL-3.0 ライセンスの下でオープンソースです。",
     "repoAddress": "リポジトリ：",
-    "team": "チーム"
+    "team": "チーム",
+    "joinGroup": "グループチャットに参加",
+    "joinGroupDesc": "下のボタンをクリックして SDS マップコミュニティに参加し、他のマップクリエイターと交流しましょう。",
+    "joinGroupButton": "グループに参加",
+    "email": "WIhee のメール",
+    "emailDesc": "自分のマップ(.fun)をこのメールに送ってください。毎週不定期にチェックして、確認後にサイトに追加します。マナーを守ってください。",
+    "emailSubject": "マップの提出",
+    "emailBody": "マップ名：\nマップの説明：\n作者名：\nあなたのSNSリンク：\n\n（.fun ファイルを添付してください）"
   },
   "common": {
     "cancel": "キャンセル",

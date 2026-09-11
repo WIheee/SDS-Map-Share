@@ -60,7 +60,14 @@
     "license": "Lizenz",
     "licenseContent": "Diese Website ist Open Source unter der GPL-3.0-Lizenz.",
     "repoAddress": "Repository:",
-    "team": "Unser Team"
+    "team": "Unser Team",
+    "joinGroup": "Unserer Gruppe beitreten",
+    "joinGroupDesc": "Klicken Sie auf die Schaltfläche unten, um der SDS Map Community beizutreten und sich mit anderen Kartenerstellern auszutauschen.",
+    "joinGroupButton": "Gruppe beitreten",
+    "email": "WIhee E-Mail",
+    "emailDesc": "Du kannst deine eigenen Karten (.fun) an diese E-Mail senden. Ich schaue wöchentlich unregelmäßig nach und füge sie nach Prüfung zur Website hinzu. Bitte bleibt höflich.",
+    "emailSubject": "Karten-Einreichung",
+    "emailBody": "Kartenname:\nKartenbeschreibung:\nAutorname:\nDein Social-Media-Link:\n\n(Bitte füge deine .fun-Datei dieser E-Mail bei)"
   },
   "common": {
     "cancel": "Abbrechen",

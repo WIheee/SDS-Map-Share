@@ -1,217 +1,306 @@
-# SDS-Map-Share 工具集使用说明
+# SDS-Map-Share · 工具集
 
-本目录包含用于管理地图资源的一系列 Python 工具，支持地图的添加（交互式与批量自动）、删除、图片和地图文件压缩以及目录结构导出。
+本目录包含项目使用的全部自动化脚本。所有脚本都**只需 Python 3.10+**，除 `generate_thumbnails.py` 外无第三方依赖。
 
-## 环境要求
+## 脚本一览
 
-- Python 3.8+
-- 依赖库（仅 `compress_images.py` 需要 Pillow）：
-  ```bash
-  pip install Pillow
-  ```
-- 压缩地图文件（.fun -> .7z）需要系统安装 `7z` 命令：
-  - Linux (Debian/Ubuntu): `sudo apt install p7zip-full`
-  - macOS: `brew install p7zip`
-  - Termux (Android): `pkg install p7zip`
-
-所有脚本均需在项目根目录下执行（即 `SDS-Map-Share/` 目录），因为它们会基于当前路径定位 `public/` 和 `src/` 目录。
+| 脚本 | 用途 | 需要运行？ |
+|---|---|---|
+| `auto_add_map.py` | **一键批量添加地图**（主力脚本） | 每次加图时运行 |
+| `generate_thumbnails.py` | 批量生成地图缩略图（无需进游戏） | 加图前运行（可选） |
+| `rm_map.py` | 按 UUID 删除地图 | 需要删图时 |
+| `compress_images.py` | 图片压缩到 ≤60 KB | 被 `auto_add_map.py` 自动调用 |
+| `compress_fun.py` | `.fun` 压缩成 `.7z` | 被 `auto_add_map.py` 自动调用 |
+| `tree.py` | 导出项目结构（给 AI 或备份用） | 按需 |
+| `rewrite_i18n_email.py` | 一次性重写公告页 + 语言文件 | **只需运行一次** |
 
 ---
 
-## 工具列表
+## 环境准备
 
-### 1. `add_map.py` – 交互式单地图上传
+### 必需
 
-**用途**：通过命令行交互输入地图信息，手动指定图片和 `.fun` 文件路径，上传单张地图。
+- **Python 3.10+**
+- **7-Zip 命令行工具**（`7z` 命令）
+  - Termux / Android：`pkg install p7zip`
+  - Debian / Ubuntu：`sudo apt install p7zip-full`
+  - macOS：`brew install p7zip`
+  - Windows：安装 [7-Zip](https://www.7-zip.org/)，把安装目录加入 `PATH`
 
-**使用方法**：
-```bash
-python tools/add_map.py
+### 缩略图生成额外需要
+
+- **Pillow**：`pip install Pillow`
+- **sdsmap**：`pip install sdsmap`
+
+---
+
+## 标准工作流
+
+### 加一张新地图
+
+```
+1. 在 /storage/emulated/0/sds/ 下建一个文件夹（名字随意，比如 仙境/）
+2. 把 .fun 文件放进去
+3. 在文件夹里放一个 config.json（可选，见下文）
+4. （可选）运行 generate_thumbnails.py 生成缩略图
+5. 运行 auto_add_map.py 一键添加到项目
 ```
 
-**交互流程**：
-1. 输入地图名称、描述
-2. 输入图片路径（绝对路径或相对路径）
-3. 输入地图文件路径（`.fun` 文件）
-4. 选择分类（输入数字，多个用逗号分隔：1-对战，2-观赏，3-机关，4-生存）
-5. 输入作者名和可选的作者主页链接
-6. 确认信息后上传
+### 删除一张地图
 
-**文件处理**：
-- 图片复制到 `public/map/image/{分类}/` 并重命名为 `{标题}.扩展名`
-- 地图文件复制到 `public/map/fun/{分类}/` 并重命名为 `{标题}.fun`
-- 自动调用压缩脚本（图片 → webp，地图 → .7z）
-- 更新 `src/data/map/json/{分类}.json`，自动分配自增 ID
+```
+1. 打开 src/data/map/json/ 找到目标地图的 UUID
+2. 运行 rm_map.py，粘贴 UUID
+3. 确认删除（同时会删掉 .webp 和 .7z）
+```
 
 ---
 
-### 2. `auto_add_map.py` – 批量自动扫描上传
+## 脚本详解
 
-**用途**：扫描指定目录（默认 `/storage/emulated/0/sds/`）下的所有子文件夹，自动读取每个文件夹内的 `config.json` 并自动检测图片和 `.fun` 文件，批量一键上传。
+### `auto_add_map.py` — 一键添加
 
-**使用方法**：
+**用途**：扫描 `sds/` 目录下所有地图文件夹，自动完成重命名、复制、压缩、写 JSON 的全流程。
+
+**用法**：
 ```bash
+cd <项目根目录>
 python tools/auto_add_map.py
 ```
 
-**目录结构要求**：
+**它做了什么**：
+1. 扫描 `/storage/emulated/0/sds/` 下的每个文件夹
+2. 读取文件夹内的 `config.json`（标题、描述、分类、作者）
+3. 自动识别文件夹内的图片（截图 / 缩略图）和 `.fun` 文件
+4. 按标题重命名，复制到 `public/map/image/<分类>/` 和 `public/map/fun/<分类>/`
+5. 用 UUID 作为唯一 ID，写入 `src/data/map/json/<分类>.json`
+6. 全部完成后**统一压缩一次**（图片 → WebP、`.fun` → `.7z`）
+
+**文件夹结构要求**：
 ```
-/storage/emulated/0/sds/
-├── config.json                 # （可选）全局配置
-├── 地图A/
-│   ├── config.json            # 地图元数据
-│   ├── cover.jpg              # 任意图片（自动检测）
-│   └── map.fun                # 任意 .fun 文件（自动检测）
-└── 地图B/
-    ├── config.json
-    ├── screenshot.png
-    └── level.fun
+/storage/emulated/0/sds/仙境/
+├── config.json          # 必需：元数据
+├── 仙境.fun             # 必需：地图文件
+└── 仙境.webp            # 可选：封面图（没有的话用自动生成的缩略图）
 ```
 
-**地图 `config.json` 格式**：
+**`config.json` 示例**：
 ```json
 {
-  "title": "地图名称",
-  "description": "地图描述",
+  "title": "仙境",
+  "description": "四周白茫茫的，仿佛只有自己，宛如水墨画一般的地图",
   "category": ["对战", "观赏"],
-  "author": "作者名",
-  "authorUrl": "https://..."   // 可选
+  "author": "WLurker",
+  "authorUrl": ""
 }
 ```
-- `category` 为数组，可选值：`对战`、`观赏`、`机关`、`生存`
-- 封面图和 `.fun` 文件**无需在配置中指定**，脚本自动查找文件夹内第一个图片文件（支持 `.jpg/.jpeg/.png/.gif/.bmp/.webp`）和第一个 `.fun` 文件。
 
-**全局配置（可选）** `/storage/emulated/0/sds/config.json`：
+**分类可选值**：`对战` / `观赏` / `趣味` / `跑酷` / `其他`。第一个分类决定文件放进哪个目录。
+
+**全局配置**（可选）：在 `/storage/emulated/0/sds/config.json` 放一份默认值：
 ```json
 {
-  "defaultAuthor": "匿名",
-  "defaultCategory": ["生存"],
+  "defaultAuthor": "WIhee",
+  "defaultCategory": ["其他"],
   "autoCompress": true,
   "skipInvalid": true
 }
 ```
-- `defaultAuthor`：当地图配置未提供作者时使用的默认值
-- `defaultCategory`：当分类无效或为空时使用的默认分类
-- `autoCompress`：是否自动调用压缩脚本
-- `skipInvalid`：遇到无效地图时是否跳过继续处理
 
-**处理流程**：
-1. 扫描 `/storage/emulated/0/sds/` 下所有非隐藏子文件夹
-2. 对每个文件夹读取 `config.json`，验证必填字段
-3. 自动检测图片和 `.fun` 文件
-4. 将文件重命名为 `标题.扩展名` 并复制到 `public/map/` 对应分类目录
-5. 调用压缩脚本
-6. 更新 JSON 数据文件，分配自增 ID
+**注意**：此脚本**不做备份**，会覆盖同名文件。建议先 `git commit` 再跑。
 
 ---
 
-### 3. `compress_images.py` – 图片压缩为 WebP
+### `generate_thumbnails.py` — 生成缩略图
 
-**用途**：遍历 `public/map/image/` 下所有图片（包括子目录），将其转换为 WebP 格式并压缩至 60KB 以下。原图会在成功转换后被删除，已为 WebP 且小于 60KB 的图片会被跳过。
+**用途**：直接解析 `.fun` 文件，用程序化渲染生成 16:9 缩略图。**无需进游戏截图**。
 
-**使用方法**：
+**用法**：
+```bash
+python tools/generate_thumbnails.py
+```
+
+**输出**：每个地图文件夹里生成 `<文件夹名>.webp`。
+
+**可调参数**（文件顶部）：
+| 参数 | 默认 | 说明 |
+|---|---|---|
+| `VIEW_HALF_WIDTH` | `300` | 视野半宽（世界单位）。越小越放大，越大越广角 |
+| `OUTPUT_SIZE` | `(1600, 900)` | 输出分辨率 |
+| `TARGET_SIZE` | `60 * 1024` | 目标文件大小上限 |
+
+**原理**：用 `sdsmap` 解析 `.fun` 得到方块列表 → 用 Pillow 按 `id` 逐块绘制（颜色和形状参照 SDSmapViewer）→ 以出生点为中心裁剪 16:9 → 循环降质压缩到 ≤60 KB。
+
+**依赖**：需要 `Pillow` 和 `sdsmap`。
+
+**已知限制**：地图极大时可能内存不足。渲染的是俯视平面图，没有游戏里的光影效果。
+
+---
+
+### `rm_map.py` — 删除地图
+
+**用途**：按 UUID 删除一条地图记录及其关联文件。
+
+**用法**：
+```bash
+python tools/rm_map.py
+# 按提示粘贴 UUID
+```
+
+**它做了什么**：从 JSON 中移除条目，同时删除对应的 `.webp` 和 `.7z` 文件。
+
+**跨平台**：使用 `Path.unlink()` 而非 `rm -f`，Windows / macOS / Linux / Termux 都能跑。
+
+---
+
+### `compress_images.py` — 图片压缩
+
+**用途**：把 `public/map/image/` 下的所有图片压到 ≤60 KB 的 WebP。
+
+**用法**：
 ```bash
 python tools/compress_images.py
 ```
 
-**压缩策略**：
-- 从质量 90 开始逐步降低至 5，步长 5，直到文件大小 ≤ 60KB
-- 若最低质量仍大于 60KB，保留原始文件（不删除）
-- 依赖 Pillow 库，请先安装
+**通常不需要手动运行**：`auto_add_map.py` 会自动调用它。
+
+**依赖**：`pip install Pillow`
+
+**特性**：
+- 已是 WebP 且 <60 KB 的图片直接跳过（幂等）
+- 循环降质：从 quality=90 开始，每次 -5，直到 ≤60 KB
+- 降到底仍超标的会保留原文件并提示失败
 
 ---
 
-### 4. `compress_fun.py` – 地图文件压缩为 7z
+### `compress_fun.py` — 地图压缩
 
-**用途**：遍历 `public/map/fun/` 下所有 `.fun` 文件，使用系统 `7z` 命令压缩为 `.7z` 归档，压缩完成后**默认删除原始 `.fun` 文件**（可加 `--keep-original` 保留）。
+**用途**：把 `public/map/fun/` 下的所有 `.fun` 文件压成独立的 `.7z`。
 
-**使用方法**：
+**用法**：
 ```bash
 python tools/compress_fun.py
 ```
 
-**选项**：
-- `--directory DIR`：指定扫描目录（默认 `public/map/fun`）
-- `--keep-original`：保留原始 `.fun` 文件
-- `--no-skip-existing`：覆盖已存在的 `.7z` 文件（默认跳过）
-- `--verbose`：输出详细日志
+**参数**：
+| 参数 | 说明 |
+|---|---|
+| `--directory <路径>` | 搜索根目录（默认 `public/map/fun`） |
+| `--keep-original` | 保留原 `.fun`（默认压缩后删除） |
+| `--no-skip-existing` | 覆盖已存在的 `.7z`（默认跳过） |
+| `--verbose` | 输出详细日志 |
 
-**示例**：
-```bash
-# 压缩所有 .fun，并保留原文件
-python tools/compress_fun.py --keep-original
+**通常不需要手动运行**：`auto_add_map.py` 会自动调用它。
 
-# 指定目录并强制覆盖已有 7z
-python tools/compress_fun.py --directory public/map/fun/battle --no-skip-existing
-```
+**Termux 支持**：脚本会检测 Termux 环境并尝试自动 `pkg install p7zip`。
 
 ---
 
-### 5. `rm_map.py` – 删除地图条目（含文件清理）
+### `tree.py` — 导出项目结构
 
-**用途**：根据地图 ID 删除地图条目，同时删除对应的图片和 `.7z`/`.fun` 文件（使用 Shell `rm -f` 命令）。
+**用途**：生成 `tree.txt`，包含完整的目录结构和文件内容，适合给 AI 分析或做代码存档。
 
-**使用方法**：
-```bash
-python tools/rm_map.py
-```
-
-**交互流程**：
-1. 输入要删除的地图 ID
-2. 显示地图信息（标题、分类、作者）
-3. 确认删除后，自动删除 `image` 和 `file` 字段指向的资源文件
-4. 从对应的 JSON 文件中移除该条目
-
----
-
-### 6. `tree.py` – 导出目录树与文件内容
-
-**用途**：生成 `tree.txt` 文件，包含目录结构和可选的文件内容，便于分享项目结构或调试。
-
-**使用方法**：
+**用法**：
 ```bash
 python tools/tree.py
+# 按提示输入：
+#   Directory path: .    （或直接回车）
+#   Include hidden files? n
+#   List file contents? y
 ```
 
-**交互选项**：
-- 输入要导出的目录（直接回车表示当前目录）
-- 是否包含隐藏文件（y/N）
-- 是否列出文件内容（y/N）
+**输出**：项目根目录的 `tree.txt`。
 
-**输出文件**：`tree.txt`（位于项目根目录）
+**跳过规则**：可在项目根放一份 `.skip_patterns` 文件自定义额外忽略项。
 
 ---
 
-## 改造说明（从手动到自动化）
+### `rewrite_i18n_email.py` — 一次性重写
 
-- 原有 `add_map.py` 为交互式单次上传，适合少量、精细控制。
-- 新增 `auto_add_map.py` 实现了完全自动化：用户只需将地图素材按规范放入 `/storage/emulated/0/sds/` 下的子文件夹，并编写简洁的 `config.json`，运行一次即可批量处理所有地图。该脚本自动检测图片和 `.fun` 文件，省去手动输入路径和重复操作的麻烦。
-- 压缩脚本独立出来，可在上传后自动调用，也可单独运行以重新压缩所有资源。
-- 删除工具 `rm_map.py` 整合了 JSON 修改和文件删除，确保数据一致性。
+**用途**：完整重写 `AnnouncementView.vue` 和所有语言 JSON。**只需运行一次**，之后除非要改邮箱或群链接，否则不用再碰。
 
-整个工具链的设计遵循“配置驱动、自动检测、一键完成”的理念，大幅提高了地图管理效率。
+**用法**：
+```bash
+python tools/rewrite_i18n_email.py
+```
+
+**改邮箱**：编辑脚本顶部的 `EMAIL` 常量，重跑即可。
 
 ---
 
 ## 常见问题
 
-**Q：`auto_add_map.py` 扫描不到我的文件夹？**  
-A：请确认扫描根目录是否为 `/storage/emulated/0/sds/`，如果你的手机存储挂载点不同，可修改脚本中的 `SCAN_ROOT` 变量。
+### Q：`7z: command not found`
 
-**Q：压缩图片时提示 `ModuleNotFoundError: No module named 'PIL'`？**  
-A：执行 `pip install Pillow` 安装依赖。
+安装 7-Zip：
+- Termux：`pkg install p7zip`
+- Linux：`sudo apt install p7zip-full`
+- macOS：`brew install p7zip`
 
-**Q：压缩地图文件时提示 `7z command not found`？**  
-A：安装 p7zip（参考环境要求章节）。在 Termux 中可使用 `pkg install p7zip`。
+### Q：`ModuleNotFoundError: No module named 'PIL'`
 
-**Q：`add_map.py` 和 `auto_add_map.py` 分配的 ID 会重复吗？**  
-A：不会。所有工具共用 `get_next_id()` 函数，扫描所有 JSON 文件获取最大 ID 并加 1，保证全局唯一且永不回收。
+```bash
+pip install Pillow
+```
 
-**Q：我想修改默认分类或作者，应该怎么做？**  
-A：在 `auto_add_map.py` 中调整 `defaults` 字典内的值，或使用全局 `config.json` 覆盖。
+### Q：`ModuleNotFoundError: No module named 'sdsmap'`
+
+```bash
+pip install sdsmap
+```
+
+Termux 上如果 `pip install` 编译失败，参考 `generate_thumbnails.py` 的文件头注释。
+
+### Q：添加地图后网站没更新
+
+检查两件事：
+1. `src/data/map/json/<分类>.json` 里有没有新条目
+2. `public/map/image/` 和 `public/map/fun/` 里有没有新文件
+
+都有的话，重启 dev server（`npm run dev`）或重新 build。
+
+### Q：UUID 会不会重复
+
+理论上可能，实际不会。`uuid4` 有 122 位随机位，生成 10 亿个碰撞概率约 1.7×10⁻¹⁸。
+
+### Q：`.webp` 和 `.jpg` 冲突怎么办
+
+`auto_add_map.py` 的 `detect_assets` 会抓文件夹里的**第一个**图片。如果同时有手动截图和自动生成的缩略图，可能抓错。
+
+**建议**：一个文件夹里**只留一张图**，要么全是手动截图，要么全是自动缩略图。
 
 ---
 
-## 维护者
+## 目录约定
 
-如有问题或建议，请联系项目维护者。
+```
+<项目根>/
+├── tools/                      # 本目录
+├── public/
+│   └── map/
+│       ├── image/<分类>/       # 封面图（WebP）
+│       └── fun/<分类>/         # 地图文件（.7z）
+└── src/data/map/json/          # 地图元数据
+
+/storage/emulated/0/sds/        # 地图源文件夹（不在项目里）
+├── config.json                 # 全局默认配置（可选）
+└── <地图名>/
+    ├── config.json             # 单图元数据
+    ├── <任意名>.fun            # 源地图文件
+    └── <任意名>.webp           # 封面图
+```
+
+---
+
+## 添加新脚本的建议
+
+如果你要往 `tools/` 里加新脚本，遵循现有风格：
+
+1. **单文件、无外部依赖**（除 Pillow / sdsmap 这类明确需要的）
+2. **文件顶部写 docstring**，说明用途和用法
+3. **路径用 `Path(__file__).parent.parent`** 定位项目根
+4. **不生成备份**，依赖 git 做版本管理
+5. **幂等**：重复运行无害
+6. **提供 CLI 提示**（`input()` 或 `argparse`）
+
+参考 `rm_map.py` 的结构最简单，`auto_add_map.py` 最完整。

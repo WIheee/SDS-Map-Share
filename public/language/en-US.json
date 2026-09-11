@@ -60,7 +60,14 @@
     "license": "License",
     "licenseContent": "This website is open source under the GPL-3.0 license.",
     "repoAddress": "Repository:",
-    "team": "Our Team"
+    "team": "Our Team",
+    "joinGroup": "Join Our Community",
+    "joinGroupDesc": "Click the button below to join the SDS Map community and chat with other map creators.",
+    "joinGroupButton": "Join Group Chat",
+    "email": "WIhee's Email",
+    "emailDesc": "You can send your own maps (.fun) to this email. I'll check periodically each week and add them to the site after verification. Please keep it polite. Thank you.",
+    "emailSubject": "Map Submission",
+    "emailBody": "Map name:\nMap description:\nAuthor name:\nYour social media link:\n\n(Please attach your .fun file to this email)"
   },
   "common": {
     "cancel": "Cancel",

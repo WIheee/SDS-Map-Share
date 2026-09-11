@@ -5,6 +5,7 @@
       <h1>{{ t('announcement.title') }}</h1>
     </div>
 
+    <!-- 公告 -->
     <mdui-card class="info-card">
       <div class="card-header">
         <mdui-icon name="announcement" class="card-icon"></mdui-icon>
@@ -14,6 +15,7 @@
       <div class="card-body">{{ t('announcement.announcementContent') }}</div>
     </mdui-card>
 
+    <!-- 开源协议 -->
     <mdui-card class="info-card">
       <div class="card-header">
         <mdui-icon name="code" class="card-icon"></mdui-icon>
@@ -36,6 +38,7 @@
       </div>
     </mdui-card>
 
+    <!-- 团队 -->
     <mdui-card class="info-card">
       <div class="card-header">
         <mdui-icon name="group" class="card-icon"></mdui-icon>
@@ -63,16 +66,71 @@
         </div>
       </div>
     </mdui-card>
+
+    <!-- 加入群聊 -->
+    <mdui-card class="info-card">
+      <div class="card-header">
+        <mdui-icon name="group_add" class="card-icon"></mdui-icon>
+        <span>{{ t('announcement.joinGroup') }}</span>
+      </div>
+      <mdui-divider></mdui-divider>
+      <div class="card-body join-group-body">
+        <p>{{ t('announcement.joinGroupDesc') }}</p>
+        <mdui-button
+          variant="filled"
+          icon="group_add"
+          class="join-group-btn"
+          @click="openGroup"
+        >
+          {{ t('announcement.joinGroupButton') }}
+        </mdui-button>
+      </div>
+    </mdui-card>
+
+    <!-- 邮箱 -->
+    <mdui-card class="info-card">
+      <div class="card-header">
+        <mdui-icon name="mail" class="card-icon"></mdui-icon>
+        <span>{{ t('announcement.email') }}</span>
+      </div>
+      <mdui-divider></mdui-divider>
+      <div class="card-body email-body">
+        <p>{{ t('announcement.emailDesc') }}</p>
+        <a :href="emailHref" class="email-link">
+          <mdui-icon name="mail" class="email-icon"></mdui-icon>
+          {{ EMAIL }}
+        </a>
+      </div>
+    </mdui-card>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import 'mdui/components/card.js'
 import 'mdui/components/icon.js'
 import 'mdui/components/divider.js'
+import 'mdui/components/button.js'
 
 const { t } = useI18n()
+
+// ⚠️ 邮箱地址
+const EMAIL = 'bywihee@outlook.com'
+
+// QQ 群邀请链接
+const GROUP_URL = 'https://qun.qq.com/universal-share/share?ac=1&authKey=vACL5aGiSRKwNdk9PQpevQe3l%2BoYxn5CSXaqQIVEDjBVuWRUI8DsXvwSYJPKAPmo&busi_data=eyJncm91cENvZGUiOiI5OTEyNDAyNzAiLCJ0b2tlbiI6IjdHLzNJYlFZNzJRNG5yQ2VjcmlEOVVhQ05yemdpN0FJd3hTZDBpQjJyTjBueWNOS29PWTFiUy8rc1dNU1RpWkgiLCJ1aW4iOiIzMjg5NTc1ODIxIn0%3D&data=alw3G_blKFAMNyum3E8A4tHd5PuPThsX1izuO1qT-YLTsUFD1nQcjcyU0lTkOLgP0TF8JUqqZtqaj0UpODYz8Q&svctype=4&tempid=h5_group_info'
+
+// 邮件链接：主题和正文从 i18n 读取，切换语言时自动跟随
+const emailHref = computed(() => {
+  const subject = t('announcement.emailSubject')
+  const body = t('announcement.emailBody')
+  return `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+})
+
+const openGroup = () => {
+  window.open(GROUP_URL, '_blank', 'noopener,noreferrer')
+}
 
 interface TeamMember {
   name: string
@@ -164,6 +222,7 @@ h1 {
   text-decoration: underline;
 }
 
+/* 团队 */
 .team-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -214,6 +273,62 @@ h1 {
   margin-top: 4px;
 }
 
+/* 加入群聊 */
+.join-group-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.join-group-body p {
+  margin: 0;
+  color: rgb(var(--mdui-color-on-surface-variant));
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.join-group-btn {
+  align-self: flex-start;
+  --mdui-button-container-color: rgb(var(--mdui-color-primary));
+  --mdui-button-label-text-color: rgb(var(--mdui-color-on-primary));
+}
+
+/* 邮箱 */
+.email-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.email-body p {
+  margin: 0;
+  color: rgb(var(--mdui-color-on-surface-variant));
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.email-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgb(var(--mdui-color-primary));
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  word-break: break-all;
+  align-self: flex-start;
+  transition: color 0.2s ease;
+}
+
+.email-link:hover {
+  text-decoration: underline;
+}
+
+.email-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
 @media (max-width: 600px) {
   .header-icon {
     font-size: 26px;
@@ -223,6 +338,10 @@ h1 {
   }
   .team-grid {
     grid-template-columns: 1fr 1fr;
+  }
+  .join-group-btn,
+  .email-link {
+    align-self: stretch;
   }
 }
 </style>
