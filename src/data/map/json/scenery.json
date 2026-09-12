@@ -116,5 +116,18 @@
       "观赏"
     ],
     "author": "Teus"
+  },
+  {
+    "id": "bdb726e7587c49539ac61e9c2eb59459",
+    "title": "CrimsonCatacombs",
+    "description": "What is Paris truly hiding beneath its surface? Descend into the Catacombs... if you dare. (巴黎的地下究竟隐藏着什么？潜入地下墓穴……如果你敢的话)",
+    "image": "/map/image/scenery/CrimsonCatacombs.webp",
+    "file": "/map/fun/scenery/CrimsonCatacombs.7z",
+    "category": [
+      "观赏",
+      "对战"
+    ],
+    "author": "BobDaClown",
+    "authorUrl": "https://youtube.com/@bobdaclown?si=FjM12RiqDNmBSdE6"
   }
 ]
