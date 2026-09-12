@@ -5,7 +5,7 @@ Usage: python tools/auto_add_map.py
 Scans all map folders under /storage/emulated/0/sds/,
 reads config.json for metadata (title, description, category, author),
 auto-detects cover image and .fun file inside the folder,
-renames them to the title, copies them to the project directory,
+renames them to "<title>_<uuid6>", copies them to the project directory,
 and updates the corresponding JSON data file.
 """
 
@@ -138,7 +138,11 @@ def run_compress(script: str) -> bool:
 
 def process_map(folder: Path, config: dict, global_config: dict,
                 map_id: str, img_src: Path, fun_src: Path) -> bool:
-    """复制文件 + 写 JSON，不再负责压缩（压缩已提到 main 循环外）"""
+    """复制文件 + 写 JSON，不再负责压缩（压缩已提到 main 循环外）
+
+    资源命名规则：<sanitize 后的标题>_<UUID 前 6 位>
+    例：标题「我的 地图」+ id a1b2c3... → 我的_地图_a1b2c3
+    """
     title = config["title"]
     description = config["description"]
     categories = config["category"]
@@ -147,27 +151,44 @@ def process_map(folder: Path, config: dict, global_config: dict,
 
     main_cat = categories[0]
     cat_en = CATEGORY_EN[main_cat]
-    safe_title = sanitize_filename(title)
+
+    # 文件名 = 清洗后的标题 + "_" + UUID 前 6 位
+    safe_base = f"{sanitize_filename(title)}_{map_id[:6]}"
 
     # ---- 复制封面 ----
     img_ext = img_src.suffix.lower()
     img_dst_dir = PUBLIC_MAP / "image" / cat_en
     img_dst_dir.mkdir(parents=True, exist_ok=True)
-    img_dst = img_dst_dir / (safe_title + img_ext)
+    img_dst = img_dst_dir / f"{safe_base}{img_ext}"
+
+    # 防御：即便 UUID 罕见撞车，也不静默覆盖
+    if img_dst.exists():
+        print(f"  [ERROR] 目标封面已存在，跳过：{img_dst}")
+        return False
+
     shutil.copy2(img_src, img_dst)
-    print(f"  Cover image: {img_src.name} -> {safe_title}{img_ext}")
+    print(f"  Cover image: {img_src.name} -> {img_dst.name}")
 
     # ---- 复制 .fun ----
     fun_dst_dir = PUBLIC_MAP / "fun" / cat_en
     fun_dst_dir.mkdir(parents=True, exist_ok=True)
-    fun_dst = fun_dst_dir / (safe_title + ".fun")
-    shutil.copy2(fun_src, fun_dst)
-    print(f"  Map file: {fun_src.name} -> {safe_title}.fun")
+    fun_dst = fun_dst_dir / f"{safe_base}.fun"
 
-    # ---- 生成 URL（此时压缩还没跑，先按源文件名写；main 循环结束会统一压缩）----
-    # 压缩后 .webp / .7z 会替换源文件，URL 用 basename 一致即可
-    image_url = f"/map/image/{cat_en}/{safe_title}.webp"
-    file_url = f"/map/fun/{cat_en}/{safe_title}.7z"
+    if fun_dst.exists():
+        print(f"  [ERROR] 目标地图文件已存在，跳过：{fun_dst}")
+        # 回滚已经复制好的封面，避免留下半成品
+        try:
+            img_dst.unlink()
+        except OSError:
+            pass
+        return False
+
+    shutil.copy2(fun_src, fun_dst)
+    print(f"  Map file: {fun_src.name} -> {fun_dst.name}")
+
+    # ---- URL（压缩后 .webp / .7z 与 .fun 同名替换）----
+    image_url = f"/map/image/{cat_en}/{safe_base}.webp"
+    file_url = f"/map/fun/{cat_en}/{safe_base}.7z"
 
     map_data = {
         "id": map_id,

@@ -5,10 +5,7 @@
     "description": "被深渊凝视不好受对吧?那如果还要战斗呢",
     "image": "/map/image/scenery/克苏鲁之眼.webp",
     "file": "/map/fun/scenery/克苏鲁之眼.7z",
-    "category": [
-      "观赏",
-      "对战"
-    ],
+    "category": ["观赏", "对战"],
     "author": "WLurker"
   },
   {
@@ -17,9 +14,7 @@
     "description": "战斗了一天也累了吧?这里没有战斗只有温暖的家,2025新年快乐!",
     "image": "/map/image/scenery/温暖的家.webp",
     "file": "/map/fun/scenery/温暖的家.7z",
-    "category": [
-      "观赏"
-    ],
+    "category": ["观赏"],
     "author": "WLurker"
   },
   {
@@ -28,10 +23,7 @@
     "description": "在悠远的天空 苍穹的尽头…享受在天空战斗的乐趣",
     "image": "/map/image/scenery/FloatingTori.webp",
     "file": "/map/fun/scenery/FloatingTori.7z",
-    "category": [
-      "观赏",
-      "对战"
-    ],
+    "category": ["观赏", "对战"],
     "author": "未知"
   },
   {
@@ -40,10 +32,7 @@
     "description": "一座在荒山野岭的小屋子,里面可能就坐着一位恐怖的老奶奶...",
     "image": "/map/image/scenery/山村老屋.webp",
     "file": "/map/fun/scenery/山村老屋.7z",
-    "category": [
-      "观赏",
-      "对战"
-    ],
+    "category": ["观赏", "对战"],
     "author": "WLurker"
   },
   {
@@ -52,10 +41,7 @@
     "description": "人类到如今已经繁衍了250000年,只有最近的400年是有意义的,我们不妨大胆想象一下为什么不在星空对战呢?",
     "image": "/map/image/scenery/星空之旅.webp",
     "file": "/map/fun/scenery/星空之旅.7z",
-    "category": [
-      "观赏",
-      "对战"
-    ],
+    "category": ["观赏", "对战"],
     "author": "一只小小的乌鸦"
   },
   {
@@ -64,10 +50,7 @@
     "description": "残败的封印，飘荡的铁链，壮观的地狱地图",
     "image": "/map/image/scenery/挣脱.webp",
     "file": "/map/fun/scenery/挣脱.7z",
-    "category": [
-      "观赏",
-      "对战"
-    ],
+    "category": ["观赏", "对战"],
     "author": "美酒FineWine",
     "authorUrl": "https://youtube.com/@finewine-meijiunb?si=lRsWmXjFfWbvEs-o"
   },
@@ -77,9 +60,7 @@
     "description": "不知道是哪位勇者打完魔王之后忘记拿的",
     "image": "/map/image/scenery/遗忘之剑.webp",
     "file": "/map/fun/scenery/遗忘之剑.7z",
-    "category": [
-      "观赏"
-    ],
+    "category": ["观赏"],
     "author": "Sooy"
   },
   {
@@ -88,10 +69,7 @@
     "description": "森严的戒备，祥和的边境，最后的宁静",
     "image": "/map/image/scenery/枷锁.webp",
     "file": "/map/fun/scenery/枷锁.7z",
-    "category": [
-      "观赏",
-      "对战"
-    ],
+    "category": ["观赏", "对战"],
     "author": "美酒FineWine",
     "authorUrl": "https://youtube.com/@finewine-meijiunb?si=lRsWmXjFfWbvEs-o"
   },
@@ -101,9 +79,7 @@
     "description": "我跟你说,我小时候天天来这棵树玩你看...不对快跑!",
     "image": "/map/image/scenery/诡树.webp",
     "file": "/map/fun/scenery/诡树.7z",
-    "category": [
-      "观赏"
-    ],
+    "category": ["观赏"],
     "author": "WLurker"
   },
   {
@@ -112,9 +88,7 @@
     "description": "a short and easy tower",
     "image": "/map/image/scenery/Tower_of_Lava_Facility.webp",
     "file": "/map/fun/scenery/Tower_of_Lava_Facility.7z",
-    "category": [
-      "观赏"
-    ],
+    "category": ["观赏"],
     "author": "Teus"
   },
   {
@@ -123,11 +97,28 @@
     "description": "What is Paris truly hiding beneath its surface? Descend into the Catacombs... if you dare. (巴黎的地下究竟隐藏着什么？潜入地下墓穴……如果你敢的话)",
     "image": "/map/image/scenery/CrimsonCatacombs.webp",
     "file": "/map/fun/scenery/CrimsonCatacombs.7z",
-    "category": [
-      "观赏",
-      "对战"
-    ],
+    "category": ["观赏", "对战"],
     "author": "BobDaClown",
     "authorUrl": "https://youtube.com/@bobdaclown?si=FjM12RiqDNmBSdE6"
+  },
+  {
+    "id": "e680759c7fbc450aa0bd2dfa4eec51bc",
+    "title": "ABC",
+    "description": "Art map for Alex, Bobdaclown, Cheesehamster (ABC)",
+    "image": "/map/image/scenery/ABC_e68075.webp",
+    "file": "/map/fun/scenery/ABC_e68075.7z",
+    "category": ["观赏"],
+    "author": "CharlieNar",
+    "authorUrl": "https://youtube.com/@charlienarr?si=43FPhK-auir4OaLR"
+  },
+  {
+    "id": "f5d0f3dc413e4472a408c5edc6601278",
+    "title": "K",
+    "description": "A simple art map, not recommended for fighting",
+    "image": "/map/image/scenery/K_f5d0f3.webp",
+    "file": "/map/fun/scenery/K_f5d0f3.7z",
+    "category": ["观赏"],
+    "author": "CharlieNar",
+    "authorUrl": "https://youtube.com/@charlienarr?si=43FPhK-auir4OaLR"
   }
 ]
