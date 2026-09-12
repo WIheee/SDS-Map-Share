@@ -67,7 +67,10 @@
     "email": "Email de WIhee",
     "emailDesc": "Vous pouvez envoyer vos propres cartes (.fun) à cet email. Je vérifie régulièrement chaque semaine et les ajouterai au site après vérification. Merci de rester courtois.",
     "emailSubject": "Soumission de carte",
-    "emailBody": "Nom de la carte :\nDescription de la carte :\nNom de l'auteur :\nVotre lien de réseau social :\n\n(Veuillez joindre votre fichier .fun à cet email)"
+    "emailBody": "Nom de la carte :\nDescription de la carte :\nNom de l'auteur :\nVotre lien de réseau social :\n\n(Veuillez joindre votre fichier .fun à cet email)",
+    "discord": "Communauté Discord officielle",
+    "discordDesc": "Rejoignez la communauté Discord officielle pour discuter en temps réel avec d'autres créateurs de cartes et partager vos œuvres.",
+    "discordButton": "Rejoindre Discord"
   },
   "common": {
     "cancel": "Annuler",

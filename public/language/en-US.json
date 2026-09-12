@@ -67,7 +67,10 @@
     "email": "WIhee's Email",
     "emailDesc": "You can send your own maps (.fun) to this email. I'll check periodically each week and add them to the site after verification. Please keep it polite. Thank you.",
     "emailSubject": "Map Submission",
-    "emailBody": "Map name:\nMap description:\nAuthor name:\nYour social media link:\n\n(Please attach your .fun file to this email)"
+    "emailBody": "Map name:\nMap description:\nAuthor name:\nYour social media link:\n\n(Please attach your .fun file to this email)",
+    "discord": "Official Discord Community",
+    "discordDesc": "Join the official Discord community to chat with other map creators in real time and share your work.",
+    "discordButton": "Join Discord"
   },
   "common": {
     "cancel": "Cancel",

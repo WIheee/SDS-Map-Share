@@ -67,7 +67,10 @@
     "email": "WIhee 이메일",
     "emailDesc": "자신의 맵(.fun)을 이 이메일로 보내주세요. 매주 부정기적으로 확인 후 사이트에 추가합니다. 예의를 지켜주세요.",
     "emailSubject": "맵 제출",
-    "emailBody": "맵 이름:\n맵 설명:\n작성자 이름:\n소셜 미디어 링크:\n\n(.fun 파일을 첨부해 주세요)"
+    "emailBody": "맵 이름:\n맵 설명:\n작성자 이름:\n소셜 미디어 링크:\n\n(.fun 파일을 첨부해 주세요)",
+    "discord": "공식 Discord 커뮤니티",
+    "discordDesc": "공식 Discord 커뮤니티에 참여하여 다른 맵 제작자들과 실시간으로 소통하고 작품을 공유하세요.",
+    "discordButton": "Discord 참여"
   },
   "common": {
     "cancel": "취소",

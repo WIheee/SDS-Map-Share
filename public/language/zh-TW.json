@@ -67,7 +67,10 @@
     "email": "WIhee 信箱",
     "emailDesc": "你自己的地圖(.fun)可以寄到該信箱，每週會不定期查看，檢查完畢之後就會加入到網站上。請文明用語，謝謝。",
     "emailSubject": "地圖提交",
-    "emailBody": "地圖名稱：\n地圖描述：\n作者名：\n你的社群媒體連結：\n\n（請將 .fun 檔案作為附件加入本郵件）"
+    "emailBody": "地圖名稱：\n地圖描述：\n作者名：\n你的社群媒體連結：\n\n（請將 .fun 檔案作為附件加入本郵件）",
+    "discord": "官方 Discord 社群",
+    "discordDesc": "加入官方 Discord 社群，與其他地圖創作者即時交流、分享你的作品。",
+    "discordButton": "加入 Discord 社群"
   },
   "common": {
     "cancel": "取消",

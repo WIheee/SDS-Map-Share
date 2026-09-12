@@ -67,7 +67,10 @@
     "email": "WIhee のメール",
     "emailDesc": "自分のマップ(.fun)をこのメールに送ってください。毎週不定期にチェックして、確認後にサイトに追加します。マナーを守ってください。",
     "emailSubject": "マップの提出",
-    "emailBody": "マップ名：\nマップの説明：\n作者名：\nあなたのSNSリンク：\n\n（.fun ファイルを添付してください）"
+    "emailBody": "マップ名：\nマップの説明：\n作者名：\nあなたのSNSリンク：\n\n（.fun ファイルを添付してください）",
+    "discord": "公式 Discord コミュニティ",
+    "discordDesc": "公式 Discord コミュニティに参加して、他のマップクリエイターとリアルタイムで交流し、作品を共有しましょう。",
+    "discordButton": "Discord に参加"
   },
   "common": {
     "cancel": "キャンセル",

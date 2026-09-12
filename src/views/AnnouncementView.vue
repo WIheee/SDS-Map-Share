@@ -67,26 +67,6 @@
       </div>
     </mdui-card>
 
-    <!-- 加入群聊 -->
-    <mdui-card class="info-card">
-      <div class="card-header">
-        <mdui-icon name="group_add" class="card-icon"></mdui-icon>
-        <span>{{ t('announcement.joinGroup') }}</span>
-      </div>
-      <mdui-divider></mdui-divider>
-      <div class="card-body join-group-body">
-        <p>{{ t('announcement.joinGroupDesc') }}</p>
-        <mdui-button
-          variant="filled"
-          icon="group_add"
-          class="join-group-btn"
-          @click="openGroup"
-        >
-          {{ t('announcement.joinGroupButton') }}
-        </mdui-button>
-      </div>
-    </mdui-card>
-
     <!-- 邮箱 -->
     <mdui-card class="info-card">
       <div class="card-header">
@@ -100,6 +80,36 @@
           <mdui-icon name="mail" class="email-icon"></mdui-icon>
           {{ EMAIL }}
         </a>
+      </div>
+    </mdui-card>
+
+    <!-- Discord 社区 -->
+    <mdui-card class="info-card">
+      <div class="card-header">
+        <mdui-icon name="forum" class="card-icon"></mdui-icon>
+        <span>{{ t('announcement.discord') }}</span>
+      </div>
+      <mdui-divider></mdui-divider>
+      <div class="card-body discord-body">
+        <p>{{ t('announcement.discordDesc') }}</p>
+        <mdui-button variant="filled" icon="forum" class="discord-btn" @click="openDiscord">
+          {{ t('announcement.discordButton') }}
+        </mdui-button>
+      </div>
+    </mdui-card>
+
+    <!-- QQ 群 -->
+    <mdui-card class="info-card">
+      <div class="card-header">
+        <mdui-icon name="group_add" class="card-icon"></mdui-icon>
+        <span>{{ t('announcement.joinGroup') }}</span>
+      </div>
+      <mdui-divider></mdui-divider>
+      <div class="card-body join-group-body">
+        <p>{{ t('announcement.joinGroupDesc') }}</p>
+        <mdui-button variant="filled" icon="group_add" class="join-group-btn" @click="openGroup">
+          {{ t('announcement.joinGroupButton') }}
+        </mdui-button>
       </div>
     </mdui-card>
   </div>
@@ -119,7 +129,11 @@ const { t } = useI18n()
 const EMAIL = 'bywihee@outlook.com'
 
 // QQ 群邀请链接
-const GROUP_URL = 'https://qun.qq.com/universal-share/share?ac=1&authKey=vACL5aGiSRKwNdk9PQpevQe3l%2BoYxn5CSXaqQIVEDjBVuWRUI8DsXvwSYJPKAPmo&busi_data=eyJncm91cENvZGUiOiI5OTEyNDAyNzAiLCJ0b2tlbiI6IjdHLzNJYlFZNzJRNG5yQ2VjcmlEOVVhQ05yemdpN0FJd3hTZDBpQjJyTjBueWNOS29PWTFiUy8rc1dNU1RpWkgiLCJ1aW4iOiIzMjg5NTc1ODIxIn0%3D&data=alw3G_blKFAMNyum3E8A4tHd5PuPThsX1izuO1qT-YLTsUFD1nQcjcyU0lTkOLgP0TF8JUqqZtqaj0UpODYz8Q&svctype=4&tempid=h5_group_info'
+const GROUP_URL =
+  'https://qun.qq.com/universal-share/share?ac=1&authKey=vACL5aGiSRKwNdk9PQpevQe3l%2BoYxn5CSXaqQIVEDjBVuWRUI8DsXvwSYJPKAPmo&busi_data=eyJncm91cENvZGUiOiI5OTEyNDAyNzAiLCJ0b2tlbiI6IjdHLzNJYlFZNzJRNG5yQ2VjcmlEOVVhQ05yemdpN0FJd3hTZDBpQjJyTjBueWNOS29PWTFiUy8rc1dNU1RpWkgiLCJ1aW4iOiIzMjg5NTc1ODIxIn0%3D&data=alw3G_blKFAMNyum3E8A4tHd5PuPThsX1izuO1qT-YLTsUFD1nQcjcyU0lTkOLgP0TF8JUqqZtqaj0UpODYz8Q&svctype=4&tempid=h5_group_info'
+
+// Discord 社区链接
+const DISCORD_URL = 'https://discord.gg/FeGk8JF4py'
 
 // 邮件链接：主题和正文从 i18n 读取，切换语言时自动跟随
 const emailHref = computed(() => {
@@ -130,6 +144,10 @@ const emailHref = computed(() => {
 
 const openGroup = () => {
   window.open(GROUP_URL, '_blank', 'noopener,noreferrer')
+}
+
+const openDiscord = () => {
+  window.open(DISCORD_URL, '_blank', 'noopener,noreferrer')
 }
 
 interface TeamMember {
@@ -273,26 +291,6 @@ h1 {
   margin-top: 4px;
 }
 
-/* 加入群聊 */
-.join-group-body {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.join-group-body p {
-  margin: 0;
-  color: rgb(var(--mdui-color-on-surface-variant));
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.join-group-btn {
-  align-self: flex-start;
-  --mdui-button-container-color: rgb(var(--mdui-color-primary));
-  --mdui-button-label-text-color: rgb(var(--mdui-color-on-primary));
-}
-
 /* 邮箱 */
 .email-body {
   display: flex;
@@ -329,6 +327,46 @@ h1 {
   flex-shrink: 0;
 }
 
+/* Discord */
+.discord-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.discord-body p {
+  margin: 0;
+  color: rgb(var(--mdui-color-on-surface-variant));
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.discord-btn {
+  align-self: flex-start;
+  --mdui-button-container-color: rgb(var(--mdui-color-primary));
+  --mdui-button-label-text-color: rgb(var(--mdui-color-on-primary));
+}
+
+/* QQ 群 */
+.join-group-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.join-group-body p {
+  margin: 0;
+  color: rgb(var(--mdui-color-on-surface-variant));
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.join-group-btn {
+  align-self: flex-start;
+  --mdui-button-container-color: rgb(var(--mdui-color-primary));
+  --mdui-button-label-text-color: rgb(var(--mdui-color-on-primary));
+}
+
 @media (max-width: 600px) {
   .header-icon {
     font-size: 26px;
@@ -339,8 +377,9 @@ h1 {
   .team-grid {
     grid-template-columns: 1fr 1fr;
   }
-  .join-group-btn,
-  .email-link {
+  .email-link,
+  .discord-btn,
+  .join-group-btn {
     align-self: stretch;
   }
 }

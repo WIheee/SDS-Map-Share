@@ -2,7 +2,7 @@
 """
 SDS Map Thumbnail Generator
 - 移植自 SDSmapViewer 的方块样式与层次逻辑
-- 以出生点为中心，固定视野，16:9 输出
+- 以出生点为中心，自动视野，16:9 输出
 - 用 Pillow 替代 pygame，Termux 可跑
 - 缩略图输出到与 .fun / .7z 相同文件夹
 - 压缩逻辑与 compress_images.py 保持一致
@@ -31,10 +31,13 @@ SCAN_ROOT = Path("/storage/emulated/0/sds")
 OUTPUT_SIZE = (1600, 900)      # 16:9 输出尺寸
 MAX_CANVAS = 6000              # 单边最大像素，防内存溢出
 
-# ---- 视野大小（世界单位）----
-# 方块默认 2.5 单位。数值越小，画面越放大。
-# 参考：15≈12个方块   30≈24个方块   60≈48个方块   120≈96个方块
-VIEW_HALF_WIDTH = 300
+# ---- 自动视野参数 ----
+ASPECT = OUTPUT_SIZE[0] / OUTPUT_SIZE[1]   # 16:9
+PADDING_RATIO = 0.08           # 边缘留白比例（0.05~0.15 比较合适）
+ZOOM = 1.3                     # 全局缩放，>1 放大、<1 缩小
+MIN_HALF_WIDTH = 40            # 最小半宽（世界单位），防止小地图被放糊
+MAX_HALF_WIDTH = 2000          # 最大半宽（世界单位），防止超大地图缩成一点
+CENTER_WEIGHT = 0.0            # 0=包围盒中心居中，1=spawn 居中（>0 有裁边风险）
 
 # ---- 压缩参数（与 compress_images.py 保持一致）----
 TARGET_SIZE = 60 * 1024        # 目标：≤60 KB
@@ -310,28 +313,85 @@ def load_map_data(fun_path: Path):
 
 
 # ==========================================
-# 渲染整张缩略图（spawn 居中，固定视野，16:9）
+# 自动视野：根据包围盒计算 16:9 取景范围
+# ==========================================
+def compute_view(map_data,
+                 aspect=ASPECT,
+                 padding_ratio=PADDING_RATIO,
+                 zoom=ZOOM,
+                 min_half_width=MIN_HALF_WIDTH,
+                 max_half_width=MAX_HALF_WIDTH,
+                 center_weight=CENTER_WEIGHT):
+    """
+    根据方块包围盒计算 16:9 视野。
+    返回 (view_min_x, view_max_x, view_min_y, view_max_y)。
+    """
+    blocks = map_data["blocks"]
+    spawn_x = map_data["spawn_x"]
+    spawn_y = map_data["spawn_y"]
+
+    # 空地图兜底
+    if not blocks:
+        half_w = min_half_width / zoom
+        half_h = half_w / aspect
+        return (spawn_x - half_w, spawn_x + half_w,
+                spawn_y - half_h, spawn_y + half_h)
+
+    # 1) 逐块扩展包围盒（用外接圆半径覆盖旋转情况）
+    min_x = float("inf"); max_x = float("-inf")
+    min_y = float("inf"); max_y = float("-inf")
+    for b in blocks:
+        r = math.hypot(abs(b["w"]), abs(b["h"])) / 2
+        min_x = min(min_x, b["x"] - r); max_x = max(max_x, b["x"] + r)
+        min_y = min(min_y, b["y"] - r); max_y = max(max_y, b["y"] + r)
+
+    # 2) 把 spawn 也纳入视野，保证出生点不会跑出画面
+    min_x = min(min_x, spawn_x); max_x = max(max_x, spawn_x)
+    min_y = min(min_y, spawn_y); max_y = max(max_y, spawn_y)
+
+    # 3) 按目标比例扩展较短的一边，避免拉伸变形
+    span_x = max_x - min_x
+    span_y = max_y - min_y
+    if span_x / span_y < aspect:
+        need_x = span_y * aspect
+        cx = (min_x + max_x) / 2
+        min_x, max_x = cx - need_x / 2, cx + need_x / 2
+    else:
+        need_y = span_x / aspect
+        cy = (min_y + max_y) / 2
+        min_y, max_y = cy - need_y / 2, cy + need_y / 2
+
+    # 4) 中心加权（0=包围盒中心，1=spawn）
+    bx = (min_x + max_x) / 2
+    by = (min_y + max_y) / 2
+    cx = bx * (1 - center_weight) + spawn_x * center_weight
+    cy = by * (1 - center_weight) + spawn_y * center_weight
+
+    # 5) padding + zoom
+    half_w = (max_x - min_x) / 2 * (1 + padding_ratio) / zoom
+    half_h = (max_y - min_y) / 2 * (1 + padding_ratio) / zoom
+
+    # 6) 夹紧到合理范围
+    half_w = max(min_half_width, min(half_w, max_half_width))
+    half_h = half_w / aspect
+
+    return cx - half_w, cx + half_w, cy - half_h, cy + half_h
+
+
+# ==========================================
+# 渲染整张缩略图（自动视野，16:9）
 # ==========================================
 def render_thumbnail(map_data, output_path: Path) -> bool:
     blocks = map_data["blocks"]
     if not blocks:
         return False
 
-    spawn_x = map_data["spawn_x"]
-    spawn_y = map_data["spawn_y"]
+    # ---- 自动视野 ----
+    view_min_x, view_max_x, view_min_y, view_max_y = compute_view(map_data)
+    span_x = view_max_x - view_min_x
+    span_y = view_max_y - view_min_y
 
-    # 固定视野，以 spawn 为中心
-    half_w = VIEW_HALF_WIDTH
-    half_h = half_w * 9 / 16      # 16:9
-
-    view_min_x = spawn_x - half_w
-    view_max_x = spawn_x + half_w
-    view_min_y = spawn_y - half_h
-    view_max_y = spawn_y + half_h
-    span_x = half_w * 2
-    span_y = half_h * 2
-
-    # 画布像素尺寸
+    # 画布像素尺寸（长边撑到 MAX_CANVAS，再降采样到 OUTPUT_SIZE）
     scale = min(MAX_CANVAS / span_x, MAX_CANVAS / span_y)
     canvas_w = max(200, int(span_x * scale))
     canvas_h = max(200, int(span_y * scale))
@@ -339,7 +399,7 @@ def render_thumbnail(map_data, output_path: Path) -> bool:
     canvas = Image.new("RGBA", (canvas_w, canvas_h), map_data["bg_color"])
 
     def w2p(wx, wy):
-        """世界坐标 → 像素坐标（y 轴翻转，spawn 在画面正中）"""
+        """世界坐标 → 像素坐标（y 轴翻转）"""
         px = (wx - view_min_x) * scale
         py = canvas_h - (wy - view_min_y) * scale
         return px, py
@@ -424,7 +484,7 @@ def process_folder(folder: Path) -> bool:
 
 def main():
     print("=" * 50)
-    print("SDS 缩略图生成器 (spawn 居中 + 固定视野 + 60KB 压缩)")
+    print("SDS 缩略图生成器 (自动视野 + 16:9 + 60KB 压缩)")
     print("=" * 50)
 
     if not SCAN_ROOT.exists():

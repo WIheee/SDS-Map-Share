@@ -67,7 +67,10 @@
     "email": "WIhee 邮箱",
     "emailDesc": "你自己的地图(.fun)可以发到该邮箱，每周会不定期查看，检查完毕之后就会添加到网站上。请文明用语，谢谢。",
     "emailSubject": "地图提交",
-    "emailBody": "地图名称：\n地图描述：\n作者名：\n你的社交媒体链接：\n\n（请将 .fun 文件作为附件添加到本邮件）"
+    "emailBody": "地图名称：\n地图描述：\n作者名：\n你的社交媒体链接：\n\n（请将 .fun 文件作为附件添加到本邮件）",
+    "discord": "官方 Discord 社区",
+    "discordDesc": "加入官方 Discord 社区，与其他地图创作者实时交流、分享你的作品。",
+    "discordButton": "加入 Discord 社区"
   },
   "common": {
     "cancel": "取消",
